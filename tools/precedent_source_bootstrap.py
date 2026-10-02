@@ -1,0 +1,1273 @@
+#!/usr/bin/env python3
+"""precedent_source_bootstrap.py — the retry-capable half of getting a
+privately-scoped individual practice source resolvable on an ephemeral,
+hosted session (INSTALL.md step 9's individual-source branch;
+spec/BOOTSTRAP_NEW_SOURCES.md).
+
+THE INCIDENT THIS CLOSES, AND A CORRECTION ON HOW (2026-09-06). Two
+independent adopters hit the same failure within a day of each other: a
+`SessionStart` hook clones the person's individual-set repo and writes
+`~/.config/precedent/config.json` — but that clone needs the session to
+already have git read access to a private repo, and on this harness that
+access is granted by the AGENT calling `add_repo` as its own first tool
+call, in its own turn. A `SessionStart` hook runs *entirely to completion*
+before that turn starts (Claude Code's own docs for this hook: synchronous
+mode "guarantees dependencies are installed before your session starts" —
+a strict ordering, not a race with variable odds). INSTALL.md used to say
+a *behavioral instruction* ("tell the agent to call add_repo first") closed
+this gap; both incidents are direct evidence it does not.
+
+**This file originally shipped with a bounded retry in the hook itself
+("Option B") as half the fix. A follow-up testing session proved that
+wrong, structurally, not just unlucky: every retry attempt this file makes
+runs *inside* the `SessionStart` hook's own execution, which by
+construction finishes before the agent's turn — and therefore before
+`add_repo` — can start even once. There is no point during this file's
+own retry loop where `add_repo` access could possibly have appeared, on a
+genuinely fresh session, no matter the attempt count or delay.** Retrying
+here is not a partial mitigation of the incident; it is inert for it,
+full stop, and previously cost every cold session real latency (up to
+~12 seconds) for zero benefit on the exact path it was meant to help.
+
+**The only thing that actually closes the gap is
+`tools/precedent_resolve.py`'s own lazy self-heal ("Option A"):** it
+re-invokes this same hook lazily, on demand, the first time anything
+performs a live resolve and finds the config still absent — and because
+that call happens *inside* the agent's own turn, always after `add_repo`
+has already run (per the standing session-start instruction), the
+re-invoked hook now has the access it needed and succeeds on its first
+attempt. `DEFAULT_RETRIES` below reflects this: it defaults to a single
+attempt, because a retry loop earns no credit here. `--retries`/
+`--retry-delay` remain real, working options — not because they help with
+`add_repo`, but as ordinary defensive engineering against a genuinely
+transient git/network hiccup unrelated to this specific race, for a
+caller who wants that and knows why.
+
+WHY THIS IS A SEPARATE, VENDORED, HARNESS-NEUTRAL TOOL AND NOT INLINE SHELL
+(practice: engine-plus-host-shims). The actual clone-or-pull-then-write-
+config mechanism is domain-neutral: every adopter's version of it differs
+only in the repo URL and two paths. Before this file existed, every adopter
+hand-wrote their own copy of that mechanism directly in a shell hook script
+(spec/MIGRATING_EXISTING_INSTALLS.md step 4's "worked pattern"), which is
+exactly how a missing fix (first the retry that didn't exist, then the
+retry that couldn't have worked) went unnoticed in more than one place at
+once: a bug in hand-copied shell has to be found and fixed once per
+adopter. Vendoring the mechanism here means a fix reaches every adopter
+through their ordinary `process/upstream/` sync, and the per-adopter shell
+hook
+(templates/harness/claude-code/hooks/individual-source-bootstrap.sh.template)
+shrinks to naming its own repo URL and two paths, then delegating.
+
+Run:
+  python3 precedent_source_bootstrap.py \\
+      --level individual --name NAME --repo-url URL \\
+      --clone PATH --config PATH \\
+      [--branch NAME] [--retries N] [--retry-delay SECONDS] [--remote-only true]
+
+Exit: always 0 (fail-gracefully — an unreachable individual source degrades
+the session, per tools/precedent_resolve.py's own documented contract; it
+must never be what takes a session down). A failure after every retry is
+attempted is reported on stderr, not silently absorbed.
+"""
+import argparse
+import json
+import os
+import pathlib
+import re
+import subprocess
+import sys
+import time
+
+LEVELS = {'individual', 'shared'}
+LEVEL_ALIASES = {'team': 'shared'}   # the pre-2026-09-18 spelling still reads
+
+# WHICH BRANCH A SOURCE IS CLONED FROM, AND WHY IT IS NAMED HERE RATHER THAN
+# ASKED FOR (practice: cite-the-incident).
+#
+# `git clone <url> <dir>` with no --branch asks the SERVER which branch to
+# check out, and the server answers with its HEAD symref -- which is whatever
+# is set in the repository's web settings. So the branch a session works on
+# was decided by a setting on a web page that nothing in this repository can
+# see, check, or version.
+#
+# 2026-09-09, measured from a consuming repo: two practice-source repositories
+# had their default pointed at a feature branch, so every session-start clone
+# of those sources landed on an older tree. `precedent_sync_views.py --check`
+# then reported the CONSUMER as drifted, and a plain sync would have written
+# that older text over newer committed text -- deleting a practice's Story
+# block and a clause from its Rule, with no warning and exit 0. The consuming
+# repo had never been stale; the clone had been pointed somewhere else.
+#
+# This repository already forbids the explicit form of that inference:
+# precedent_check.py's `declared-base-branch` fails any tool that resolves
+# refs/remotes/origin/HEAD without reading a DECLARED branch first, because
+# origin/HEAD answers "what does the host show first" and every caller here
+# means "what lineage does this work belong to". That check reads Python, so
+# it never saw this one -- here git was making the same inference implicitly,
+# on our behalf, inside a clone.
+#
+# `main` is the convention for a practice-set source and the fallback, never
+# an assumption to make when the repository says otherwise: a source that
+# declares base_branch in its own precedent.json is taken at its word, which
+# is what expected_branch() below is for.
+SOURCE_BRANCH_DEFAULT = 'main'
+
+
+# WHICH CHECKOUTS THIS TOOL MAY MOVE BETWEEN BRANCHES (2026-09-26).
+#
+# The pin below re-checks-out an existing clone onto its pinned branch before
+# pulling, because a clone that once landed on the wrong branch otherwise
+# stays there. That is right for a clone this tool made, and wrong for any
+# other checkout that happens to sit at a declared path -- and in a
+# multi-repo session most of them do: a practice set declares universal at
+# `../BestPractice`, which is the session's own working copy of BestPractice,
+# and BestPractice declares universal at `.`, which is itself.
+#
+# Measured 2026-09-26 on a scratch repo declaring universal at `.`, clean, on
+# a branch called `feature`: one sources_from_repo() call left it on
+# `staging`. Every session start ran that call (tools/bootstrap.sh), and so
+# does precedent_resolve.py's self-heal mid-turn, from a set whose other
+# declared source is missing. It matches the "HEAD moved onto the base branch
+# with no repo tool in the loop" rows in precedent_session_check.py and
+# gotcha-2026-09-25, and it is a plausible cause of them, not a proven one.
+#
+# So a clone this tool makes is marked inside its own .git, and only a marked
+# checkout is ever moved between branches. An unmarked one is still pulled
+# when it already sits on the pinned branch, and otherwise left exactly where
+# it is, with a message saying so.
+CLONE_MARKER = 'precedent-source-clone'
+
+
+def _mark_clone(clone_path):
+    try:
+        (pathlib.Path(clone_path) / '.git' / CLONE_MARKER).write_text(
+            'cloned by tools/precedent_source_bootstrap.py -- it may move this '
+            'checkout onto its pinned branch\n', encoding='utf-8')
+    except OSError:                          # practice: fail-gracefully
+        pass
+
+
+def _is_marked_clone(clone_path):
+    return (pathlib.Path(clone_path) / '.git' / CLONE_MARKER).is_file()
+
+
+def expected_branch(clone_path):
+    """-> str the branch a source clone belongs on: whatever its own
+    precedent.json DECLARES, else SOURCE_BRANCH_DEFAULT. Never read off the
+    remote's HEAD -- that is the inference this whole mechanism exists to
+    stop."""
+    try:
+        declared = json.loads(
+            (pathlib.Path(clone_path) / 'precedent.json').read_text(
+                encoding='utf-8')).get('base_branch')
+    except Exception:
+        return SOURCE_BRANCH_DEFAULT
+    return declared if isinstance(declared, str) and declared.strip() \
+        else SOURCE_BRANCH_DEFAULT
+# An INDIVIDUAL source resolves through a $HOME clone plus a user-level
+# config naming it; a SHARED source resolves as a SIBLING CHECKOUT beside the
+# consuming repo, by path, with nothing to write down -- see
+# tools/precedent_resolve.py's own header for why the two are wired
+# differently. Both are cloned the same way, which is all this tool does, so
+# 'team' is a real value here rather than the placeholder it was until
+# 2026-09-09: what differs is only whether a config file is written
+# afterwards (_write_config below), and the sibling path the clone lands at.
+#
+# Why it stopped being a placeholder: a credential carried by the
+# ENVIRONMENT, rather than granted per session by add_repo, can be used
+# before the agent's first turn -- and at that moment a shared set is exactly
+# as cloneable as an individual one. See tools/precedent_source_credentials.py
+# for what was measured about that, and how far.
+
+# A single attempt by default -- see the module docstring's 2026-09-06
+# correction. A retry loop here cannot help the incident this file was
+# built for (every attempt runs before the agent's turn, and therefore
+# `add_repo`, can start), so defaulting to more than one attempt would
+# just add latency on the exact path where it can never pay off. Raised
+# explicitly via --retries/--retry-delay, it is still real, working
+# defensive engineering against an unrelated, genuinely transient
+# git/network failure -- a caller who wants that opts in knowing why.
+DEFAULT_RETRIES = 1
+DEFAULT_RETRY_DELAY = 2.0
+
+
+def _load_json(path):
+    if path.is_file():
+        try:
+            return json.loads(path.read_text(encoding='utf-8'))
+        except json.JSONDecodeError:
+            return None
+    return None
+
+
+def _write_config(config_path, level, name, clone_path, repo_url=None):
+    """Merge — never clobber — so a config file that later grows a second
+    key (or a second person's individual set were this ever multi-tenant)
+    isn't silently overwritten by a hook that only knows about its own
+    key. Matches tools/precedent_bootstrap_source.py's write_user_config,
+    kept as a small, separate copy rather than an import: that tool
+    creates a *new* source from a skeleton, a one-off, human-in-the-loop
+    action; this one runs unattended, every session, and the two should
+    not have to change together by accident."""
+    data = _load_json(config_path) or {'format_version': 1}
+    entry = {'name': name, 'path': str(clone_path)}
+    # RECORD THE URL, because this file is the only place it can privately
+    # live. A shared repo's tracked hook must not carry a private source's
+    # clone URL (2026-09-07: one public consumer did, five lines from its own
+    # sentence saying that naming it "would leak its existence and location"),
+    # so the hook reads `repo_url` from here instead -- and this tool already
+    # had it in hand and dropped it, which is why every new machine needed a
+    # human to type it back in.
+    if repo_url:
+        entry['repo_url'] = repo_url
+    data[level] = entry
+    config_path.parent.mkdir(parents=True, exist_ok=True)
+    config_path.write_text(json.dumps(data, indent=2) + '\n', encoding='utf-8')
+
+
+def _credential_args(repo_url):
+    """The `git -c ...` flags that let this one invocation authenticate with
+    a credential the ENVIRONMENT carries, or [] when there is none.
+
+    (practice: fail-gracefully) The import is guarded and its failure is
+    ANNOUNCED rather than absorbed: a vendored tree that predates
+    precedent_source_credentials.py still runs, exactly as it did before,
+    but a person expecting a token to be used is told plainly why it was
+    not. A silently ignored credential is indistinguishable from a wrong
+    one, and this file's whole history is about failures that look like
+    something else."""
+    try:
+        sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))
+        from precedent_source_credentials import credential_args
+    except ImportError:
+        if os.environ.get('PRECEDENT_GIT_TOKEN'):
+            print("precedent_source_bootstrap: PRECEDENT_GIT_TOKEN is set, but "
+                  "precedent_source_credentials.py is not beside this file, so "
+                  "the credential CANNOT be used. Re-vendor the engine "
+                  "(python3 tools/precedent_vendor_engine.py refresh <clone>).",
+                  file=sys.stderr)
+        return []
+    return credential_args(repo_url)
+
+
+def _persist_credential(clone_path, repo_url):
+    """Leave the credential helper in the clone's own config, so git commands
+    run inside it LATER can authenticate too -- a session-start hook, the
+    freshness guard, a person. _credential_args covers one invocation and the
+    clone remembers nothing of it; see the incident recorded above
+    persist_credential_helper in precedent_source_credentials.py, where that
+    gap blocked every non-git tool call of a session.
+
+    Guarded and silent on failure, like _credential_args: a source that
+    synced is in force, and a convenience for later callers must not turn
+    that into a failure. Writes no secret -- the config records the
+    environment variable's NAME."""
+    try:
+        sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))
+        from precedent_source_credentials import persist_credential_helper
+    except ImportError:
+        return False
+    return persist_credential_helper(clone_path, repo_url)
+
+
+def _run_git(args):
+    """-> (ok, output). The exit code is consulted, never inferred from the
+    text: several git commands print something useful and exit non-zero, and
+    a helper that returns stdout alone hands the caller a confident wrong
+    answer (AGENTS.md records five tools that had that bug)."""
+    r = subprocess.run(['git', *args], capture_output=True, text=True)
+    return r.returncode == 0, (r.stdout + r.stderr).strip()
+
+
+def _branch_absent(output):
+    """git's several ways of saying "there is no branch by that name here".
+
+    Matched narrowly and on purpose: this decides whether to fall back to the
+    remote's own default, and a loose match would turn an ordinary network
+    failure into a silent branch switch -- the exact thing the pin exists to
+    stop."""
+    low = (output or '').lower()
+    return ('remote branch' in low and 'not found' in low) or \
+        ("couldn't find remote ref" in low)
+
+
+def _try_sync(repo_url, clone_path, branch=None):
+    """One attempt: pull if already cloned, else clone. -> (ok, output).
+
+    WHY THE PERSIST LIVES HERE AND NOT IN run_sync (practice: cite-the-incident).
+    It used to sit in run_sync, on the reasoning that every sync goes through
+    there. Two do not, and between them they cover every clone a session
+    actually meets at startup:
+
+      * sources_from_repo's ALREADY-ON-DISK branch calls this function
+        directly, so a shared-set clone that exists -- which is every shared-set clone
+        after the first session -- was synced and never given a helper.
+      * the individual source is not synced at session start at all while it
+        looks usable: session-start.sh leaves it to precedent_resolve.py's
+        self-heal, and a healthy clone never triggers one.
+
+    So run_sync's comment calling itself "the repair path for the clones made
+    before this existed" was true of a path those clones do not take.
+    Measured 2026-09-11, hours after the persist landed: all four private
+    sources on disk, PRECEDENT_GIT_TOKEN set, not one of them carrying a
+    helper, and the freshness guard blocking every non-git tool call of the
+    session exactly as it had before the fix. This function is the one funnel
+    both a clone and a pull pass through, so it is where the guarantee holds.
+
+    Repairing a clone nothing pulls is a different question again, and this
+    cannot answer it -- precedent_refresh_sources.py does, per attached
+    source, at every session start.
+
+    The clone is made from the CLEAN url -- the credential travels as a git
+    helper that reads the environment itself, so no token is ever written
+    into .git/config, where it would outlive this process and be pushed by
+    whoever committed next.
+
+    The branch is PINNED, never asked for -- see SOURCE_BRANCH_DEFAULT above
+    for the incident. Two halves, and the second is the one that made the
+    first incident persist: a fresh clone takes --branch, and an existing
+    clone is put back on that branch BEFORE pulling, because `git pull
+    --ff-only` pulls whatever branch the checkout is already sitting on. A
+    clone that landed on the wrong branch once therefore stayed there and
+    kept pulling it, session after session, with nothing saying so."""
+    ok, out = _sync_once(repo_url, clone_path, branch=branch)
+    if ok:
+        _persist_credential(clone_path, repo_url)
+    return ok, out
+
+
+def _sync_once(repo_url, clone_path, branch=None):
+    """The attempt itself, with every early return _try_sync has to wrap."""
+    cred = _credential_args(repo_url)
+    branch = branch or expected_branch(clone_path)
+    if (clone_path / '.git').is_dir():
+        ok, current = _run_git(['-C', str(clone_path), 'rev-parse',
+                                '--abbrev-ref', 'HEAD'])
+        if not ok:
+            return False, current
+        if current != branch and not _is_marked_clone(clone_path):
+            # Not a clone this tool made, so possibly a session's working
+            # copy -- see CLONE_MARKER. Still in force as it stands.
+            return False, (
+                f"{clone_path} is on {current!r}, not the pinned {branch!r}, "
+                f"and was not cloned by this tool, so it may be somebody's "
+                f"working copy. Left where it is and not pulled.")
+        if current != branch:
+            # A clone with uncommitted work is somebody's working copy, and
+            # moving it is not this tool's call to make. Refusing is the safe
+            # direction: an unresolved source is reported loudly at session
+            # start, while a source silently read off the wrong branch is the
+            # exact silent revert this pin exists to prevent.
+            ok, dirty = _run_git(['-C', str(clone_path), 'status', '--porcelain'])
+            if not ok:
+                return False, dirty
+            if dirty.strip():
+                return False, (
+                    f"{clone_path} is on branch {current!r}, not {branch!r}, "
+                    f"and has uncommitted changes. Refusing to move it: a "
+                    f"source read off the wrong branch silently reverts the "
+                    f"repositories that sync from it. Commit or stash there, "
+                    f"then re-run.")
+            ok, out = _run_git([*cred, '-C', str(clone_path), 'fetch',
+                                '--quiet', 'origin', branch])
+            if not ok:
+                if not _branch_absent(out):
+                    return False, out
+                # No branch by that name at all -- see the note in the clone
+                # path below. Leave the checkout where it is and pull that,
+                # rather than refusing and putting the source out of force.
+                print(f"precedent_source_bootstrap: {clone_path} has no branch "
+                      f"{branch!r} on its remote, so it stays on {current!r}. "
+                      f"Declare base_branch in that repository's precedent.json "
+                      f"if {current!r} is what it should be on.", file=sys.stderr)
+                return _run_git([*cred, '-C', str(clone_path), 'pull',
+                                 '--ff-only', '--quiet'])
+            ok, out = _run_git(['-C', str(clone_path), 'checkout', '--quiet',
+                                branch])
+            if not ok:
+                return False, out
+        cmd = [*cred, '-C', str(clone_path), 'pull', '--ff-only', '--quiet']
+    else:
+        clone_path.parent.mkdir(parents=True, exist_ok=True)
+        cmd = [*cred, 'clone', '--quiet', '--branch', branch,
+               repo_url, str(clone_path)]
+        ok, out = _run_git(cmd)
+        if ok:
+            _mark_clone(clone_path)
+        if ok or not _branch_absent(out):
+            return ok, out
+        # THE ONE CASE THE PIN GIVES WAY, AND WHY IT IS NOT THE INCIDENT
+        # RETURNING. The pin refuses to let the REMOTE choose between branches
+        # that exist -- which is what went wrong on 2026-09-09, where `main`
+        # was there and the remote's default named something else. This is a
+        # different situation: no branch by that name exists at all, so there
+        # is nothing to choose between. Refusing here would take a perfectly
+        # good source out of force for being on `master`, or on any other name
+        # -- and git's own default branch name is per-machine, so whoever
+        # created the set may never have made a decision about it. Falling
+        # back keeps the practices in force; saying so keeps it from being
+        # silent, which is the whole complaint against the old behaviour.
+        print(f"precedent_source_bootstrap: {repo_url} has no branch "
+              f"{branch!r}; cloning its default instead. Declare base_branch "
+              f"in that repository's precedent.json to pin it explicitly.",
+              file=sys.stderr)
+        ok, out = _run_git([*cred, 'clone', '--quiet', repo_url,
+                            str(clone_path)])
+        if ok:
+            _mark_clone(clone_path)
+        return ok, out
+    return _run_git(cmd)
+
+
+# ONE TREE FOR THE INDIVIDUAL SET, WHICHEVER ROUTE CLONED IT (2026-09-28).
+#
+# Two routes put the individual set on disk and they disagreed about where.
+# This tool clones it to `--clone` ($HOME/precedent-individual, the path the
+# user config records). The repo-attach tool (`add_repo` on Claude Code on
+# the web) grants the session access to it -- push access included, which is
+# why sessions are told to call it -- and its reply tells the session to
+# clone the repo into the directory the project lives in
+# (/home/user/<name>). Where $HOME is not that directory, the two land in
+# different places. Two consumer sessions reported it the same day: the
+# session check's "cloned exactly once" row failing every turn, in one case
+# with both copies at one commit and in the other with the two DIVERGED, so
+# whichever copy a tool happened to read decided which practices were in
+# force.
+#
+# The same answer _clone_elsewhere_on_disk gives the shared sets: one working
+# tree, and every other path a symlink to it. Whichever route cloned first
+# keeps its tree. When this tool is first, it leaves a link at the attach
+# path, so the clone the attach reply suggests stops at "destination path
+# already exists" instead of making a second copy. When the session was
+# first, this tool reuses that clone, records it in the config, and links
+# $HOME's path to it.
+#
+# Two separate trees already on disk are REPORTED and neither is touched
+# (practice: repair-cannot-discard-work): which one holds the work is not
+# something a startup hook gets to decide, and a diverged pair has work in
+# both.
+#
+# The attach path is only considered for a HOSTED url, and a tree found there
+# only counts when its origin names the same repository. The attach tool
+# only ever hands out hosted repositories, so a file:// source has no attach
+# clone to meet -- and that keeps a test fixture with a fake $HOME from ever
+# reaching a real workspace through an inherited project-dir variable.
+
+
+def attach_workspace():
+    """-> the directory a repo-attach tool clones into, or None: the parent
+    of the session's project, read from the same two variables as
+    _clone_elsewhere_on_disk (engine's own first, provider's second)."""
+    for var in ('PRECEDENT_PROJECT_DIR', 'CLAUDE_PROJECT_DIR'):
+        proj = os.environ.get(var, '').strip()
+        if proj:
+            return pathlib.Path(proj).parent
+    return None
+
+
+def _is_hosted(url):
+    u = (url or '').strip()
+    return u.startswith(('https://', 'http://', 'ssh://', 'git://')) or \
+        bool(re.match(r'^[\w.-]+@[\w.-]+:', u))
+
+
+def _repo_key(url):
+    """`owner/repo`, lowercased, for comparing two remotes of one repository.
+    The attach tool's clone URL goes through a local proxy and is lowercased
+    (gotchas/gotcha-2026-09-06-a-repository-attached-mid-session-clones-
+    single-branch-so-ev.md), so only the last two path segments compare."""
+    u = (url or '').strip().rstrip('/')
+    if u.endswith('.git'):
+        u = u[:-4]
+    parts = [p for p in re.split(r'[/:]', u) if p]
+    return '/'.join(parts[-2:]).lower()
+
+
+def _copy_state(path):
+    """-> 'e4ff664, 2 unpushed commit(s), uncommitted changes' for a report."""
+    _, head = _run_git(['-C', str(path), 'rev-parse', '--short', 'HEAD'])
+    bits = [head or 'unreadable']
+    ok, ahead = _run_git(['-C', str(path), 'rev-list', '--count', '--branches',
+                          '--not', '--remotes'])
+    if ok and ahead.strip() not in ('', '0'):
+        bits.append(f'{ahead.strip()} unpushed commit(s)')
+    ok, dirty = _run_git(['-C', str(path), 'status', '--porcelain'])
+    if ok and dirty.strip():
+        bits.append('uncommitted changes')
+    return head, ', '.join(bits)
+
+
+def _one_individual_tree(name, repo_url, clone_path, workspace):
+    """-> (the path to sync, [paths that should lead to it], report or None).
+
+    See the block above. Never deletes, moves or overwrites anything: the
+    only change it makes is removing a DANGLING symlink, which holds
+    nothing."""
+    attach = None
+    if workspace is not None and clone_path.name == name \
+            and _is_hosted(repo_url):
+        attach = pathlib.Path(workspace) / name
+    trees = []                                  # [(resolved, as found)]
+    for cand, must_match in ((clone_path, False), (attach, True)):
+        if cand is None or not (cand / '.git').exists():
+            continue
+        real = cand.resolve()
+        if any(real == r for r, _ in trees):
+            continue                            # a link to a tree already seen
+        if must_match:
+            ok, url = _run_git(['-C', str(cand), 'remote', 'get-url', 'origin'])
+            if not ok or _repo_key(url) != _repo_key(repo_url):
+                continue                        # somebody else's repository
+        trees.append((real, cand))
+    links = [p for p in (clone_path, attach) if p is not None]
+    if not trees:
+        if clone_path.is_symlink() and not clone_path.exists():
+            clone_path.unlink()                 # dangling: nothing to lose
+        return clone_path, links, None
+    if len(trees) == 1:
+        real, found = trees[0]
+        return (real if found.is_symlink() else found), links, None
+    heads, shown = [], []
+    for real, found in trees:
+        head, state = _copy_state(real)
+        heads.append(head)
+        shown.append(f'{found} @ {state}')
+    diverged = len(set(heads)) > 1
+    return clone_path, [], (
+        f'precedent_source_bootstrap: {name} is cloned twice on this disk -- '
+        + ' and '.join(shown)
+        + (' -- THESE HAVE DIVERGED' if diverged else '')
+        + f'. Neither was touched: this tool never deletes, moves or '
+          f'overwrites a clone, and which one holds the work is not its call. '
+          f'Tools read {clone_path}. To end up with one, push or carry any '
+          f'work out of the other copy, remove it, and run this bootstrap '
+          f'again -- it links that path to the remaining tree instead of '
+          f'cloning a second one.')
+
+
+def _link_to(tree, paths):
+    """Make each of `paths` lead to `tree` where nothing is there yet. A path
+    that already exists is left exactly as it is, and a failure only costs
+    the link (practice: fail-gracefully)."""
+    for path in paths:
+        try:
+            if path.is_symlink() and not path.exists():
+                path.unlink()                   # dangling: nothing to lose
+            if os.path.lexists(path) or not path.parent.is_dir():
+                continue
+            path.symlink_to(pathlib.Path(tree).resolve(),
+                            target_is_directory=True)
+        except OSError as e:
+            print(f'precedent_source_bootstrap: could not link {path} to '
+                  f'{tree} ({e}). A clone made there later is a second '
+                  f'copy of the same source.', file=sys.stderr)
+
+
+def ensure_source(level, name, repo_url, clone_path, config_path,
+                   retries=DEFAULT_RETRIES, retry_delay=DEFAULT_RETRY_DELAY,
+                   sleep=time.sleep, branch=None, workspace=None):
+    """The mechanism, callable in-process as well as from main() below.
+    (tools/precedent_resolve.py's own self-heal does NOT call this
+    in-process -- it shells out to the project's session-start hook, the
+    hook this file backs, so a project that customized its hook still gets
+    the customized behavior on self-heal too.) `sleep` is injectable so a
+    test can prove the retry count without a real wall-clock wait.
+
+    -> (True, None) on success; (False, last_output) once every retry is
+    spent. Never raises for an ordinary sync failure — a source this
+    session cannot yet reach is the expected, common case (see module
+    docstring), not a bug to propagate.
+
+    `workspace` (individual only) is where a repo-attach tool clones; see
+    _one_individual_tree. None keeps the one-path behaviour."""
+    clone_path = pathlib.Path(clone_path)
+    links = []
+    if level == 'individual':
+        clone_path, links, report = _one_individual_tree(
+            name, repo_url, clone_path, workspace)
+        if report:
+            print(report, file=sys.stderr)
+    attempts = max(1, retries)
+    last_output = ''
+    for attempt in range(1, attempts + 1):
+        ok, last_output = _try_sync(repo_url, clone_path, branch=branch)
+        # Linked whether or not the pull worked: a tree on disk is in force
+        # either way, and the link is what stops a second clone.
+        if links and (clone_path / '.git').exists():
+            _link_to(clone_path, links)
+        if ok:
+            # The credential helper is persisted by _try_sync itself, for
+            # every caller rather than only this one -- see its docstring for
+            # the two paths that bypass run_sync entirely, and what that cost.
+            #
+            # A shared source is resolved BY PATH, as a sibling checkout, so
+            # there is nothing to record; writing a config entry for one
+            # would invent a resolution route precedent_resolve.py does not
+            # read (practice: no-invented-specifics, applied to code).
+            if config_path is not None:
+                _write_config(pathlib.Path(config_path), level, name, clone_path,
+                              repo_url=repo_url)
+            return True, None
+        if _left_as_it_stands(clone_path, last_output):
+            # A WORKING COPY ON ANOTHER BRANCH IS STILL THE SOURCE. The
+            # refusal in _sync_once protects the checkout from being moved;
+            # it was never meant to take the source out of force, and its
+            # own comment says "Still in force as it stands." Until
+            # 2026-09-28 nothing recorded it, so an individual set the
+            # harness had attached on a session branch -- every attached
+            # repo in a multi-repo cloud session is -- resolved nowhere, and
+            # the caller blamed read access. A deterministic refusal is
+            # also not worth retrying.
+            print(f'precedent_source_bootstrap: {last_output} It is used '
+                  f'as the {level} source exactly as it stands.',
+                  file=sys.stderr)
+            if config_path is not None:
+                _write_config(pathlib.Path(config_path), level, name, clone_path,
+                              repo_url=repo_url)
+            return True, None
+        if attempt < attempts:
+            sleep(retry_delay)
+    return False, last_output
+
+
+def _left_as_it_stands(clone_path, output):
+    """True when _sync_once declined to move a checkout it did not make (see
+    CLONE_MARKER) and that checkout is a practice source on disk."""
+    return ('was not cloned by this tool' in (output or '')
+            and (pathlib.Path(clone_path) / 'practices').is_dir())
+
+
+BASE_URL_ENV = 'PRECEDENT_SOURCE_BASE_URL'
+TOKEN_ENV_NAME = 'PRECEDENT_GIT_TOKEN'  # named, not imported: this file
+                                        # must run in a tree vendored
+                                        # before the credentials module
+                                        # existed (see _credential_args)
+
+
+def _clone_elsewhere_on_disk(name, clone_path, repo_path):
+    """An already-cloned copy of source `name` sitting at a DIFFERENT standard
+    location on this disk, or None.
+
+    WHY THIS EXISTS. A source is declared as a sibling relative path
+    (`../precedent-shared-writing`), so where it lands depends on which repo
+    is doing the resolving. On a container where the consumer and the
+    individual set have different parents -- the ordinary shape, since
+    `~/.config/precedent/config.json` puts the individual set wherever it was
+    cloned -- the same three shared sets get resolved into two different
+    parents and cloned TWICE. Measured 2026-09-22 by moving one copy aside and
+    re-running the bootstrap from each root in turn: from the consumer the
+    stray stayed gone, from `$HOME/precedent-individual` it came straight
+    back, because that set declares the same sets at `../<name>` too.
+
+    WHY A SECOND COPY IS WORSE THAN IT LOOKS. Both copies are real clones, so
+    both refresh cleanly and neither reports a problem. Nothing says which one
+    the loader actually read. They are identical until the day somebody
+    commits a practice into one of them, and from that day a rule that was
+    genuinely written is simply not in force, with no error anywhere -- the
+    silent failure filed as
+    todo/todo-2026-09-21-three-shared-sets-are-cloned-twice-on-this-container.md.
+
+    WHY A SYMLINK RATHER THAN A SECOND CLONE. The declared relative path has
+    to keep resolving -- every consumer reads its sources through it -- so the
+    path must exist. A symlink makes it exist while leaving exactly one
+    working tree on disk: one place to commit into, one place to pull, one
+    answer to "which copy did the loader read". Deleting the strays instead
+    does not hold, because whatever resolved that path re-creates it at the
+    next session start.
+
+    FIRST ONE ON DISK WINS, and that is deliberate rather than unfortunate:
+    the question this answers is "is there already a tree for this source",
+    and any answer that leaves one tree is a right answer. It never picks a
+    path over an EXISTING `clone_path` -- the caller only reaches here when
+    that one is absent."""
+    roots = []
+    try:
+        roots.append(pathlib.Path.home())
+    except Exception:
+        pass
+    roots.append(pathlib.Path(repo_path).parent)
+    # THE SESSION'S OWN PROJECT DIR IS THE THIRD ROOT, and leaving it out made
+    # the first version of this inert: run from `$HOME/precedent-individual`,
+    # both of the roots above ARE `$HOME`, so the copy under the consumer's
+    # parent -- the one that actually exists -- was never a candidate. That is
+    # the whole failing shape, so the root that names the other parent cannot
+    # be the one that is missing.
+    #
+    # THE ENGINE'S OWN VARIABLE FIRST, THE PROVIDER'S SECOND. This file ships
+    # into repos on four harnesses, so the neutral name is the one that is
+    # documented and the provider's is read as a convenience where it happens
+    # to be set (practice: vendor-neutral-by-default). Where a harness sets
+    # neither, this helper finds nothing and the old behaviour resumes -- a
+    # second clone, degraded rather than broken, and still reported.
+    #
+    # CWD IS DELIBERATELY NOT A ROOT, and briefly was. It is redundant exactly
+    # when it would help -- the adapters run `--teams-from .` from the project
+    # root, where cwd's parent IS repo_path's parent already -- and wrong
+    # exactly when it differs, which is when something resolves a repo other
+    # than the one it is standing in. Measured 2026-09-22: with cwd as a root,
+    # verify_harness's credential fixture stopped reporting a source as NOT in
+    # force, because the helper found the fixture's own REMOTE copy under cwd's
+    # parent and linked the declared path to it. A root that can reach a
+    # directory nobody meant as a source is worse than no root.
+    for var in ('PRECEDENT_PROJECT_DIR', 'CLAUDE_PROJECT_DIR'):
+        proj = os.environ.get(var, '').strip()
+        if proj:
+            roots.append(pathlib.Path(proj).parent)
+            break
+    for cand in [r / name for r in roots]:
+        try:
+            if cand.resolve() == clone_path:
+                continue
+            if (cand / 'practices').is_dir() and (cand / '.git').exists():
+                return cand
+        except Exception:
+            continue
+    return None
+
+
+def sources_from_repo(repo_path, base_url=None, retries=DEFAULT_RETRIES,
+                      retry_delay=DEFAULT_RETRY_DELAY, branch=None, skip=None,
+                      only_marked=False, existing_only=False):
+    """Clone every TEAM and UNIVERSAL source a repo's precedent.json declares,
+    to the sibling path it declares.
+
+    Called sources_from_repo until 2026-09-13, when universal joined it so that
+    a practice SET can put the universal catalogue on disk beside itself and
+    read it (spec/SOURCE_SET_PROSE_GAP.md, shape 3). Renamed rather than
+    left with a name that had stopped describing it (practice:
+    label-describes-content).
+
+    THE TWO LEVELS DIFFER IN ONE THING ONLY -- where the clone URL comes
+    from -- and the difference is not arbitrary. A shared set is private, so
+    its URL is built from $PRECEDENT_SOURCE_BASE_URL and never written down
+    (see the note below). Universal is PUBLIC, and every vendored engine
+    already records exactly where it came from, in
+    tools/ENGINE_MANIFEST.json's `source_repo` and `source_branch`. So
+    universal needs no base URL, no token, and nothing new declared: the set
+    is cloning the repository it already says it vendored its engine from.
+
+    WHY THE URL IS BUILT FROM AN ENVIRONMENT VARIABLE rather than declared
+    in precedent.json beside the name: the account that owns a set is the
+    half that locates it, and a tracked file in a public repository must not
+    carry that (2026-09-07: one public consumer's own hook did, five lines
+    from its own sentence saying it must not). The NAME is already declared
+    in the open and that was a deliberate decision -- see precedent.json's
+    own comment. Building `<base>/<name>` keeps it that way.
+
+    `skip` maps a resolved clone path to the reason it is not touched this
+    call -- already synced by an earlier call this session start, or a
+    checkout a session is working in (sources_from_attached_sets below).
+    A skipped source is still on disk and in force, so it reports ok.
+    `only_marked` leaves alone, the same way, any checkout already on disk
+    that this tool did not clone (CLONE_MARKER): the attached-set walk pulls
+    only its own clones, since the project directory is not always named in
+    the environment that runs it. `existing_only` refreshes what is on disk
+    and clones nothing new: a missing source stays the resolver's to clone
+    when something first reads it, so a session start in a repository whose
+    sets never needed their own universal clone does not start paying for
+    one.
+
+    -> [(name, ok, output)], one per declared shared source. Never raises: a
+    set that cannot be cloned degrades the session (practice:
+    fail-gracefully), it does not stop startup."""
+    repo_path = pathlib.Path(repo_path)
+    if base_url is not None:
+        base = base_url.strip().rstrip('/')
+    else:
+        # The variable, else the value kept in the user config, else the
+        # token's account (precedent_source_credentials.source_base_url).
+        try:
+            from precedent_source_credentials import source_base_url
+            base = source_base_url()[0]
+        except Exception:                                   # noqa: BLE001
+            base = os.environ.get(BASE_URL_ENV, '').strip().rstrip('/')
+    results = []
+    try:
+        cfg = json.loads((repo_path / 'precedent.json').read_text(encoding='utf-8'))
+    except Exception as e:
+        return [(None, False, f'could not read {repo_path / "precedent.json"}: {e}')]
+    for src in cfg.get('sources', []) or []:
+        level = LEVEL_ALIASES.get(src.get('level'), src.get('level'))
+        if level not in ('shared', 'universal'):
+            continue
+        name = str(src.get('name') or '').strip()
+        rel = str(src.get('path') or '').strip()
+        repo = str(src.get('repo') or '').strip()
+        if not name or not rel:
+            results.append((name or None, False,
+                            'the declared source has no name or no path'))
+            continue
+        clone_path = (repo_path / rel).resolve()
+        if _declared_inside(repo_path, clone_path):
+            # The repository itself (BestPractice declares universal at `.`)
+            # or a copy vendored inside it (a consumer's
+            # precedent/universal). Neither is a clone: the first used to be
+            # checked out onto its base branch from here, and the second was
+            # handed to `git clone` as a non-empty target. A nested directory
+            # with a .git of its own IS a clone, and is synced as one.
+            results.append((name, True, 'declared inside this repository -- '
+                                        'nothing to clone or pull'))
+            continue
+        if skip and clone_path in skip:
+            results.append((name, True, skip[clone_path]))
+            continue
+        if only_marked and (clone_path / '.git').exists() \
+                and not _is_marked_clone(clone_path):
+            # practice: repair-cannot-discard-work
+            results.append((name, True, 'not cloned by this tool, so it may '
+                            'be a session\'s working copy -- left as it is'))
+            continue
+        if existing_only and not (clone_path / '.git').exists():
+            results.append((name, True, 'not on disk here; cloned when '
+                            'something first reads it, not at session start'))
+            continue
+        if (clone_path / 'practices').is_dir():
+            # ON DISK IS NOT THE SAME AS CURRENT, and until 2026-09-11 this
+            # returned 'already on disk' and stopped -- so a shared-set clone was
+            # pulled exactly once, when it was created, and every session
+            # afterwards read whatever it held that day. Measured on a real
+            # container: four attached sources 4, 4, 6 and 19 commits behind
+            # their own origin/main, with session start reporting all four
+            # fine. The cost lands somewhere else entirely -- the harness
+            # reported `commit-identity.sh` copies disagreeing across
+            # repositories and the drift was in this clone, not in any
+            # repository (practice: upstream-fix -- the recurring failure was
+            # the symptom; this is what kept producing it).
+            #
+            # _try_sync() is the same clone-or-pull used for a fresh source,
+            # so the branch pin above applies here too. The URL is read off
+            # the clone's own remote: a pull needs no base URL, and this path
+            # must keep working for a session whose environment carries no
+            # PRECEDENT_SOURCE_BASE_URL at all.
+            ok_url, url = _run_git(['-C', str(clone_path), 'remote',
+                                    'get-url', 'origin'])
+            ok_before, before = _run_git(['-C', str(clone_path), 'rev-parse',
+                                          'HEAD'])
+            # THE SAME PIN AS A FRESH CLONE (2026-10-02). This call passed no
+            # branch, so _sync_once fell back to the clone's OWN declared
+            # base_branch -- for a universal clone, BestPractice's working
+            # branch (staging), not the main its manifest pins. It never
+            # showed while nothing re-synced a set's universal clone; the
+            # first run that did moved /root/BestPractice from main onto
+            # staging.
+            ok, out = _try_sync(url if ok_url else _clone_url(
+                repo_path, level, name, base, repo) or '', clone_path,
+                branch=branch or _clone_branch(repo_path, level))
+            if not ok:
+                # A source that is present but could not be refreshed is
+                # still IN FORCE -- it is on disk and resolvable -- so this
+                # stays True. What it must not do is report freshness it did
+                # not establish (practice: fail-gracefully).
+                why = _diagnose(out)
+                if why == 'it':
+                    # _diagnose's fallback is a bare pronoun, written for a
+                    # caller whose own sentence carries the verb. Here it
+                    # would swallow git's message entirely, which is the
+                    # "could not check" that renders as nothing at all.
+                    lines = [ln.strip() for ln in (out or '').splitlines()
+                             if ln.strip()]
+                    # The FIRST line, not the last: git leads with the reason
+                    # ("Your local changes ... would be overwritten") and ends
+                    # with "Aborting", which names no cause at all.
+                    why = lines[0][:200] if lines else 'git reported nothing'
+                results.append((name, True, 'already on disk, but could NOT '
+                                            'be brought up to date: ' + why))
+                continue
+            ok_after, after = _run_git(['-C', str(clone_path), 'rev-parse',
+                                        'HEAD'])
+            moved = (ok_before and ok_after and before != after)
+            results.append((name, True, 'already on disk, fast-forwarded'
+                            if moved else 'already on disk and current'))
+            continue
+        existing = _clone_elsewhere_on_disk(name, clone_path, repo_path)
+        if existing is not None:
+            # Point the declared path at the tree that is already here rather
+            # than cloning a twin beside it -- see _clone_elsewhere_on_disk.
+            # A failure to link is NOT fatal: fall through and clone, because
+            # a duplicated source still puts the practices in force, while an
+            # absent one does not (practice: fail-gracefully).
+            try:
+                clone_path.parent.mkdir(parents=True, exist_ok=True)
+                clone_path.symlink_to(existing, target_is_directory=True)
+                results.append((name, True, f'linked to the copy already on '
+                                            f'disk at {existing} rather than '
+                                            f'cloned a second time'))
+                continue
+            except Exception as e:
+                print(f'precedent_source_bootstrap: {name} already exists at '
+                      f'{existing}, but linking {clone_path} to it failed '
+                      f'({type(e).__name__}: {e}) -- cloning a second copy. '
+                      f'Two copies of one source diverge silently; see '
+                      f'_clone_elsewhere_on_disk.', file=sys.stderr)
+        clone_url = _clone_url(repo_path, level, name, base, repo)
+        if not clone_url:
+            results.append((name, False,
+                            f'{BASE_URL_ENV} is not set, so there is no URL to '
+                            f'clone {name} from' if level == 'shared' else
+                            f'tools/ENGINE_MANIFEST.json records no '
+                            f'source_repo, so there is no URL to clone the '
+                            f'universal source {name} from'))
+            continue
+        ok, out = ensure_source(level, name, clone_url, clone_path,
+                                None, retries=retries, retry_delay=retry_delay,
+                                branch=branch or _clone_branch(repo_path, level))
+        results.append((name, ok, out or 'cloned'))
+    return results
+
+
+
+# THE SOURCES OF EVERY ATTACHED SET, NOT ONLY THE ROOT'S (2026-10-02).
+#
+# Session start called sources_from_repo() on the session's own repository
+# and nothing else. A practice set reads its universal rules from the
+# `../BestPractice` IT declares, and when the set sits under a different
+# parent from the project -- the individual set at $HOME/precedent-individual
+# beside a project at /home/user/BestPractice -- that path is a clone of its
+# own, which nothing ever pulled again. Measured 2026-10-02: /root/BestPractice
+# had one reflog entry, its clone at the previous day's session start, and
+# was 131 commits behind origin/main. The set's session file was rendered
+# from it, and the reply gate reported a session load of about 4,900 tokens
+# that measured about 4,000 once the clone was fast-forwarded and the file
+# rebuilt. The set's shared sets escaped only because they were symlinks to
+# the copies the root does sync (_clone_elsewhere_on_disk).
+#
+# So, after the root's own sources, every practice set the root declares and
+# the individual set have their own declared sources synced too, by the same
+# _try_sync (fast-forward only; a clone this tool did not make is never moved
+# off its branch). Two kinds of path are skipped: one already synced this
+# run, so a symlinked set is pulled once, and a checkout a session is working
+# in -- a set beside the project declares ../BestPractice, which IS the
+# project, possibly on a feature branch with work in it (practice:
+# repair-cannot-discard-work). Then each set's .precedent/SESSION_PRACTICES.md
+# is re-rendered if a source it reads moved since it was written
+# (precedent_resolve._self_heal_stale_render), which is the other half of the
+# same stale number: the shared sets moved at a resume and the set's file did
+# not follow.
+#
+# One level deep, deliberately: a set's sources are universal and shared
+# sets, and those declare nothing this walk needs.
+
+
+def _session_working_trees():
+    """-> {resolved path: reason} for every checkout a session is working
+    in: the project directory, read from the engine's own variable first and
+    the provider's second (the same pair attach_workspace reads)."""
+    out = {}
+    for var in ('PRECEDENT_PROJECT_DIR', 'CLAUDE_PROJECT_DIR'):
+        proj = os.environ.get(var, '').strip()
+        if not proj:
+            continue
+        try:
+            out[pathlib.Path(proj).resolve()] = (
+                'a session is working in this checkout, so it is not pulled '
+                'from here -- its own git workflow keeps it current')
+        except OSError:
+            continue
+    return out
+
+
+def attached_sets(repo_path):
+    """-> [Path] every practice set this session reads beyond the root: the
+    shared sets the root declares and the person's individual set, resolved
+    and deduplicated, each present on disk with a precedent.json of its own.
+    Never the root itself or a universal clone. [] when the resolver is not
+    beside this file -- an engine older than it simply keeps the root-only
+    behaviour."""
+    try:
+        import precedent_resolve as pr
+        declared = pr.declared_source_paths(repo_path)
+    except Exception:                                       # noqa: BLE001
+        return []
+    root = pathlib.Path(repo_path).resolve()
+    out, seen = [], set()
+    for path, level, _name, note in declared:
+        if note or level not in ('shared', 'individual') or not path:
+            continue
+        real = pathlib.Path(path).resolve()
+        if real == root or real in seen:
+            continue
+        seen.add(real)
+        try:
+            json.loads((real / 'precedent.json').read_text(encoding='utf-8'))
+        except (OSError, ValueError):
+            # Unreadable or broken: the resolver and the session check report
+            # a broken set already, so the walk adds no second message.
+            continue
+        out.append(real)
+    return out
+
+
+def sources_from_attached_sets(repo_path, base_url=None,
+                               retries=DEFAULT_RETRIES,
+                               retry_delay=DEFAULT_RETRY_DELAY):
+    """Sync the sources each attached practice set declares, then re-render
+    each set's session file if what it reads moved. See the comment above.
+
+    The sources the root repository declares were synced just before this
+    by sources_from_repo(repo_path), so they are skipped rather than pulled
+    twice. -> [(set path, name, ok, output)]. Never raises."""
+    root = pathlib.Path(repo_path).resolve()
+    skip = _session_working_trees()
+    skip.setdefault(root, 'the root repository is not pulled by this tool')
+    try:
+        cfg = json.loads((root / 'precedent.json').read_text(encoding='utf-8'))
+        for src in cfg.get('sources', []) or []:
+            rel = str(src.get('path') or '').strip()
+            if rel:
+                skip.setdefault((root / rel).resolve(),
+                                'already synced from the root repository '
+                                'this session start')
+    except Exception:                                       # noqa: BLE001
+        pass
+    out = []
+    for set_path in attached_sets(root):
+        try:
+            res = sources_from_repo(set_path, base_url=base_url,
+                                    retries=retries, retry_delay=retry_delay,
+                                    skip=skip, only_marked=True,
+                                    existing_only=True)
+        except Exception as e:                              # noqa: BLE001
+            res = [(None, False, f'{type(e).__name__}: {e}')]
+        for name, ok, msg in res:
+            out.append((set_path, name, ok, msg))
+        # Whatever this set declares is now synced: a second set declaring
+        # the same clone (by a symlink, usually) skips it.
+        try:
+            scfg = json.loads((set_path / 'precedent.json')
+                              .read_text(encoding='utf-8'))
+            for src in scfg.get('sources', []) or []:
+                rel = str(src.get('path') or '').strip()
+                if rel:
+                    skip.setdefault((set_path / rel).resolve(),
+                                    'already synced from another practice '
+                                    'set this session start')
+        except Exception:                                   # noqa: BLE001
+            pass
+        try:
+            import precedent_resolve as pr
+            pr._self_heal_stale_render(set_path)
+        except Exception:                                   # noqa: BLE001
+            pass
+    return out
+
+
+def sources_from_brings(retries=DEFAULT_RETRIES):
+    """Clone or pull every set the person's individual set BRINGS
+    (spec/LADDER_OPT_IN_PLAN.md D2): beside the individual set, from the full
+    URL the entry names. A set already on disk elsewhere is linked rather
+    than cloned twice (_clone_elsewhere_on_disk). Runs before
+    sources_from_attached_sets, so what a brought set declares is refreshed
+    in the same session start. -> [(name, ok, output)]. Never raises."""
+    try:
+        import precedent_resolve as pr
+        ucfg = pathlib.Path(os.environ.get(
+            pr.USER_CONFIG_ENV, str(pr.DEFAULT_USER_CONFIG))).expanduser()
+        ind = json.loads(ucfg.read_text(encoding='utf-8')).get('individual')
+        ind_path = pathlib.Path(ind['path']).expanduser() \
+            if isinstance(ind, dict) and ind.get('path') else None
+        brought = pr.brought_sources(ind_path, warn=False) if ind_path else []
+    except Exception:                                       # noqa: BLE001
+        return []
+    out = []
+    for b in brought:
+        name, url = b['name'], b['repo']
+        clone_path = pathlib.Path(b['path'])
+        try:
+            if not (clone_path / '.git').exists() and not clone_path.exists():
+                existing = _clone_elsewhere_on_disk(name, clone_path.resolve(),
+                                                    ind_path)
+                if existing is not None:
+                    clone_path.parent.mkdir(parents=True, exist_ok=True)
+                    clone_path.symlink_to(existing, target_is_directory=True)
+                    out.append((name, True, f'linked to the copy already on '
+                                            f'disk at {existing}'))
+                    continue
+            ok, msg = _try_sync(url, clone_path.resolve() if clone_path.exists()
+                                else clone_path)
+            out.append((name, ok, msg or 'cloned'))
+        except Exception as e:                              # noqa: BLE001
+            out.append((name, False, f'{type(e).__name__}: {e}'))
+    return out
+
+def _declared_inside(repo_path, clone_path):
+    """True when a declared source path is this repository itself, or a
+    directory inside it with no .git of its own -- a vendored copy. Neither
+    is a clone this tool may sync. precedent_check.py's
+    declared-sources-are-cloned asks the same question."""
+    here = pathlib.Path(repo_path).resolve()
+    p = pathlib.Path(clone_path).resolve()
+    if p == here:
+        return True
+    return here in p.parents and p.exists() and not (p / '.git').exists()
+
+
+def _clone_url(repo_path, level, name, base, repo=''):
+    """Where a declared source is cloned from -- see sources_from_repo's
+    docstring for why the two levels answer differently.
+
+    `repo` is the declaration's optional `repo` field (practice:
+    source-naming, 2026-09-18): the repository a shared set lives in when it
+    is not called what the set is. A full URL is used as given (a private
+    consumer's choice; a public one would be publishing an account); a bare
+    repository name is joined to the base URL exactly as the source's name
+    would have been, so a public consumer still names no account."""
+    if level == 'universal':
+        return _engine_manifest(repo_path).get('source_repo') or ''
+    if repo and ('://' in repo or repo.startswith('git@')):
+        return repo
+    if not base:
+        return ''
+    return f'{base}/{repo or name}'
+
+
+def _clone_branch(repo_path, level):
+    """The branch a universal clone is pinned to, read off the manifest.
+
+    Never left to the server's default branch: `git clone` with no --branch
+    asks the REMOTE which branch to check out, and the answer is a setting on
+    a web page nothing here can see. Two practice-source repositories had it
+    pointed at a feature branch on 2026-09-09 and every session-start clone
+    silently landed on an older tree (AGENTS.md's gotchas section)."""
+    if level != 'universal':
+        return None
+    # Never the universal repository's OWN base_branch: that names where its
+    # contributors work (staging), and a consumer reads the catalogue at main
+    # (2026-10-02 -- a set with no manifest, or one without source_branch,
+    # had its universal clone moved onto staging by the fallback).
+    return _engine_manifest(repo_path).get('source_branch') or SOURCE_BRANCH_DEFAULT
+
+
+def _engine_manifest(repo_path):
+    try:
+        return json.loads((pathlib.Path(repo_path) / 'tools' /
+                           'ENGINE_MANIFEST.json').read_text(encoding='utf-8'))
+    except Exception:                                        # noqa: BLE001
+        return {}
+
+
+def _diagnose(output):
+    """Name WHICH failure git reported, since the remedies are opposite ones.
+
+    "No token" and "the token is wrong" and "that repository does not exist"
+    all end in the same silence otherwise, and the first thing anybody does
+    with an unexplained failure is re-set a credential that was fine
+    (practice: fail-gracefully -- match the telling to the reader)."""
+    low = (output or '').lower()
+    if 'invalid username or token' in low or 'authentication failed' in low:
+        return ('AUTHENTICATION was refused by the server, so a credential '
+                'WAS sent and it was not accepted -- check the token\'s scope '
+                'and expiry rather than whether it is set.')
+    if 'could not read username' in low or 'terminal prompts disabled' in low:
+        return (f'NO CREDENTIAL was available -- git asked for a username and '
+                f'there was nothing to answer with. Set ${TOKEN_ENV_NAME} in '
+                f'the environment (INSTALL.md section 8).')
+    if 'repository not found' in low or 'does not appear to be a git repo' in low:
+        return ('the repository was NOT FOUND, which for a private repo is '
+                'also what insufficient access looks like -- check the name '
+                'and the credential\'s access to it.')
+    return 'it'
+
+
+def main(argv=None):
+    p = argparse.ArgumentParser(description=__doc__.splitlines()[0])
+    p.add_argument('--level', choices=sorted(LEVELS))
+    p.add_argument('--name')
+    p.add_argument('--repo-url')
+    p.add_argument('--clone')
+    p.add_argument('--config',
+                   help='where to record the resolution (individual only -- a '
+                        'shared source resolves by path and records nothing)')
+    # --teams-from is kept as an alias, not retired: it is baked into
+    # session-start hooks already vendored into other repositories, and
+    # renaming it out from under them would break the clone step silently at
+    # their next session start. The new name is the one that describes what
+    # the flag does now that universal joined it (practice:
+    # label-describes-content).
+    p.add_argument('--sources-from', '--teams-from', dest='teams_from',
+                   metavar='REPO',
+                   help="clone every shared source REPO's precedent.json "
+                        f'declares, from ${BASE_URL_ENV}/<name>. Mutually '
+                        'exclusive with the single-source arguments above')
+    p.add_argument('--root-only', action='store_true',
+                   help='with --sources-from: sync only the sources REPO '
+                        'declares, not those of the practice sets it '
+                        'attaches (the behaviour before 2026-10-02)')
+    p.add_argument('--branch', default=None, metavar='NAME',
+                   help='the branch to clone and keep the source on. '
+                        'Defaults to the source\'s own declared base_branch, '
+                        'else ' + SOURCE_BRANCH_DEFAULT + '. Never read off '
+                        'the remote\'s HEAD -- see SOURCE_BRANCH_DEFAULT.')
+    p.add_argument('--retries', type=int, default=DEFAULT_RETRIES)
+    p.add_argument('--retry-delay', type=float, default=DEFAULT_RETRY_DELAY)
+    p.add_argument('--remote-only', default='true',
+                   help='skip entirely unless CLAUDE_CODE_REMOTE=true (a '
+                        'local machine already has a persistent $HOME, so '
+                        'this hook would be a no-op there anyway)')
+    args = p.parse_args(argv)
+
+    if args.remote_only.lower() == 'true' and os.environ.get('CLAUDE_CODE_REMOTE') != 'true':
+        return 0
+
+    if args.teams_from:
+        root_results = sources_from_repo(args.teams_from,
+                                         retries=args.retries,
+                                         retry_delay=args.retry_delay,
+                                         branch=args.branch)
+        for name, ok, out in root_results:
+            if not ok:
+                print(f"precedent_source_bootstrap: shared source "
+                      f"{name!r} is not on disk -- {out[-500:]}. Its practices "
+                      f"are NOT in force this session.", file=sys.stderr)
+        for name, ok, out in sources_from_brings(retries=args.retries):
+            if not ok:
+                print(f"precedent_source_bootstrap: {name!r}, a set your own "
+                      f"practice set brings, could not be fetched -- "
+                      f"{out[-300:]}. Its practices are NOT in force this "
+                      f"session.", file=sys.stderr)
+        if not args.root_only:
+            for set_path, name, ok, out in sources_from_attached_sets(
+                    args.teams_from, retries=args.retries,
+                    retry_delay=args.retry_delay):
+                # A source still in force but NOT refreshed reports ok=True
+                # (sources_from_repo), and staying quiet about it is the
+                # silent staleness this walk exists to end: say it once.
+                stale = out.startswith('already on disk, but could NOT')
+                if not ok or stale:
+                    why = out.split(': ', 1)[1] if stale else out
+                    print(f"precedent_source_bootstrap: the copy of {name!r} "
+                          f"that the practice set at {set_path} reads was not "
+                          f"brought up to date ({why[-300:]}), so that set may "
+                          f"be reading older rules this session.",
+                          file=sys.stderr)
+        return 0
+
+    missing = [f'--{n}' for n, v in (('level', args.level), ('name', args.name),
+                                     ('repo-url', args.repo_url),
+                                     ('clone', args.clone)) if not v]
+    if missing:
+        p.error('needs ' + ', '.join(missing) + ' (or --teams-from REPO)')
+    if args.level == 'individual' and not args.config:
+        p.error('--config is required for an individual source: it is the '
+                'only place its resolution is recorded')
+
+    ok, last_output = ensure_source(args.level, args.name, args.repo_url,
+                                    args.clone, args.config,
+                                    retries=args.retries,
+                                    retry_delay=args.retry_delay,
+                                    branch=args.branch,
+                                    workspace=attach_workspace())
+    if not ok:
+        print(f"precedent_source_bootstrap: {_diagnose(last_output)} "
+              f"could not reach {args.repo_url!r} "
+              f"after {args.retries} attempt(s) -- this environment may not "
+              f"(yet) have read access to it. The {args.level} source "
+              f"{args.name!r} will not be in force this session unless "
+              f"something re-syncs it later (tools/precedent_resolve.py "
+              f"retries this itself, once, the next time anything asks for "
+              f"the {args.level} source). Last attempt's output: "
+              f"{last_output[-500:]}", file=sys.stderr)
+    return 0  # fail-gracefully -- see module docstring
+
+
+if __name__ == '__main__':
+    sys.exit(main())
