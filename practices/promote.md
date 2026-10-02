@@ -157,8 +157,14 @@ The command does the whole promotion, and a session adds nothing to it:
    repository has one installed. A published pass for the exact files
    counts; for main, so does a GitHub run on the commit itself or on the
    pull request that brought it in. **Whatever is missing, it runs** --
-   the full check in a throwaway worktree, and for main the GitHub test by
-   its `workflow_dispatch` button, waiting up to 30 minutes for the answer.
+   the full check in a throwaway worktree, and, at a Promote into main,
+   main's GitHub test by its `workflow_dispatch` button, waiting up to 30
+   minutes for the answer. **A Debut does not start or wait on main's
+   GitHub test**: main's work comes down only if that test has already
+   passed on it, and otherwise the Debut says main's newer work was not
+   brought down, and why, and carries your own work up anyway (Morgan,
+   2026-10-02, strength: decided). **A Promote into main waits while
+   main's own GitHub test is running, and refuses while it is failing.**
    What passes is merged into pre-staging. **What fails is not copied, and
    is reported** with the commit and the check: it is live on that tier
    already, so it is fixed the normal way, on pre-staging. **Merge commits
