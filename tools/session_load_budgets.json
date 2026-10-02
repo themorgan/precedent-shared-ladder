@@ -1,0 +1,20 @@
+{
+  "_comment": [
+    "Seeded at bootstrap (practice: session-load-budget) so the early-warning notice starts ON. headroom_floor_pct matches BestPractice's own value; each surface's ceiling is measured plus ~20% headroom, the convention every hand-written entry in that repo already uses. .precedent/SESSION_PRACTICES.md is regenerated at every session start and grows with the universal catalogue, so re-measure it when it trips rather than reading the trip as this set growing. A ceiling is a watermark, not an endorsement: review and reduce, never just raise, when it is crossed for real."
+  ],
+  "headroom_floor_pct": 5,
+  "surfaces": {
+    "AGENTS.md": {
+      "ceiling": 600,
+      "_note": "466 tokens measured at bootstrap (2026-10-02). Ceiling is current + ~20%."
+    },
+    "CLAUDE.md": {
+      "ceiling": 150,
+      "_note": "111 tokens measured at bootstrap (2026-10-02). Ceiling is current + ~20%."
+    },
+    ".precedent/SESSION_PRACTICES.md": {
+      "ceiling": 4800,
+      "_note": "3997 tokens measured at bootstrap (2026-10-02). Ceiling is current + ~20%."
+    }
+  }
+}

@@ -1,0 +1,19 @@
+{
+  "name": "precedent-shared-ladder",
+  "level": "shared",
+  "visibility": "public",
+  "subject": "the five-stage ladder -- Consider, Act, Booked, Debut, Produce -- and the branch tiers it climbs, for the people who bring it",
+  "provides": [
+    "ladder"
+  ],
+  "_provides_comment": "The capability this set gives the person who brings it (spec/LADDER_OPT_IN_PLAN.md in BestPractice). The engine says the ladder is in force for a person only when a set providing it is loaded, and PRECEDENT_NO_LADDERS=1 drops it.",
+  "code": [],
+  "_comment": [
+    "This file is what makes the directory a practice-set source: its",
+    "name is chosen once, here, and every consumer declares it verbatim.",
+    "The repository holding it may be called anything. `subject` is a",
+    "sentence saying what the set is about; `code` lists directories",
+    "a consumer vendors alongside the practices (tools/, for a set",
+    "whose practices are about a tool it ships)."
+  ]
+}
