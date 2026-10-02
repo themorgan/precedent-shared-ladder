@@ -1,0 +1,146 @@
+{
+  "_comment": [
+    "Written by tools/precedent_bootstrap_source.py. The base branch is",
+    "passed to freshness-guard.sh explicitly, as its second argument, and",
+    "is not detected: at least one real repo's configured default branch is",
+    "not the branch its work sits on top of. Change it here if this source's",
+    "is not `main`.",
+    "",
+    "The PreToolUse matcher includes Bash deliberately -- an agent editing",
+    "files through cat/sed/python3 never touches Edit or Write at all.",
+    "",
+    "The guard is wired THREE times, matching",
+    "templates/harness/claude-code/settings.json. SessionStart fires once",
+    "at the start and pre-write fires once at the first write, so a session",
+    "left open across a break has spent both and nothing rechecks the",
+    "checkout however far origin moves underneath it. UserPromptSubmit is",
+    "the only one that keeps firing, so it is the only one that reaches",
+    "that case; it is throttled to one real check per 600s and always exits",
+    "0, because a UserPromptSubmit hook that exits non-zero eats the message",
+    "somebody just typed.",
+    "",
+    "No env identity is set here: a source repo may have more than one",
+    "person committing to it, and commit-identity.sh resolves each of them",
+    "at session start instead of anybody being named in a tracked file.",
+    "",
+    "precedent-individual-bootstrap.sh runs FIRST, ahead of the other two:",
+    "it is what makes the person's own individual practice set resolve in",
+    "THIS repo, and commit-identity.sh reads that set for the author and the",
+    "timezone. It names no account -- it derives the set from",
+    "PRECEDENT_SOURCE_BASE_URL, and reads ~/.config/precedent/config.json",
+    "ahead of that. Without a credential it prints why and exits 0."
+  ],
+  "hooks": {
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "$CLAUDE_PROJECT_DIR/.claude/hooks/precedent-individual-bootstrap.sh"
+          },
+          {
+            "type": "command",
+            "command": "$CLAUDE_PROJECT_DIR/.claude/hooks/precedent-universal-catalogue.sh"
+          },
+          {
+            "type": "command",
+            "command": "$CLAUDE_PROJECT_DIR/.claude/hooks/freshness-guard.sh session-start main"
+          },
+          {
+            "type": "command",
+            "command": "$CLAUDE_PROJECT_DIR/.claude/hooks/commit-identity.sh"
+          }
+        ]
+      }
+    ],
+    "UserPromptSubmit": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "$CLAUDE_PROJECT_DIR/.claude/hooks/freshness-guard.sh user-prompt main"
+          }
+        ]
+      }
+    ],
+    "PreToolUse": [
+      {
+        "matcher": "Edit|Write|NotebookEdit|Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "$CLAUDE_PROJECT_DIR/.claude/hooks/freshness-guard.sh pre-write main"
+          }
+        ]
+      },
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "$CLAUDE_PROJECT_DIR/.claude/hooks/doc-lint-gate.sh"
+          }
+        ]
+      },
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "$CLAUDE_PROJECT_DIR/.claude/hooks/push-check-gate.sh",
+            "timeout": 900
+          }
+        ]
+      },
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "$CLAUDE_PROJECT_DIR/.claude/hooks/wait-loop-gate.sh"
+          }
+        ]
+      },
+      {
+        "matcher": "Bash|mcp__.*__merge_pull_request",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "$CLAUDE_PROJECT_DIR/.claude/hooks/merge-check-gate.sh",
+            "timeout": 900
+          }
+        ]
+      },
+      {
+        "matcher": "mcp__.*__(create_session|create_trigger|update_trigger|fire_trigger|send_later)",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "$CLAUDE_PROJECT_DIR/.claude/hooks/seeded-prompt-gate.sh"
+          }
+        ]
+      },
+      {
+        "matcher": "mcp__.*__(create_or_update_file|push_files)",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "$CLAUDE_PROJECT_DIR/.claude/hooks/workflow-write-gate.sh"
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "Bash|mcp__.*__merge_pull_request",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "$CLAUDE_PROJECT_DIR/.claude/hooks/merge-check-gate.sh",
+            "timeout": 900
+          }
+        ]
+      }
+    ]
+  }
+}

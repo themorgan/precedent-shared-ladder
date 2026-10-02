@@ -1,0 +1,25 @@
+{
+  "_comment": [
+    "The ladder's own words, for the people who bring this set. Vocabulary",
+    "merges them into its \"Our language\" list (BestPractice spec/LADDER_OPT_IN_PLAN.md D12);",
+    "a word here replaces the universal meaning of the same word for them."
+  ],
+  "words": [
+    {
+      "word": "landing branch",
+      "meaning": "The branch your saved work lands on when you say \"Booked\" (or \"Go update\"): pre-staging if you use all three branch tiers, otherwise staging, or main."
+    },
+    {
+      "word": "pre-staging, staging, main",
+      "meaning": "The three branches work climbs through, in that order. Pre-staging is where saved work waits, staging is where it is fully checked, and main is production -- what everyone gets."
+    },
+    {
+      "word": "tier branch",
+      "meaning": "One of these branches: pre-staging, staging or main, plus the two that travel with them -- staging's old name `precedent-beta-v01` and Promote's lock branch `precedent-promote-lock`. A tier branch is never offered for deletion."
+    },
+    {
+      "word": "stage",
+      "meaning": "One of the five steps work climbs from idea to production: Consider, Act, Booked, Debut, Produce. \"Promote 3\" means stage 3, and each stage is read back before it runs."
+    }
+  ]
+}
