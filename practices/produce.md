@@ -17,7 +17,7 @@ in_force_at: null
 supersedes:  []
 overrides:   null
 added:       "2026-10-02"
-approved_by: "Morgan F, 2026-10-02, duplicated from the universal set BestPractice -- that copy stays active, see its own Story"
+approved_by: "Morgan F, 2026-10-02, withdrawn from the universal set BestPractice, which keeps no copy (there: Morgan, 2026-09-28 -- \"the stage 5 word should be \\\"Produce\\\" to make it a verb like the previous ones\", with \"production\" kept as the noun for main; the session must read it in context, \"should not just do a simple grep for that exact word\")"
 strength:    decided
 ---
 ## Rule

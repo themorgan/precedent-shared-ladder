@@ -24,6 +24,7 @@ Built from every practice's `defines:` frontmatter field -- the terms that pract
 | Graduate | [promote](practices/promote.md) |
 | Landing branch | [tier-branch](practices/tier-branch.md) |
 | Make live | [produce](practices/produce.md) |
+| No ladders | [no-ladders](practices/no-ladders.md) |
 | One-line plan | [consider](practices/consider.md) |
 | Plan it | [consider](practices/consider.md) |
 | pre-staging | [promote](practices/promote.md) |

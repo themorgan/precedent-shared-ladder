@@ -3,10 +3,12 @@
     "Seeded at bootstrap (practice: session-load-budget) so the early-warning notice starts ON. headroom_floor_pct matches BestPractice's own value; each surface's ceiling is measured plus ~20% headroom, the convention every hand-written entry in that repo already uses. .precedent/SESSION_PRACTICES.md is regenerated at every session start and grows with the universal catalogue, so re-measure it when it trips rather than reading the trip as this set growing. A ceiling is a watermark, not an endorsement: review and reduce, never just raise, when it is crossed for real."
   ],
   "headroom_floor_pct": 5,
+  "resident_block_tokens": 250,
+  "_resident_block_comment": "This set's resident rules, read by every session of a person who brings it. Carved out of the universal set's 2,000 on 2026-10-02 (BestPractice spec/LADDER_OPT_IN_PLAN.md D15, Morgan, strength: decided), when brainstorm-holds-commits left universal for this set. Measured about 175 that day.",
   "surfaces": {
     "AGENTS.md": {
-      "ceiling": 600,
-      "_note": "466 tokens measured at bootstrap (2026-10-02). Ceiling is current + ~20%."
+      "ceiling": 1300,
+      "_note": "1,069 tokens measured 2026-10-02, once the ladder's rules had moved in. 1,300 was carved out of the universal set's AGENTS.md ceiling (7,650 to 6,950; BestPractice spec/LADDER_OPT_IN_PLAN.md D15, Morgan, strength: decided), so no ceiling went up in total. It was 600 at bootstrap, measured on an empty set."
     },
     "CLAUDE.md": {
       "ceiling": 150,

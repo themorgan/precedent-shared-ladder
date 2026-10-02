@@ -16,7 +16,7 @@ in_force_at: null
 supersedes:  []
 overrides:   null
 added:       "2026-10-02"
-approved_by: "Morgan F, 2026-10-02, duplicated from the universal set BestPractice -- that copy stays active, see its own Story"
+approved_by: "Morgan F, 2026-10-02, withdrawn from the universal set BestPractice, which keeps no copy (there: Morgan, 2026-09-18. Extended 2026-09-20, on instruction to this practice, My options and Prompt Please together: a proposed solution that is itself a cross-repo change must account for the upstream template it comes from and say whether it needs a clean rollout to the repos vendoring this one. Extended again 2026-09-20, same instruction to all three commands: when the proposed solution belongs in a different session, say the seed root and the repos to attach in plain prose in the reply, not only inside a report or block meant for someone else to read. Extended 2026-09-26: analyze and attack the idea before proposing it, and a declared write-up directory, `writeup_dir`, defaulting to spec/. \"Spec it out\" added as a second word for the same command, 2026-09-26 (Morgan: \"'spec it out' should be a synonym of 'write it up'\", strength: decided).)"
 strength:    decided
 ---
 ## Rule

@@ -15,7 +15,7 @@ in_force_at: null
 supersedes:  []
 overrides:   null
 added:       "2026-10-02"
-approved_by: "Morgan F, 2026-10-02, duplicated from the universal set BestPractice -- that copy stays active, see its own Story"
+approved_by: "Morgan F, 2026-10-02, withdrawn from the universal set BestPractice, which keeps no copy (there: Morgan, 2026-09-27 (strength: decided): \"for pre-staging, we should not check every file ... the pre-staging checks need to be the fast, immediate checks ... we have staging precisely to do the full suite ... That has to be our articulated philosophy.\")"
 ---
 ## Rule
 **Each branch tier has one job, and a check goes to the tier whose job it is.**

@@ -7,6 +7,8 @@
     "ladder"
   ],
   "_provides_comment": "The capability this set gives the person who brings it (spec/LADDER_OPT_IN_PLAN.md in BestPractice). The engine says the ladder is in force for a person only when a set providing it is loaded, and PRECEDENT_NO_LADDERS=1 drops it.",
+  "occasion_share_tokens": 550,
+  "_occasion_share_comment": "This set's allowance in the occasion index of every person who brings it. Carved out of the universal set's on 2026-10-02 (BestPractice spec/LADDER_OPT_IN_PLAN.md D15, Morgan, strength: decided): universal went from 2,800 to 2,250 as these rules left it, so a person who brings this set loads no more than before. Measured about 450 that day.",
   "code": [],
   "_comment": [
     "This file is what makes the directory a practice-set source: its",

@@ -17,7 +17,7 @@ in_force_at: null
 supersedes:  []
 overrides:   null
 added:       "2026-10-02"
-approved_by: "Morgan F, 2026-10-02, duplicated from the universal set BestPractice -- that copy stays active, see its own Story"
+approved_by: "Morgan F, 2026-10-02, withdrawn from the universal set BestPractice, which keeps no copy (there: Morgan F, 2026-09-14, in his own words after a relayed merge stalled three times: \"Why make it a Todo rather than do it now? Let's fix this so we don't have the round trip always.\" The shape of the fix -- a declaration in the person's own source rather than a firmer relay -- was the session's, and is named as its judgement here rather than attributed to him.)"
 strength:    decided
 source_practice_number: null
 ---

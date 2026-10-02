@@ -10,7 +10,7 @@ Precedent's own repo map (PRACTICE_ENGINE_PLAN.md, Sequence row 2: "make AGENTS.
 
 ## The practice catalogue
 
-`practices/` holds 18 practice files (1 resident, 17 on-demand). One file per practice.
+`practices/` holds 19 practice files (1 resident, 18 on-demand). One file per practice.
 
 | Practice | Tier | Occasion / scope |
 |---|---|---|
@@ -21,6 +21,7 @@ Precedent's own repo map (PRACTICE_ENGINE_PLAN.md, Sequence row 2: "make AGENTS.
 | [consider](practices/consider.md) | on-demand | a person says "Promote", "Promote N" or a stage word ("Consider", "Act", "Debut", "Produce", "Make live"), or asks to plan, build or move work up a tier |
 | [debut](practices/debut.md) | on-demand | a person says "Promote", "Promote N" or a stage word ("Consider", "Act", "Debut", "Produce", "Make live"), or asks to plan, build or move work up a tier |
 | [go-update](practices/go-update.md) | on-demand | a message says "Booked", "Approved", "Book it" or "Promote 3", or plainly authorizes a merge |
+| [no-ladders](practices/no-ladders.md) | on-demand | a person says "No ladders", or asks to see what somebody who does not use the ladder sees |
 | [primary-branch](practices/primary-branch.md) | on-demand | ** |
 | [produce](practices/produce.md) | on-demand | a person says "Promote", "Promote N" or a stage word ("Consider", "Act", "Debut", "Produce", "Make live"), or asks to plan, build or move work up a tier |
 | [promote](practices/promote.md) | on-demand | a person says "Promote", "Promote N" or a stage word ("Consider", "Act", "Debut", "Produce", "Make live"), or asks to plan, build or move work up a tier |

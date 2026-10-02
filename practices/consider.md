@@ -16,7 +16,7 @@ in_force_at: null
 supersedes:  []
 overrides:   null
 added:       "2026-10-02"
-approved_by: "Morgan F, 2026-10-02, duplicated from the universal set BestPractice -- that copy stays active, see its own Story"
+approved_by: "Morgan F, 2026-10-02, withdrawn from the universal set BestPractice, which keeps no copy (there: Morgan, 2026-09-27/28 -- the five stages (spec/FIVE_STAGES_AND_OUR_LANGUAGE_PLAN.md); \"You should choose, based on the context, the complexity, and also, I will sometimes give you verbal guidance\"; on the one-line plan: \"Very, very, very important.\")"
 strength:    decided
 ---
 ## Rule

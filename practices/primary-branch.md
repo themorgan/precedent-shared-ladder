@@ -17,7 +17,7 @@ in_force_at: null
 supersedes:  []
 overrides:   null
 added:       "2026-10-02"
-approved_by: "Morgan F, 2026-10-02, duplicated from the universal set BestPractice -- that copy stays active, see its own Story"
+approved_by: "Morgan F, 2026-10-02, withdrawn from the universal set BestPractice, which keeps no copy (there: Morgan, 2026-09-22 -- asked to add \"Primary branch\" to the vocabulary list, wording it with \"trunk\": 'Can you add \"Primary branch\" to the vocabulary list, and in the phrase about it, use the word \"trunk\" there.')"
 strength:    decided
 ---
 ## Rule

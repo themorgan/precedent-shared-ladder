@@ -17,7 +17,7 @@ in_force_at: null
 supersedes:  []
 overrides:   null
 added:       "2026-10-02"
-approved_by: "Morgan F, 2026-10-02, duplicated from the universal set BestPractice -- that copy stays active, see its own Story"
+approved_by: "Morgan F, 2026-10-02, withdrawn from the universal set BestPractice, which keeps no copy (there: extended 2026-09-28, Morgan (strength: decided) -- Promotion Reviews A and B cover every repository with a Precedent install, not only the week's active ones; extended 2026-09-26 again, Morgan (strength: decided) -- the branch list is a one-click page, never a downloaded file; extended 2026-09-26, Morgan (strength: decided) -- asked for a Promotion Reviews section, last in the report, covering staging into main, pre-staging into staging, and a stale-branch review with its unlanded work read; the state-based reading of stale and of uncommitted are the session's resolutions of what that ask left open; extended 2026-09-21, Morgan (strength: decided, relayed) -- after a fleet audit found 110 merged-but-undeleted branches across 9 repos, he asked for them rendered as filtered branches-page links and placed the fleet sweep here, with very-deep-check keeping only its own checkout; the repo-set bound on the branch half is the session's resolution of a question that decision left open; Morgan, 2026-09-14 -- chose it from the options after two wrong rows in a live sweep; strength: decided)"
 ---
 ## Rule
 When the person says **"Chief of Staff"**, read the whole fleet and say what
