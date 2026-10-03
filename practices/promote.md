@@ -177,9 +177,10 @@ The command does the whole promotion, and a session adds nothing to it:
    that takes both or neither. When it fails, or step 2 met a conflict in
    hand-written text, **neither moves**: the tree goes to a
    `promote-fix-DATE` branch, the Promote says what failed -- and, when
-   main brought work, whether main's work alone fails too (one more full
-   check) -- and the session fixes it there in the same turn and Promotes
-   again with `--work` that branch ([debut](debut.md)).
+   main brought work, lists those commits as the place to look first,
+   never as the cause -- and the session measures which it is, fixes it
+   there in the same turn, and Promotes again with `--work` that branch
+   ([debut](debut.md)).
    **It does not run the suite a second time on files that already passed
    it.** When the full check already passed on exactly these files -- the
    usual case after a high-risk change, which ran it before landing on
