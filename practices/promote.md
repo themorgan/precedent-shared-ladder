@@ -151,35 +151,35 @@ The command does the whole promotion, and a session adds nothing to it:
    checks again after the merge: when the tier moved in those seconds and
    what landed fails, it reverts the merge, putting the tier back to the
    tree the other window landed.
-1. **Copies down what reached staging or main by another route** -- a
-   direct push to staging, a workflow's bot commit on main, an edit made on
-   GitHub's website -- **once it has had its own tier's checks.** Staging's
-   is the full local check; main's is that plus the GitHub test, where the
-   repository has one installed. A published pass for the exact files
-   counts; for main, so does a GitHub run on the commit itself or on the
-   pull request that brought it in. **Whatever is missing, it runs** --
-   the full check in a throwaway worktree, and, at a Promote into main,
-   main's GitHub test by its `workflow_dispatch` button, waiting up to 30
-   minutes for the answer. **A Debut does not start or wait on main's
-   GitHub test**: main's work comes down only if that test has already
-   passed on it, and otherwise the Debut says main's newer work was not
-   brought down, and why, and carries your own work up anyway (Morgan,
-   2026-10-02, strength: decided). **A Promote into main waits while
-   main's own GitHub test is running, and refuses while it is failing.**
-   What passes is merged into pre-staging. **What fails is not copied, and
-   is reported** with the commit and the check: it is live on that tier
-   already, so it is fixed the normal way, on pre-staging. **Merge commits
-   that change no file are not drift** and are left alone -- every
-   ordinary pull request into main leaves two. A conflict stops the sync
-   before anything is pushed. It never pushes to staging or main. When
-   nothing waits to be promoted but main or staging carries such work,
-   Promote still runs this step and says so.
-2. **Makes one merge commit of pre-staging onto staging** -- always a merge
-   commit, never a fast-forward, so no pre-staging commit's `[skip ci]`
-   line can become staging's head and silence the GitHub test on the pull
-   request into main.
-3. **Runs the full push check on exactly that commit**, in a throwaway
-   worktree, and **pushes it to staging only if it passes.**
+1. **Copies down what reached staging by another route** -- a direct
+   push to staging, an edit made on GitHub's website -- **once it has had
+   its own tier's checks**, the full local check. A published pass for the
+   exact files counts; whatever is missing, it runs, in a throwaway
+   worktree. What passes is merged into pre-staging; **what fails is not
+   copied, and is reported** with the commit and the check. **Merge
+   commits that change no file are not drift** and are left alone -- every
+   ordinary pull request into main leaves two. **Main's own new work is
+   never copied here**: it comes down only in step 2, composed and checked
+   with everything else, so pre-staging only ever receives a tree that
+   passed (Morgan, 2026-10-03, strength: decided).
+2. **Composes one tree, by merge commits, in a throwaway worktree**:
+   staging, then a `promote-fix-` branch handed in with `--work`, then
+   work made directly on main, then pre-staging -- never a fast-forward, so
+   no pre-staging commit's `[skip ci]` line can become staging's head and
+   silence the GitHub test on the pull request into main. When main brought
+   work, it then **rebuilds the generated files** (a map, an index, a
+   rendered page) with their own generators, since a source edited off the
+   ladder whose render nobody rebuilt is the commonest way main goes red; a
+   render that would differ only by its build time is left alone. A
+   conflict only in generated files is rebuilt the same way.
+3. **Runs the full push check on exactly that tree once**, and **only if it
+   passes moves staging and pre-staging to that same commit**, in one push
+   that takes both or neither. When it fails, or step 2 met a conflict in
+   hand-written text, **neither moves**: the tree goes to a
+   `promote-fix-DATE` branch, the Promote says what failed -- and, when
+   main brought work, whether main's work alone fails too (one more full
+   check) -- and the session fixes it there in the same turn and Promotes
+   again with `--work` that branch ([debut](debut.md)).
    **It does not run the suite a second time on files that already passed
    it.** When the full check already passed on exactly these files -- the
    usual case after a high-risk change, which ran it before landing on
@@ -191,9 +191,16 @@ The command does the whole promotion, and a session adds nothing to it:
    files are that decides, never which branch they came from. **It says
    which happened**: "NOT re-run", with when the earlier run passed, or how
    long the run it just did took.
+   When nothing waits to be promoted but main or staging carries work
+   pre-staging lacks, Promote still runs these steps and says so.
 
 **Staging into main runs step 1 first, then the same full check** on staging merged into main
-(standing on an earlier pass of the same files, as above), then pushes a
+(standing on an earlier pass of the same files, as above). **It waits while
+main's own GitHub test is running, and is held while that test is
+failing** -- unless staging already carries main's failing tip and
+staging's tip has passed the full local check, which a Debut gives it: then
+this Produce is what brings main back to green, and goes ahead (Morgan,
+2026-10-03, strength: decided). It then pushes a
 throwaway copy of staging, `to-main-DATE`, and stops: the tool never moves
 main. **That stop exits 3, not 0**, and its block opens with *"MAIN HAS NOT
 MOVED YET"*: exit 0 from Promote means the branch it names has moved, so a
