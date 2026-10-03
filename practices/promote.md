@@ -96,8 +96,9 @@ refer to - then choose to do pre-staging to staging"*, strength: decided).
 A later Promote carries it on into main.
 
 A Promote that resolves to staging into main is the named go-ahead
-[merge-target-is-beta-branch](https://github.com/alex137/BestPractice/blob/staging/local/practices/merge-target-is-beta-branch.md)
-asks for, since Morgan asked for exactly this; nobody is asked again.
+[BestPractice's AGENTS.md](https://github.com/alex137/BestPractice/blob/staging/AGENTS.md)
+asks for before main moves, since Morgan asked for exactly this; nobody is
+asked again.
 
 **When Claude Code's own safety check stops that move, say so and ask for
 "Produce".** Its auto mode can refuse `--promote --to main` as a
