@@ -1,5 +1,7 @@
 #!/usr/bin/env python3
-"""precedent_resolve.py — resolve the four sources into one set of practices
+"""Resolves the universal, shared and individual sources into one set, by precedence
+
+precedent_resolve.py — resolve the four sources into one set of practices
 (PRACTICE_ENGINE_PLAN.md, "Source — Who a Practice Belongs To" and
 "Precedence, and the One Case Where the Individual Does Not Win").
 
@@ -152,6 +154,20 @@ def _self_heal_individual_source(repo_root):
         return 'not-remote'
     if _scratch_copy_of(repo_root):
         return 'scratch-copy'
+    # A config named on purpose OUTSIDE $HOME belongs to somebody other than
+    # the person whose home the hook works in: the hook clones and syncs
+    # under $HOME. Running it anyway reached past the named person to the
+    # real one -- every test fixture that named a config of its own put this
+    # machine's individual clone back on its pinned branch (2026-10-02,
+    # found as a branch that kept moving mid-session). An absent config
+    # named there is a definite "none", as on a local machine. A fixture
+    # that moves $HOME with its config is still healed, in its own home.
+    named = os.environ.get(USER_CONFIG_ENV)
+    if named:
+        home = pathlib.Path.home().resolve()
+        where = pathlib.Path(named).expanduser().resolve()
+        if where != home and home not in where.parents:
+            return 'not-remote'
     hook = repo_root / INDIVIDUAL_BOOTSTRAP_HOOK
     if not hook.is_file():
         return 'no-hook'
@@ -735,6 +751,16 @@ NO_LADDERS_ENV = 'PRECEDENT_NO_LADDERS'
 LADDER_CAPABILITY = 'ladder'
 
 
+# For a test fixture of the tier machinery itself -- Promote, promote_only,
+# a pre-staging landing -- whose person brings no set: treat the ladder as
+# in force. Never set in a session; PRECEDENT_NO_LADDERS wins over it.
+ASSUME_LADDER_ENV = 'PRECEDENT_ASSUME_LADDER'
+
+
+def assume_ladder():
+    return os.environ.get(ASSUME_LADDER_ENV, '').strip() == '1'
+
+
 def no_ladders():
     """True when this session was started with the ladder switched off."""
     return os.environ.get(NO_LADDERS_ENV, '').strip().lower() not in (
@@ -776,11 +802,26 @@ def brought_sources(individual_path, warn=True):
     raw = man.get('brings') if isinstance(man, dict) else None
     if not isinstance(raw, list):
         return []
+    # Beside the individual set as it really lives. In a linked worktree --
+    # a Debut or Produce checks the individual set in one under the temp
+    # directory -- nothing is beside it, so the ladder set it brings read
+    # as providing nothing, the ladder-words check stopped standing aside,
+    # and the set's own Debut was refused for its owner's own words
+    # (2026-10-04). Resolved the way _declared_path resolves a relative
+    # source: beside the worktree when there, else beside the main checkout.
+    main = None
     out, seen = [], set()
     for item in raw:
         name = item.get('name') if isinstance(item, dict) else None
         url = item.get('repo_url') if isinstance(item, dict) else None
-        target = (ind.resolve().parent / name).resolve() \
+        home = ind.resolve().parent
+        if isinstance(name, str) and SLUG_RE.match(name or '') \
+                and not (home / name).exists():
+            if main is None:
+                main = _main_checkout(ind.resolve()) or False
+            if main and (main.parent / name).exists():
+                home = main.parent
+        target = (home / name).resolve() \
             if isinstance(name, str) and SLUG_RE.match(name or '') else None
         if not isinstance(name, str) or not SLUG_RE.match(name or '') \
                 or not isinstance(url, str) or not _BRING_URL_RE.match(url.strip()) \
@@ -794,7 +835,7 @@ def brought_sources(individual_path, warn=True):
             continue
         seen.add(name)
         out.append({'level': 'shared', 'name': name,
-                    'path': str((ind.resolve().parent / name)),
+                    'path': str(home / name),
                     'repo': url.strip(), 'brought': True})
     return out
 
@@ -1287,14 +1328,36 @@ def load_source(source):
     return out, None
 
 
-def resolve(sources):
+def _requires(fm):
+    """-> the capabilities a practice's `requires:` names, as a set."""
+    raw = fm.get('requires')
+    if raw in (None, '', 'null', '[]'):
+        return set()
+    try:
+        got = json.loads(raw) if isinstance(raw, str) else raw
+    except ValueError:
+        got = [raw]
+    if isinstance(got, str):
+        got = [got]
+    return {str(x).strip() for x in got or [] if str(x).strip()}
+
+
+def resolve(sources, context=()):
     """-> {'practices': {slug: practice}, 'shadowed': [...], 'blocked': [...],
            'missing': [...], 'retired': [...]}
 
     Sources are walked lowest precedence first, so a later source simply
     replaces what an earlier one put in place -- except where the practice it
     would replace is `severity: blocking`, which no source ranked above it
-    can override by precedence alone (see _is_blocking)."""
+    can override by precedence alone (see _is_blocking).
+
+    `context` is sources in force for this person that the caller will not
+    write: the sets a person brings, left out of a committed view
+    (spec/LADDER_OPT_IN_PLAN.md D6). They are never in the result, but what
+    they provide counts for `requires`, and a rule in force in one counts as
+    in force for a deduplicated stub that points at it. Without that, a
+    sync that left a brought set out also dropped every rule that needs the
+    ladder it provides (found by a consumer rehearsal, 2026-10-03)."""
     by_source, missing = [], []
     for s in sources:
         loaded, why = load_source(s)
@@ -1320,11 +1383,36 @@ def resolve(sources):
     # between them to fall back on -- regardless of which source(s) at that
     # level they came from.
     override_claims_by_level = {}
+    # `requires` (spec/LADDER_OPT_IN_PLAN.md D11, 2026-10-02): a practice
+    # that names a capability is in force only while a source in force
+    # provides it -- a person's own "for me, the ladder" rule goes quiet in
+    # a session started with PRECEDENT_NO_LADDERS, which load_config has
+    # already applied to `sources`. Left out, not retired: nothing about the
+    # practice is stale, the session simply does not have what it needs.
+    provided = set()
+    for _s, _loaded in by_source:
+        provided |= source_provides(_s['path'])
+    in_context = set()
+    # What a brought set provides counts for the PERSON's own rules only (an
+    # individual set's "for me, the ladder"). A rule a repository declares
+    # stays keyed to what the repository declares, so a committed view comes
+    # out the same whoever regenerates it (spec/LADDER_OPT_IN_PLAN.md, test E).
+    provided_for_person = set(provided)
+    for _s in context or ():
+        provided_for_person |= source_provides(_s['path'])
+        _loaded, _why = load_source(_s)
+        in_context |= {slug for slug, p in (_loaded or {}).items()
+                       if bv._json_str(p['fm'].get('status', 'active'))
+                       == IN_FORCE_STATUS}
     for _s, loaded in by_source:                      # lowest precedence first
         claims = override_claims_by_level.setdefault(_s['level'], {})
         for slug, practice in sorted(loaded.items()):
             if bv._json_str(practice['fm'].get('status', 'active')) != IN_FORCE_STATUS:
                 retired.append(practice)
+                continue
+            needs = _requires(practice['fm'])
+            has = provided_for_person if _s['level'] == 'individual' else provided
+            if needs and not needs <= has:
                 continue
             # A practice replaces the same slug from a lower source, and may
             # additionally name a differently-named lower practice in
@@ -1419,7 +1507,8 @@ def resolve(sources):
             continue
         msg = bv.status_contract_violation(
             practice['fm'], practice.get('sections'),
-            slug_in_force=lambda s: follow_in_force_at(s, resolved, retired) is not None)
+            slug_in_force=lambda s: (s in in_context or follow_in_force_at(
+                s, resolved, retired) is not None))
         if msg:
             entry = {'slug': practice['slug'], 'source': practice['source'],
                      'level': practice['level'], 'file': practice['file'],
@@ -1461,6 +1550,32 @@ def withdrawn_from_universal(sections):
     story = (sections or {}).get('story') or ''
     found = _WITHDRAWN_RE.findall(story)
     return tuple(found[-1]) if found else None
+
+
+# The committed record precedent_move.py --withdraw-from-universal keeps of
+# every rule it deleted from universal on purpose, one line each:
+# "- <date>: `<slug>` withdrawn from universal, deliberately; in force only
+# from the <level> set `<name>`, ...". The file itself is gone, so no stub
+# can say where it went; this line is the forwarding address. Shipped to
+# consumers with the catalogue (checkin.py's VENDORING_RULES) so a sync
+# there can tell a withdrawal from a loss.
+WITHDRAWN_RECORD = 'record/WITHDRAWN_FROM_UNIVERSAL.md'
+_WITHDRAWN_LINE_RE = re.compile(
+    r'^- (\d{4}-\d\d-\d\d): `([^`]+)` withdrawn from universal\b.*?'
+    r'in force only from the \w+ set `([^`]+)`', re.M)
+
+
+def withdrawn_record(source_path):
+    """-> {slug: (date, set name)} from a universal source's withdrawal
+    record; {} when it has none or it cannot be read. The last line for a
+    slug wins."""
+    try:
+        text = (pathlib.Path(source_path) / WITHDRAWN_RECORD).read_text(
+            encoding='utf-8')
+    except OSError:
+        return {}
+    return {slug: (date, name)
+            for date, slug, name in _WITHDRAWN_LINE_RE.findall(text)}
 
 
 def follow_in_force_at(slug, resolved, retired):

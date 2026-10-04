@@ -11,3 +11,9 @@ __pycache__/
 # it -- it is another repository's practice text, and a committed copy is a
 # copy that goes stale.
 .precedent/
+
+# Added by Update Vendors
+*.py[cod]
+.DS_Store
+*.swp
+.claude/worktrees/
