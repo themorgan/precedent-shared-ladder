@@ -1,5 +1,7 @@
 #!/usr/bin/env python3
-"""precedent_ladder.py -- is the five-stage ladder in force for this person,
+"""Says whether the five-stage ladder is in force for the person working here -- a set they bring provides it, and PRECEDENT_NO_LADDERS is not set -- so every engine line chooses the ladder wording or the plain one from one answer (spec/LADDER_OPT_IN_PLAN.md)
+
+precedent_ladder.py -- is the five-stage ladder in force for this person,
 in this repository? (spec/LADDER_OPT_IN_PLAN.md D5)
 
 The ladder (Consider, Act, Booked, Debut, Produce, and the branch tiers it
@@ -86,6 +88,8 @@ def ladder_in_force(repo=None, user_config=None):
     """True when the ladder is in force for this person in `repo`."""
     if pr.no_ladders():
         return False
+    if pr.assume_ladder():
+        return True
     return bool(ladder_sources(repo, user_config))
 
 
@@ -93,6 +97,17 @@ def say(ladder_text, plain_text, repo=None):
     """The ladder wording for a person on the ladder, the plain wording for
     everyone else. Both must say what happened; only the words differ."""
     return ladder_text if ladder_in_force(repo) else plain_text
+
+
+def test_session_refusal():
+    """-> the refusal a push or merge gate prints in a No ladders session,
+    or None. Such a session exists to show what a person off the ladder
+    sees; work done in it is a test and never leaves it (D13)."""
+    if not pr.no_ladders():
+        return None
+    return (f'{pr.NO_LADDERS_ENV} is set: this is a test session showing what '
+            'a person off the ladder sees, so nothing is pushed or merged from '
+            'it. Start a session without it to push.')
 
 
 def status_sentence(repo=None, user_config=None):
