@@ -10,7 +10,7 @@ This repository's map of the practice catalogue in force here and the engine's o
 
 ## The practice catalogue
 
-`practices/` holds 19 practice files (1 resident, 18 on-demand). One file per practice.
+`practices/` holds 20 practice files (1 resident, 19 on-demand). One file per practice.
 
 | Practice | Tier | Occasion / scope |
 |---|---|---|
@@ -20,6 +20,7 @@ This repository's map of the practice catalogue in force here and the engine's o
 | [chief-of-staff](practices/chief-of-staff.md) | on-demand | a person says "Chief of Staff" |
 | [consider](practices/consider.md) | on-demand | a person says "Promote", "Promote N" or a stage word ("Consider", "Act", "Debut", "Produce", "Make live"), or asks to plan, build or move work up a tier |
 | [debut](practices/debut.md) | on-demand | a person says "Promote", "Promote N" or a stage word ("Consider", "Act", "Debut", "Produce", "Make live"), or asks to plan, build or move work up a tier |
+| [generated-docs-in-output](practices/generated-docs-in-output.md) | on-demand | building a document from a repository's content -- a Word file, a web page, a PDF, a deck -- or finding one that sits beside its sources |
 | [go-update](practices/go-update.md) | on-demand | a message says "Booked", "Approved", "Book it" or "Promote 3", or plainly authorizes a merge |
 | [no-ladders](practices/no-ladders.md) | on-demand | a person says "No ladders", or asks to see what somebody who does not use the ladder sees |
 | [primary-branch](practices/primary-branch.md) | on-demand | ** |
