@@ -14,6 +14,7 @@ defines:     ["Debut", "Test Readiness"]
 command:     {"Debut": "Stage 4 (Promote 4), also called Test Readiness: move pre-staging into staging, with the full local checks, saying so first -- saving this session's own work to pre-staging first if it is not there yet. It takes in whatever reached main without the ladder, checks that and pre-staging together once, and moves staging and pre-staging level; when that check fails, whoever's commit broke it, the session fixes it in the same turn on the fix branch the Debut names and runs it again."}
 status:      active
 in_force_at: null
+visible_to:  code-owners
 supersedes:  []
 overrides:   null
 added:       "2026-10-02"
