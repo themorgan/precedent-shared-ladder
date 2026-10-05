@@ -6,7 +6,7 @@ This repo IS `precedent-shared-ladder` -- a **shared** source, named for its sub
 
 <!-- Regenerate with: python3 tools/build_views.py -- do not hand-edit this block; `python3 tools/build_views.py --check` exits non-zero on drift. Source: practices/ -- edit the practice file, never this block. -->
 
-## Resident block (~114 of 250 token budget, 1 of 21 practices)
+## Resident block (~114 of 250 token budget, 1 of 14 practices)
 
 **brainstorm-holds-commits.** When a conversation is a **Brainstorm** -- the person says the word, or the
 thread is plainly exploratory ("I'm wondering", "what are my options", "do
@@ -21,10 +21,6 @@ is enthusiasm for the idea. **When in doubt, it is a brainstorm.**
 ```
 When a message says "Booked", "Approved", "Book it" or "Promote 3", or plainly authorizes a merge:
   go-update — stage 3, Booked: land it on the landing branch; high-risk: PR and merge
-When a message says "Update Vendors", or an upstream update is taken into a vendoring repo:
-  vendor-update-runbook — source clone first, both layers move separately, then merge
-When a person explicitly asks for a "very deep check" or a "full practice audit":
-  very-deep-check — read every repo in force against itself, pass by pass; never routine
 When a person says "Chief of Staff":
   chief-of-staff — on request only; name the window read, link each session; Promotion Reviews last
 When a person says "No ladders", or asks to see what somebody who does not use the ladder sees:
@@ -32,8 +28,6 @@ When a person says "No ladders", or asks to see what somebody who does not use t
 When a person says "Promote", "Promote N" or a stage word ("Consider", "Act", "Debut", "Produce", "Make live"), or asks to plan, build or move work up a tier:
   act — stage 2: build on the session's feature branch, pushed so it survives
   consider — stage 1: pick the plan size -- one line, Brainstorm, Plan it, Write it up
-  debut — stage 4: pre-staging into staging, full checks
-  produce — stage 5: staging into main (production); read strictly
   promote — the next tier up, chosen from the work and said first; "Promote N" does stage N
 When a person says "Prompt Please", or work belongs in a new session or needs a repo this one cannot reach:
   prompt-please — one paste-ready prompt for a new session; never a session-creating tool
