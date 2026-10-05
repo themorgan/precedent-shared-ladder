@@ -14,6 +14,7 @@ defines:     ["Tier branch", "Landing branch"]
 command:     null
 status:      active
 in_force_at: null
+visible_to:  code-owners
 supersedes:  []
 overrides:   null
 added:       "2026-10-02"

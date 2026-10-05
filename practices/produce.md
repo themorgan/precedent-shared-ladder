@@ -14,6 +14,7 @@ defines:     ["Produce", "Make live", "production"]
 command:     {"Produce": "Stage 5 (Promote 5): move staging into main -- production -- with the full local checks plus the GitHub test, saying so first. Here we graduate you from the practice to real-life production!", "Make live": "The same as **Produce**."}
 status:      active
 in_force_at: null
+visible_to:  code-owners
 supersedes:  []
 overrides:   null
 added:       "2026-10-02"

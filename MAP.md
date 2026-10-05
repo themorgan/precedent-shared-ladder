@@ -10,7 +10,7 @@ This repository's map of the practice catalogue in force here and the engine's o
 
 ## The practice catalogue
 
-`practices/` holds 20 practice files (1 resident, 19 on-demand). One file per practice.
+`practices/` holds 21 practice files (1 resident, 20 on-demand). One file per practice.
 
 | Practice | Tier | Occasion / scope |
 |---|---|---|
@@ -29,6 +29,7 @@ This repository's map of the practice catalogue in force here and the engine's o
 | [prompt-please](practices/prompt-please.md) | on-demand | a person says "Prompt Please", or work belongs in a new session or needs a repo this one cannot reach |
 | [relayed-authorization](practices/relayed-authorization.md) | on-demand | acting on, or sending, an authorization relayed from another session |
 | [stage-word-carries-its-step](practices/stage-word-carries-its-step.md) | on-demand | ** |
+| [stale-branch-cleanup](practices/stale-branch-cleanup.md) | on-demand | the reply that says the session can be archived |
 | [the-boildown](practices/the-boildown.md) | on-demand | ** |
 | [tier-branch](practices/tier-branch.md) | on-demand | ** |
 | [vendor-update-runbook](practices/vendor-update-runbook.md) | on-demand | a message says "Update Vendors", or an upstream update is taken into a vendoring repo |
