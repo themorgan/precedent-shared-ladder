@@ -6,7 +6,7 @@ This repo IS `precedent-shared-ladder` -- a **shared** source, named for its sub
 
 <!-- Regenerate with: python3 tools/build_views.py -- do not hand-edit this block; `python3 tools/build_views.py --check` exits non-zero on drift. Source: practices/ -- edit the practice file, never this block. -->
 
-## Resident block (~114 of 250 token budget, 1 of 19 practices)
+## Resident block (~114 of 250 token budget, 1 of 20 practices)
 
 **brainstorm-holds-commits.** When a conversation is a **Brainstorm** -- the person says the word, or the
 thread is plainly exploratory ("I'm wondering", "what are my options", "do
@@ -39,6 +39,8 @@ When a person says "Prompt Please", or work belongs in a new session or needs a 
   prompt-please — one paste-ready prompt for a new session; never a session-creating tool
 When a person says "Write it up", or asks for a write-up:
   write-it-up — commit a full report: issue, options attacked, the fix that survived; link it
+When building a document from a repository's content -- a Word file, a web page, a PDF, a deck -- or finding one that sits beside its sources:
+  generated-docs-in-output — a document built from a folder's content goes in that folder's output/
 
 (More on-demand practices are not listed here: one whose applies_to names real paths, or which declares a gate, is reached by those channels instead -- `precedent_paths.py FILE` and `precedent_gate.py MOMENT`. A trigger a PERSON SAYS cannot be reached that way and is always listed above. `precedent_show.py --index-omitted` names the omitted ones.)
 ```
