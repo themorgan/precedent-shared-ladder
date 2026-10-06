@@ -46,7 +46,7 @@ included, never "main is not mine" and never deferred (Morgan, 2026-10-03:
 *"if it fails because of a problem on main (caused by someone not using
 this process) -- then you have to fix it as part of this process"*,
 strength: decided). The Debut leaves the tree it checked on a
-`promote-fix-DATE` branch and says what failed, naming main's commits as
+local `promote-fix-DATE` branch (pushed only with a fix, since 2026-10-06) and says what failed, naming main's commits as
 the place to look first. Run what failed on each tip to see which side
 brought it, fix it on that branch, run every step once (`## Detail`),
 push, and Debut again with `--work promote-fix-DATE`: that takes the fix in
