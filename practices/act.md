@@ -35,7 +35,11 @@ lowercased, so the name leads back to the session. With no session ID, or
 the name already on GitHub, the tool puts five random characters there
 instead and says so. A branch the harness named when the session opened,
 before the task was known (`claude/hopeful-carson-yy42sb`), is left alone:
-the session makes its named branch at Act and works there.
+the session makes its named branch at Act and works there. **A push that
+creates a session branch the tool did not name is refused** by the push
+check, which prints the rename command, so a hand-typed name never reaches
+GitHub (Morgan, 2026-10-06, strength: decided: "how can we make sure that
+you always use the new format for temporary branches?").
 
 **Act comes after [Consider](consider.md)**, even if the plan is one line.
 A request to build with no plan yet gets the one-line plan first, in the

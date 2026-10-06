@@ -26,7 +26,9 @@ approved_by: "Morgan; amended 2026-09-14, Morgan -- the phrase now carries
   the old install's leftovers (step 10); amended 2026-09-27, Morgan
   (decided) -- the sequence is one command, tools/precedent_update.py;
   amended 2026-10-05, Alex (decided) -- a repo may follow staging instead
-  of main by declaring upstream_branch in its precedent.json"
+  of main by declaring upstream_branch in its precedent.json; amended
+  2026-10-06, Morgan (decided) -- a declared set that is retired is dropped
+  by the update itself, only when no active rule would be lost"
 ---
 ## Rule
 **"Update Vendors" is the phrase that asks for this**, and it authorizes the
@@ -583,6 +585,19 @@ says so, both from the vendored tree under `process/upstream/`.
    it?"*, or a declared set whose subject this repo no longer has. Do not
    skip the look because nothing looks wrong — nothing looking wrong is
    the symptom, not the all-clear.
+
+   **A declared set that is retired is dropped by the update itself**
+   (Morgan, 2026-10-06, strength: decided). A set marks its own retirement
+   in its `precedent-source.json` (`"retired": {"date": ..., "folded_into":
+   [...]}`), or GitHub reports it archived; the update then removes it from
+   `precedent.json`, and the change lands with the rest of the update on
+   your landing branch. That happens only when every active rule the set
+   holds is in force in another declared source. One that still holds a
+   rule found nowhere else stays declared, and the rule is left for you by
+   name. A set GitHub only answers *Not Found* for is never dropped: that
+   is also what lost access to a private repository looks like.
+   `python3 tools/precedent_vendor_engine.py drop-retired .` does the same
+   on its own.
 
    Measured, 2026-09-09, across five repositories that each looked healthy:
    one had no session-start instruction at all, so nothing ever fetched the
