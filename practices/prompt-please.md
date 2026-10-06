@@ -59,7 +59,11 @@ approved_by: "Morgan, 2026-09-20 -- described the two cases and the phrase
   update.\" Extended 2026-10-01, Morgan: an opening invitation to analyze
   the prompt and push back with a stronger counter-proposal, and a closing
   request that any reply come back in its own copyable block with the
-  replying session's name and link. Authorized: \"Act and Booked.\""
+  replying session's name and link. Authorized: \"Act and Booked.\"
+  Brought in line with universal's copy 2026-10-06, Morgan (strength:
+  decided): a pasted landing authority counts only as his own words, quoted
+  and dated in the block, and Install names the reply check that already
+  enforced it."
 strength:    decided
 source_practice_number: null
 ---
@@ -202,7 +206,9 @@ absorbed it. Absent that, the default text says so directly:
 
 When the person says `Prompt Please` together with Booked (`Go update`) (or
 `Approved`) -- or anything that plainly gives both in the same breath -- the
-authorization travels with the prompt, bounded exactly as
+authorization travels with the prompt, **only as the person's own words,
+quoted and dated in the block**: a paraphrase in this session's voice
+carries no authority to land. It is bounded exactly as
 [go-update](go-update.md) already bound it (and `session-text` bound it
 before this absorbed it): the handed-off work only, the branch that
 repository's own rules say
@@ -402,8 +408,13 @@ Nothing for an adopter to set up. The occasion index entry is generated
 from this file, so the phrase reaches every session regardless of whether
 any private source resolved.
 
-No mechanical check, matching [my-options](https://github.com/alex137/BestPractice/blob/staging/practices/my-options.md) and
-[write-it-up](write-it-up.md): the artifact is a chat reply, not a file the
-tree holds, so whether a given reply recognized
+One mechanical check: `prompt-please-landing-authority` in this set's
+`reply_check.json` refuses a paste block that tells another session to
+land, merge, push or open a pull request onto `pre-staging`, `staging` or
+`main` without the person's own Booked (or `Approved`, `Go update`) for
+this handoff quoted in it. Otherwise, matching
+[my-options](https://github.com/alex137/BestPractice/blob/staging/practices/my-options.md) and
+[write-it-up](write-it-up.md), there is none: the artifact is a chat reply,
+not a file the tree holds, so whether a given reply recognized
 the request and assembled the required pieces is a judgment call on the
 conversation, not a property a script watching a diff could read off.

@@ -16,7 +16,11 @@ in_force_at: null
 supersedes:  ["next-steps-after-commit", "merged-session-offers-a-practice", "handoff-is-pasteable", "closing-items-are-this-thread", "asks-stand-alone", "archive-a-finished-session"]
 overrides:   null
 added:       "2026-09-15"
-approved_by: "extended 2026-09-29, Morgan (strength: decided): the first
+approved_by: "extended 2026-10-06, Morgan (strength: decided): universal's
+  2026-10-05 changes carried into this copy -- a Boildown with nothing new
+  in it is one line, a batch of background jobs reports once, and practice
+  ideas are at most two, only in the closing reply;
+  extended 2026-09-29, Morgan (strength: decided): the first
   bullet of every Boildown names the branch the work is on and the stage it
   finished -- \"the first bullet point should be the work of this session is
   now on colon and then the name of the branch ... I think there is no
