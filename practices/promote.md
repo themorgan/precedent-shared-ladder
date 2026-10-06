@@ -176,7 +176,7 @@ The command does the whole promotion, and a session adds nothing to it:
    passes moves staging and pre-staging to that same commit**, in one push
    that takes both or neither. When it fails, or step 2 met a conflict in
    hand-written text, **neither moves**: the tree goes to a
-   `promote-fix-DATE` branch, the Promote says what failed -- and, when
+   local `promote-fix-DATE` branch (pushed only with a fix), the Promote says what failed -- and, when
    main brought work, lists those commits as the place to look first,
    never as the cause -- and the session measures which it is, fixes it
    there in the same turn, and Promotes again with `--work` that branch
