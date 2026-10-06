@@ -188,6 +188,19 @@ ever land in. Ask with a credential or not at all: unauthenticated, a
 private repository and a deleted one both answer *Not Found*, so the run
 must say it learned nothing rather than report a repo as gone.
 
+**A declared set that is RETIRED is reported in its own section, RETIRED
+SETS**, for this checkout and every source in force: one that says so in
+its `precedent-source.json`, or that the liveness call above found
+archived. A set whose active rules are all in force elsewhere is a finding
+with its one remedy, `python3 tools/precedent_vendor_engine.py drop-retired
+.`, run in that repo on its feature branch and Booked onto its landing
+branch like any other change; one still holding a rule found nowhere else
+is a finding that names the rule, and stays declared. *Not Found* never
+counts as retired. Morgan, 2026-10-06 (strength: decided): *"have update
+vendors and very deep check see if any repos are declared to be included
+that no longer exist and remove them"*, choosing to drop on a set's own
+retirement or GitHub's archived flag, and never on *Not Found*.
+
 **Current is not the same as CARRIED either, and that is the half nothing
 else here could see.** The freshness gate proves a clone matches **its own
 origin**. A repo can be perfectly current with itself and be running an
@@ -2624,6 +2637,7 @@ it landed and still unreviewed.
 - **Extended 2026-09-29, Morgan (strength: decided)**, so a renamed repository is found wherever it is named -- every tracked file in this checkout and in every source, not only the always-loaded instructions files -- and fixed in the run: the clone's remote repointed and every current reference rewritten, history left as written. Asked as a question first ("does Very Deep Check do a check to see if any called repos are redirected ... add that to VDC if it doesn't"); it reported renames in two places and fixed none.
 - **Extended 2026-09-29, Morgan (strength: decided)**, with the GENERATED FILES lines: the reverse search for a file a tool writes that the new list of generated files does not name. Asked as a question ("does bestpractice maintain a list of all files that are auto-generated ... Is this checked in VDC and/or should it be?"); there was no single list, and todo/TODO.md had gone out of date with nothing checking it.
 - **Extended 2026-10-01, Morgan (strength: decided)**, so Pass 3 measures every always-loaded surface against its target as well as its ceiling, and over target runs a reduction pass with its practice-by-practice review of the occasion index and resident block -- "this reduction pass is great; if it's not part of Very Deep Check, it absolutely should be." -- after the first such review found about 1,040 tokens of room that the menu's lossless moves could not. The SESSION LOAD section prints an OVER TARGET finding for it.
+- **Extended 2026-10-06, Morgan (strength: decided)**, with the RETIRED SETS section: a declared set that says it is retired, or that GitHub reports archived, is reported with the command that drops it, and Update Vendors drops it on its own -- only when no active rule would be lost, and never on "Not Found". He chose that option ("C") from three put to him. Carried into this copy on 2026-10-06 (Morgan, approving the very deep check's fixes, strength: decided).
 - **Extended 2026-10-06, Morgan (strength: decided)**, so the review page is always published as an Artifact and never handed over as an HTML file, after a run sent it as an attached file: "That HTML doc - give me that info as an artifact - and update very deep check so that in the future, that is always an artifact, not a HTML file." Both tools that write or announce the page now say so in what they print.
 
 Copied into this set on 2026-10-02 under the same slug, when the ladder became a set a person brings (spec/LADDER_OPT_IN_PLAN.md in BestPractice). For a person who brings this set it replaces the universal rule of the same name, so they read it in the ladder's words exactly as before; everyone else reads the universal copy, which says the same thing without them. Edit both.
