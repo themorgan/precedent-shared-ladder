@@ -12,7 +12,6 @@ Built from every practice's `defines:` frontmatter field -- the terms that pract
 |---|---|
 | Act | [act](practices/act.md) |
 | Approved | [go-update](practices/go-update.md) |
-| Boildown | [the-boildown](practices/the-boildown.md) |
 | Book | [go-update](practices/go-update.md) |
 | Book it | [go-update](practices/go-update.md) |
 | Booked | [go-update](practices/go-update.md) |
@@ -34,7 +33,6 @@ Built from every practice's `defines:` frontmatter field -- the terms that pract
 | Promote | [promote](practices/promote.md) |
 | Promote N | [promote](practices/promote.md) |
 | Promotion Reviews | [chief-of-staff](practices/chief-of-staff.md) |
-| Prompt Please | [prompt-please](practices/prompt-please.md) |
 | Relayed authorization | [relayed-authorization](practices/relayed-authorization.md) |
 | Shared Save | [go-update](practices/go-update.md) |
 | Spec it out | [write-it-up](practices/write-it-up.md) |
@@ -43,8 +41,6 @@ Built from every practice's `defines:` frontmatter field -- the terms that pract
 | the five stages | [promote](practices/promote.md) |
 | the sweeper | [chief-of-staff](practices/chief-of-staff.md) |
 | Tier branch | [tier-branch](practices/tier-branch.md) |
-| Update Vendors | [vendor-update-runbook](practices/vendor-update-runbook.md) |
-| very deep check | [very-deep-check](practices/very-deep-check.md) |
 | Write it up | [write-it-up](practices/write-it-up.md) |
 
 ## Engine vocabulary
