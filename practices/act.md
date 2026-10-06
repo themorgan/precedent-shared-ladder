@@ -16,7 +16,7 @@ in_force_at: null
 supersedes:  []
 overrides:   null
 added:       "2026-10-02"
-approved_by: "Morgan F, 2026-10-02, withdrawn from the universal set BestPractice, which keeps no copy (there: Morgan, 2026-09-27 -- Act lives on the session's temporary (feature) branch and \"booked is all about moving it from there to pre-staging so ... it won't get lost\")"
+approved_by: "Morgan F, 2026-10-02, withdrawn from the universal set BestPractice, which keeps no copy (there: Morgan, 2026-09-27 -- Act lives on the session's temporary (feature) branch and \"booked is all about moving it from there to pre-staging so ... it won't get lost\"). Amended 2026-10-06, Morgan, \"Please evaluate and act\" on a session's finding that this rule and Claude Code on the web's designated branch contradicted each other (strength: assented; the wording is the session's)"
 strength:    decided
 ---
 ## Rule
@@ -35,11 +35,15 @@ lowercased, so the name leads back to the session. With no session ID, or
 the name already on GitHub, the tool puts five random characters there
 instead and says so. A branch the harness named when the session opened,
 before the task was known (`claude/hopeful-carson-yy42sb`), is left alone:
-the session makes its named branch at Act and works there. **A push that
-creates a session branch the tool did not name is refused** by the push
-check, which prints the rename command, so a hand-typed name never reaches
-GitHub (Morgan, 2026-10-06, strength: decided: "how can we make sure that
-you always use the new format for temporary branches?").
+the session makes its named branch at Act and works there. **Claude Code
+on the web tells a session to develop on that harness branch and not to
+push to another without explicit permission: this rule is that
+permission**, so the session makes its named branch without stopping to
+ask. **The push check refuses a session branch named by hand**, printing
+the rename command, so a hand-typed name never reaches GitHub; it lets the
+harness's own name through, so a session that kept it is never left with
+work it cannot push (Morgan, 2026-10-06, strength: decided: "how can we
+make sure that you always use the new format for temporary branches?").
 
 **Act comes after [Consider](consider.md)**, even if the plan is one line.
 A request to build with no plan yet gets the one-line plan first, in the
@@ -70,6 +74,15 @@ session's branch when it opens, before anyone knows the task
 session ID's ending over random characters ("I love the idea to use the
 session ID"), with random characters only where there is no ID or the name
 is taken. "Yes, let's do it. Act and Booked" (strength: decided).
+
+**The harness's branch**, 2026-10-06. A session in a consumer found this
+rule and Claude Code on the web's own instruction pulling opposite ways:
+the harness says to develop on the branch it named and push nowhere else
+without explicit permission, and this rule says to make a named branch. It
+followed the harness, and noticed that the push check let it, though this
+rule then said any branch the tool did not name was refused. The rule now
+says it is the permission the harness asks for, and says what the push
+check actually refuses.
 
 ## Install
 The naming tool ships with the engine ([precedent_branch_name.py](../tools/precedent_branch_name.py) in
