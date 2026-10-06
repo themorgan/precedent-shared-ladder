@@ -24,7 +24,9 @@ approved_by: "Morgan; amended 2026-09-14, Morgan -- the phrase now carries
   2026-09-23, Morgan (assented) -- a classic install is migrated, not
   updated; amended 2026-09-24, Morgan (decided) -- every update retires
   the old install's leftovers (step 10); amended 2026-09-27, Morgan
-  (decided) -- the sequence is one command, tools/precedent_update.py"
+  (decided) -- the sequence is one command, tools/precedent_update.py;
+  amended 2026-10-05, Alex (decided) -- a repo may follow staging instead
+  of main by declaring upstream_branch in its precedent.json"
 ---
 ## Rule
 **"Update Vendors" is the phrase that asks for this**, and it authorizes the
@@ -35,6 +37,13 @@ sequence below is done, run [go-update](go-update.md)'s chain on what it
 produced -- say the target branch out loud, commit, push, open the pull
 request, merge -- without going back for a second authorization. That is step
 12, and it is part of the phrase rather than a separate grant.
+
+**Claude Code's auto mode may still refuse that merge** ("Merge Without
+Review"): the phrase names an update, and its safety check clears a merge
+only on words that name the merge. That is not this repository's rules.
+Say so in one line and ask for it by name -- "Merge PR #N into
+<landing branch>" -- and never route around it
+([gotcha](https://github.com/alex137/BestPractice/blob/staging/gotchas/gotcha-2026-10-04-auto-mode-refuses-update-vendors-own-merge.md)).
 
 **The sequence is one command, since 2026-09-27.** From the consuming repo,
 run the BestPractice clone's own copy -- never a vendored one:
@@ -49,9 +58,16 @@ and ends with one of three outcomes. It stages what it wrote and deleted
 first, so the deep check judges what the commit will hold. **DONE** (exit
 0): nothing is left, so commit and go on to steps 11 and 12. **LEFT FOR YOU** (exit 1): the calls
 that belong to this repo, each named with its file and its question -- work
-them under the conflicted-file review below, then run it again. **FAILED**
+them under the conflicted-file review below, then run it again. Every one is
+listed in the same run, and while any is open the deep check is not started:
+it is the slow step, so it waits until nothing cheaper is in its way. Where
+the landing branch takes the full check, the basic tier runs first, and a
+finding there is reported without starting the full one. **FAILED**
 (exit 2): a step could not run or the deep check is red, and nothing is
-published. Steps 7 to 9 are still the session's, and so are 11 and 12. The
+published. Run it again as it is: the vendored files that run staged and
+nobody has changed since are its own output, so the rerun puts them back and
+writes them again rather than refusing them as uncommitted edits; one you
+changed after the failure is yours, and is refused until you commit it. Steps 7 to 9 are still the session's, and so are 11 and 12. The
 numbered steps below say what the command does and why; they are for
 investigating, not a checklist to walk by hand. Where one of them and the
 command disagree, the command is the current code, and the step is what
@@ -180,6 +196,22 @@ says so, both from the vendored tree under `process/upstream/`.
    split between `main` and `precedent-beta-v01` on an approval Morgan
    later called assent rather than a decision; this move was made for
    every install at once so that cannot happen again.
+
+   **One repo may follow `staging` instead, since 2026-10-05, by saying so
+   in its own `precedent.json`: `"upstream_branch": "staging"`.** Alex,
+   2026-10-05 (`strength: decided`), after measuring that a change took
+   about 25 minutes to reach `main` and a few to reach `staging`. The
+   default is unchanged: a repo that names nothing follows `main`. Only
+   `main` and `staging` are accepted; any other name -- the branch that
+   has had only seconds of checking among them -- is refused, with the
+   update saying so and following `main`.
+   The update reads the declaration and moves both records itself -- the
+   engine's `source_branch` and the catalogue's `upstream.branch` -- in the
+   same run, so this is still never a hand edit to either. What a repo
+   gives up by declaring it: `staging` has not had GitHub's clean-machine
+   test. Removing the declaration moves the pins back to `main`; an engine
+   already ahead of `main` is then left as it is until `main` catches up,
+   never rolled back.
 
    **The two vendored layers do not both need this, and knowing which is
    which is the whole point of the step.** The ENGINE is read by blob out of
