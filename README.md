@@ -194,7 +194,7 @@ force for whoever brings it.
 
 | File | What it is for |
 |---|---|
-| [practices/](practices/) | The ladder's rules, each moved here whole from the universal set, Story included. Four (the-boildown, prompt-please, very-deep-check, vendor-update-runbook) are fuller copies of a universal rule; a copy here replaces the universal one for the people who bring this set. |
+| [practices/](practices/) | The ladder's rules, each moved here whole from the universal set, Story included. None repeats a universal rule: where the ladder changes one, a practice here named `<rule>-on-the-ladder` holds only what it adds (four do: the-boildown, prompt-please, very-deep-check, vendor-update-runbook), and the universal rule stays in force beside it. |
 | [reply_check.json](reply_check.json) | The two reply rules only ladder users get: the step in the summary's first line, and a pasted prompt that lands work quoting your "Booked". |
 | [our_language.json](our_language.json) | The ladder's own words, merged into Vocabulary for the people who bring it. |
 | [approvers.json](approvers.json) | Who may approve a change here. |

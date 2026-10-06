@@ -121,8 +121,7 @@ another session is already doing it!!!"*).
 **Waiting for a Promote never keeps a session open.** Work on pre-staging
 is already on `origin`, and any later session can promote it, so a pending
 Promote is never a reason for "Don't archive this session" unless there is
-a genuinely urgent reason to move it now ([the-boildown](https://github.com/alex137/BestPractice/blob/staging/practices/the-boildown.md),
-archive condition 2).
+a genuinely urgent reason to move it now ([the-boildown-on-the-ladder](the-boildown-on-the-ladder.md)).
 
 Promote moves what is on pre-staging, so work still sitting in the session
 would otherwise miss the batch the person just asked to move (Morgan,
@@ -176,7 +175,7 @@ The command does the whole promotion, and a session adds nothing to it:
    passes moves staging and pre-staging to that same commit**, in one push
    that takes both or neither. When it fails, or step 2 met a conflict in
    hand-written text, **neither moves**: the tree goes to a
-   `promote-fix-DATE` branch, the Promote says what failed -- and, when
+   local `promote-fix-DATE` branch (pushed only with a fix), the Promote says what failed -- and, when
    main brought work, lists those commits as the place to look first,
    never as the cause -- and the session measures which it is, fixes it
    there in the same turn, and Promotes again with `--work` that branch

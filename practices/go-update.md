@@ -125,7 +125,7 @@ says so in one plain line, in The Boildown** -- not bolded, not urgent,
 for example *"Pre-staging is 2 commits ahead of staging; it can be
 promoted whenever it suits."* It is information, not a call to act now, and never a reason to keep the
 session open: the archive line ignores it
-([the-boildown](https://github.com/alex137/BestPractice/blob/staging/practices/the-boildown.md), archive condition 2).
+([the-boildown-on-the-ladder](the-boildown-on-the-ladder.md)).
 A high-risk change lands on pre-staging like any other rather than jumping
 the queue, so the two branches do not drift apart, and gets its full check
 at the next Promote, whenever that comes. Morgan, 2026-09-25, reversing the

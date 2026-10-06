@@ -26,26 +26,30 @@ This repository's map of the practice catalogue in force here and the engine's o
 | [primary-branch](practices/primary-branch.md) | on-demand | ** |
 | [produce](practices/produce.md) | on-demand | a person says "Promote", "Promote N" or a stage word ("Consider", "Act", "Debut", "Produce", "Make live"), or asks to plan, build or move work up a tier |
 | [promote](practices/promote.md) | on-demand | a person says "Promote", "Promote N" or a stage word ("Consider", "Act", "Debut", "Produce", "Make live"), or asks to plan, build or move work up a tier |
-| [prompt-please](practices/prompt-please.md) | on-demand | a person says "Prompt Please", or work belongs in a new session or needs a repo this one cannot reach |
+| [prompt-please-on-the-ladder](practices/prompt-please-on-the-ladder.md) | on-demand | a person says "Prompt Please" while the five-stage ladder is in force |
 | [relayed-authorization](practices/relayed-authorization.md) | on-demand | acting on, or sending, an authorization relayed from another session |
 | [stage-word-carries-its-step](practices/stage-word-carries-its-step.md) | on-demand | ** |
 | [stale-branch-cleanup](practices/stale-branch-cleanup.md) | on-demand | the reply that says the session can be archived |
-| [the-boildown](practices/the-boildown.md) | on-demand | ** |
+| [the-boildown-on-the-ladder](practices/the-boildown-on-the-ladder.md) | on-demand | ** |
 | [tier-branch](practices/tier-branch.md) | on-demand | ** |
-| [vendor-update-runbook](practices/vendor-update-runbook.md) | on-demand | a message says "Update Vendors", or an upstream update is taken into a vendoring repo |
-| [very-deep-check](practices/very-deep-check.md) | on-demand | a person explicitly asks for a "very deep check" or a "full practice audit" |
+| [vendor-update-on-the-ladder](practices/vendor-update-on-the-ladder.md) | on-demand | a person says "Update Vendors" in a repo on the five-stage ladder |
+| [very-deep-check-on-the-ladder](practices/very-deep-check-on-the-ladder.md) | on-demand | running a very deep check where the five-stage ladder is in force |
 | [write-it-up](practices/write-it-up.md) | on-demand | a person says "Write it up", or asks for a write-up |
 
 ## Withdrawn practices
 
-4 practice file(s) here are **not in force** and are left out of every table above. **The files are kept on purpose** -- a withdrawn rule and the argument against it are worth re-reading, and `retired` is not a synonym for deleted (that is `decommission-deletes-files`, and it is about mechanisms, not rules). Read one in full with `python3 tools/precedent_show.py SLUG`.
+8 practice file(s) here are **not in force** and are left out of every table above. **The files are kept on purpose** -- a withdrawn rule and the argument against it are worth re-reading, and `retired` is not a synonym for deleted (that is `decommission-deletes-files`, and it is about mechanisms, not rules). Read one in full with `python3 tools/precedent_show.py SLUG`.
 
 | Practice | Status | Now in force at | Why it was withdrawn |
 |---|---|---|---|
 | [go-merge](practices/go-merge.md) | deduplicated | [go-update](practices/go-update.md) | Renamed 2026-09-26 on Morgan's `Go update`. |
 | [merge-authorization-keyword](practices/merge-authorization-keyword.md) | deduplicated | [go-update](practices/go-update.md) | **The 2026-09-07 retirement was reversed on 2026-09-08, and this is now a deduplication rather than a withdrawal.** `status: retired` said nobody wanted this rule anywhere. |
 | [plan-it](practices/plan-it.md) | deduplicated | [consider](practices/consider.md) | **Folded into consider, 2026-09-30.** Morgan: *"Plan it is just Stage 1 of our list, so isn't that listed there, in the 5 step names, and you can recognize it?"* Its Rule is Consider's Detail now, word for word. |
+| [prompt-please](practices/prompt-please.md) | deduplicated | [prompt-please](practices/prompt-please.md) | Copied into this set on 2026-10-02 under the same slug, when the ladder became a set a person brings, so people who bring it read the rule in the ladder's words. |
 | [push-directly](practices/push-directly.md) | retired | — (nowhere) | **Retired 2026-09-30.** Morgan: *"push directly we no longer need with our 1-5 steps system but it should be part of the description in the vocab list for booked since that's what it does."* Booked's default is already a direct push, so the phrase added nothing; its description now says so. |
+| [the-boildown](practices/the-boildown.md) | deduplicated | [the-boildown](practices/the-boildown.md) | Copied into this set on 2026-10-02 under the same slug, when the ladder became a set a person brings, so people who bring it read the rule in the ladder's words. |
+| [vendor-update-runbook](practices/vendor-update-runbook.md) | deduplicated | [vendor-update-runbook](practices/vendor-update-runbook.md) | Copied into this set on 2026-10-02 under the same slug, when the ladder became a set a person brings, so people who bring it read the rule in the ladder's words. |
+| [very-deep-check](practices/very-deep-check.md) | deduplicated | [very-deep-check](practices/very-deep-check.md) | Copied into this set on 2026-10-02 under the same slug, when the ladder became a set a person brings, so people who bring it read the rule in the ladder's words. |
 
 ## The engine
 
