@@ -162,7 +162,7 @@ The command does the whole promotion, and a session adds nothing to it:
    with everything else, so pre-staging only ever receives a tree that
    passed (Morgan, 2026-10-03, strength: decided).
 2. **Composes one tree, by merge commits, in a throwaway worktree**:
-   staging, then a `promote-fix-` branch handed in with `--work`, then
+   staging, then a fix branch (`claude/DATE-promote-fix-ID`) handed in with `--work`, then
    work made directly on main, then pre-staging -- never a fast-forward, so
    no pre-staging commit's `[skip ci]` line can become staging's head and
    silence the GitHub test on the pull request into main. When main brought
@@ -175,7 +175,7 @@ The command does the whole promotion, and a session adds nothing to it:
    passes moves staging and pre-staging to that same commit**, in one push
    that takes both or neither. When it fails, or step 2 met a conflict in
    hand-written text, **neither moves**: the tree goes to a
-   local `promote-fix-DATE` branch (pushed only with a fix), the Promote says what failed -- and, when
+   local `claude/DATE-promote-fix-ID` branch (pushed only with a fix), the Promote says what failed -- and, when
    main brought work, lists those commits as the place to look first,
    never as the cause -- and the session measures which it is, fixes it
    there in the same turn, and Promotes again with `--work` that branch
@@ -201,7 +201,7 @@ failing** -- unless staging already carries main's failing tip and
 staging's tip has passed the full local check, which a Debut gives it: then
 this Produce is what brings main back to green, and goes ahead (Morgan,
 2026-10-03, strength: decided). It then pushes a
-throwaway copy of staging, `to-main-DATE`, and stops: the tool never moves
+throwaway copy of staging, `claude/DATE-promote-to-main-ID`, and stops: the tool never moves
 main. **That stop exits 3, not 0**, and its block opens with *"MAIN HAS NOT
 MOVED YET"*: exit 0 from Promote means the branch it names has moved, so a
 3 means the work below is still owed (2026-09-28: a session read the old
@@ -217,7 +217,7 @@ fetch that `origin/main` carries staging's tip.
 [spec/CI_CADENCE_PLAN.md](https://github.com/alex137/BestPractice/blob/staging/spec/CI_CADENCE_PLAN.md), "Promote decides").
 Promote reads the person's value first, then the repository's, and when the
 test passed more recently than that it names the copy
-`to-main-not-due-DATE`: the light check skips that pull request before a
+`claude/DATE-promote-to-main-not-due-ID`: the light check skips that pull request before a
 runner starts, and `--wait-main-test` says **NOT DUE** and exits 0, so merge
 on the full local check. It runs anyway after a failed run until one
 passes, when GitHub cannot be asked, and with `PRECEDENT_CI_NOW=1`; a
@@ -291,6 +291,8 @@ the decisions and how firmly each was made, is
 branch the work enters. It always did -- the Rule above runs staging's
 checks into staging and main's into main -- so only the summary changed, to
 say so.
+
+**2026-10-06: a Promote's branches named like a session's.** Morgan, reading a fix branch named `promote-fix-20261006T165108-0300` in a reply: *"isn't our URL format for temporary GitHub repo URLs to start with the timestamps then the slug then a few random characters? ... let's do that"*. The fix branch and the copy of staging are named by [tools/precedent_branch_name.py](../tools/precedent_branch_name.py) now, like every temporary branch; the old `promote-fix-DATE` and `to-main-DATE` names are still recognized, and a repository whose GitHub test knows only those keeps getting them until Update Vendors brings the new workflow. strength: decided.
 
 ## Install
 Nothing to install beyond the engine: [precedent_branches.py](../tools/precedent_branches.py) ships in

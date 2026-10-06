@@ -46,10 +46,10 @@ included, never "main is not mine" and never deferred (Morgan, 2026-10-03:
 *"if it fails because of a problem on main (caused by someone not using
 this process) -- then you have to fix it as part of this process"*,
 strength: decided). The Debut leaves the tree it checked on a
-local `promote-fix-DATE` branch (pushed only with a fix, since 2026-10-06) and says what failed, naming main's commits as
+local `claude/DATE-promote-fix-ID` branch (pushed only with a fix, since 2026-10-06) and says what failed, naming main's commits as
 the place to look first. Run what failed on each tip to see which side
 brought it, fix it on that branch, run every step once (`## Detail`),
-push, and Debut again with `--work promote-fix-DATE`: that takes the fix in
+push, and Debut again with `--work claude/DATE-promote-fix-ID`: that takes the fix in
 first and finishes. A fix to the session's own booked work may go through
 Booked instead, as before (Morgan, 2026-10-01, strength: assented).
 
@@ -65,13 +65,14 @@ down with it. So after fixing what it named, on the fix branch, run:
 
 Fix all of what that finds, push it to the fix branch, and Debut again:
 
-    python3 tools/precedent_branches.py --promote --to staging --work promote-fix-DATE
+    python3 tools/precedent_branches.py --promote --to staging --work claude/DATE-promote-fix-ID
 
 The next Debut reuses that pass for the same files rather than running it
 a second time. A conflict in hand-written text is the same route: the
 Debut names the merge to make on the fix branch (`git merge SHA`), and the
-session resolves it there. Only a `promote-fix-` branch is taken in this
-way; any other `--work` that is not on pre-staging is named and left for
+session resolves it there. Only a Promote's fix branch is taken in this
+way (`claude/DATE-promote-fix-ID`, named like every temporary branch since
+2026-10-06; an older `promote-fix-DATE` still counts); any other `--work` that is not on pre-staging is named and left for
 Booked.
 
 The fix branch has done its job once the Debut takes it in; it is never
