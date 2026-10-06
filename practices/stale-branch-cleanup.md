@@ -51,7 +51,7 @@ universal).
 
 **What counts as stale.** The tool lists a remote branch whose tip is
 already in `origin/main`, or that carries no change `main` lacks -- a
-`promote-fix-*` or `to-main-*` copy whose only commits are merges that
+Promote fix branch or copy of staging (`claude/DATE-promote-fix-ID`, `claude/DATE-promote-to-main-ID`, or the older `promote-fix-*` and `to-main-*`) whose only commits are merges that
 changed nothing. It reads the remote-tracking refs, so `--fetch` first
 makes the page match GitHub; the turn-start count skips the fetch to stay
 fast.
