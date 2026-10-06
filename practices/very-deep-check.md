@@ -103,7 +103,7 @@ one pull request is two whole minutes for however little work. Added
 [spec/VERY_DEEP_CHECK_DEEPENING_PROPOSAL.md](https://github.com/alex137/BestPractice/blob/staging/spec/VERY_DEEP_CHECK_DEEPENING_PROPOSAL.md)
 item 7.
 
-**It ends with a review page for the person, shown in the session only.**
+**It ends with a review page for the person, published as an Artifact.**
 Every run writes one page with three lists: **every branch the person can
 delete**, in this checkout and every source, each with a link that opens
 GitHub's branch list filtered to it; **every active practice, by
@@ -123,10 +123,15 @@ does not list, for the session to list or to say why each is not generated.
 [tools/precedent_review_page.py](https://github.com/alex137/BestPractice/blob/staging/tools/precedent_review_page.py)
 writes it under `.precedent/`, which git ignores, and the run's PRACTICE
 CATALOGUE section calls it. Add the unlanded branches you judged safe to
-delete, each with its reason, through `--recommend`. **Publish the page in
-the session only** (an Artifact, where the harness has one) **and never
-commit it, push it, or link it from a repository**: it carries the private
-sets' practice text in full, which is the point of it. Nothing about the
+delete, each with its reason, through `--recommend`. **Publish the page as
+an Artifact, every run** -- the harness's Artifact tool, which keeps it
+private to the person -- **never as an HTML file** attached to the reply or
+sent with a file tool, **and never commit it, push it, or link it from a
+repository**: it carries the private sets' practice text in full, which is
+the point of it. Read the whole page before publishing it, as with any file
+the session did not write. A harness with no Artifact tool says so in the
+reply and names the file's path; that is the only time the file itself is
+handed over. Nothing about the
 practice catalogue is written into [spec/VERY_DEEP_CHECK.md](https://github.com/alex137/BestPractice/blob/staging/spec/VERY_DEEP_CHECK.md)
 any more; the run's write-up links the page in the reply, not in a file.
 
@@ -2619,6 +2624,7 @@ it landed and still unreviewed.
 - **Extended 2026-09-29, Morgan (strength: decided)**, so a renamed repository is found wherever it is named -- every tracked file in this checkout and in every source, not only the always-loaded instructions files -- and fixed in the run: the clone's remote repointed and every current reference rewritten, history left as written. Asked as a question first ("does Very Deep Check do a check to see if any called repos are redirected ... add that to VDC if it doesn't"); it reported renames in two places and fixed none.
 - **Extended 2026-09-29, Morgan (strength: decided)**, with the GENERATED FILES lines: the reverse search for a file a tool writes that the new list of generated files does not name. Asked as a question ("does bestpractice maintain a list of all files that are auto-generated ... Is this checked in VDC and/or should it be?"); there was no single list, and todo/TODO.md had gone out of date with nothing checking it.
 - **Extended 2026-10-01, Morgan (strength: decided)**, so Pass 3 measures every always-loaded surface against its target as well as its ceiling, and over target runs a reduction pass with its practice-by-practice review of the occasion index and resident block -- "this reduction pass is great; if it's not part of Very Deep Check, it absolutely should be." -- after the first such review found about 1,040 tokens of room that the menu's lossless moves could not. The SESSION LOAD section prints an OVER TARGET finding for it.
+- **Extended 2026-10-06, Morgan (strength: decided)**, so the review page is always published as an Artifact and never handed over as an HTML file, after a run sent it as an attached file: "That HTML doc - give me that info as an artifact - and update very deep check so that in the future, that is always an artifact, not a HTML file." Both tools that write or announce the page now say so in what they print.
 
 Copied into this set on 2026-10-02 under the same slug, when the ladder became a set a person brings (spec/LADDER_OPT_IN_PLAN.md in BestPractice). For a person who brings this set it replaces the universal rule of the same name, so they read it in the ladder's words exactly as before; everyone else reads the universal copy, which says the same thing without them. Edit both.
 
