@@ -34,8 +34,8 @@ the engine's own branches never are.
 it rides with the archive line, so it does not come back every message.
 
 Build it with `python3 tools/precedent_stale_branches.py --fetch --html
-<scratchpad>/branch-cleanup.html`, publish that file as an artifact, and
-write the line as: *"Branches you can delete: Branch cleanup, N across M
+<scratchpad>/branch-cleanup.html`, publish that file as an artifact, unedited
+and within the hour, and write the line as: *"Branches you can delete: Branch cleanup, N across M
 repositories"*, with the page's name linked to it. The reply gate prints the count at the start of a
 turn when there is one, so the session knows before it writes the close.
 
@@ -49,9 +49,16 @@ session never does either: a remote branch is the person's to delete
 ([never-delete-a-remote-branch](https://github.com/alex137/BestPractice/blob/staging/practices/never-delete-a-remote-branch.md),
 universal).
 
+**It passes the publish gate.** Universal's
+[docs-track-models](https://github.com/alex137/BestPractice/blob/staging/practices/docs-track-models.md)
+lets only a fresh render reach a link, and the engine registers this tool
+as one of its page generators: the gate passes the page it writes, as it
+wrote it, for an hour. Edit the file and the gate refuses it as hand-made;
+run the tool again instead.
+
 **What counts as stale.** The tool lists a remote branch whose tip is
 already in `origin/main`, or that carries no change `main` lacks -- a
-Promote fix branch or copy of staging (`claude/DATE-promote-fix-ID`, `claude/DATE-promote-to-main-ID`, or the older `promote-fix-*` and `to-main-*`) whose only commits are merges that
+Promote fix branch or copy of staging (`DATE-promote-fix-ID`, `DATE-promote-to-main-ID`, the `claude/` forms of those from before 2026-10-07, or the older `promote-fix-*` and `to-main-*`) whose only commits are merges that
 changed nothing. It reads the remote-tracking refs, so `--fetch` first
 makes the page match GitHub; the turn-start count skips the fetch to stay
 fast.
@@ -74,3 +81,9 @@ BestPractice and three practice sets, Morgan asked for "a list of branches
 from the 3 sets as well as bestpractice that I can delete", then "As an
 artifact please with clickable links". The page that session built is the
 one `tools/precedent_stale_branches.py --html` now writes.
+
+2026-10-07: a consuming repository's session built the page as this rule
+says, and the Artifact publish gate refused it as "not a render of any
+registered document". Two rules in force contradicted each other, and the
+session fell back to linking branches in chat. The engine now registers the
+tool as a page generator, so the page passes, and this rule says so.
