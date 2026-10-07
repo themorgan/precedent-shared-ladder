@@ -22,14 +22,14 @@ strength:    decided
 ## Rule
 **Act is step 2 of the five-stage ladder ([promote](promote.md)): make the
 change.** The work lives on this session's own **feature branch** -- the
-short-lived branch named like `claude/<date>-<slug>-<id>` -- and is **pushed
+short-lived branch named like `<date>-<slug>-<id>` -- and is **pushed
 there**, so a reclaimed container loses nothing. It is not shared yet:
 nothing reaches pre-staging until [Booked](go-update.md).
 
 **The branch is named when Act starts, by
 [tools/precedent_branch_name.py](../tools/precedent_branch_name.py), never
 by hand**: `git switch -c "$(python3 tools/precedent_branch_name.py <a few
-words>)"` gives `claude/2026-10-01-feature-branch-naming-awpkv` -- the day,
+words>)"` gives `2026-10-01-feature-branch-naming-awpkv` -- the day,
 what the work is, and the last five characters of the session's ID,
 lowercased, so the name leads back to the session. With no session ID, or
 the name already on GitHub, the tool puts five random characters there
@@ -83,6 +83,11 @@ followed the harness, and noticed that the push check let it, though this
 rule then said any branch the tool did not name was refused. The rule now
 says it is the permission the harness asks for, and says what the push
 check actually refuses.
+
+2026-10-07: Morgan, on the temporary branches sessions leave on GitHub: "many
+of your temp github [branches] you create start with 'claude/' - I think
+update the rule to eliminate that prefix". The tool's names now open with
+the date (strength: decided); a harness-given name keeps its own.
 
 ## Install
 The naming tool ships with the engine ([precedent_branch_name.py](../tools/precedent_branch_name.py) in
