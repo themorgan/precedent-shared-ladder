@@ -16,10 +16,11 @@
       {
         "if_matches": "^(?![^\\n]*\\b(?:do not|don't|never|not|no|nothing|without)\\b)[^\\n]*\\b(?:land|merge|promote|push|pull request|PR)\\w*\\b[^\\n]{0,80}?\\b(?:into|onto|on|to)\\s+[`\\\"']?(?:pre-staging|staging|main)\\b",
         "must_also_match": "[\\\"“'‘]\\s*(?:Booked|Approved|Go update|Book it)\\b|^>\\s[^\\n]*\\b(?:Booked|Approved|Go update|Book it)\\b",
-        "why": "a paste block that tells another session to land, merge, push or open a pull request onto pre-staging, staging or main carries landing authority, and only the person's own Booked (or Approved, Go update) for this handoff gives it -- quoted in the block, so the receiving session can check it. Without that word, the prompt ends at Act: build on the feature branch, push it there, and stop"
+        "why": "a paste block that tells another session to land, merge, push or open a pull request onto pre-staging, staging or main carries landing authority, and only the person's own Booked (or Approved, Go update) for this handoff gives it -- quoted in the block, so the receiving session can check it. Without that word, the prompt ends at Act: build on the feature branch, push it there, and stop",
+        "narration_exempt_if_block_matches": "\\bfeature branch\\b[^\\n]{0,80}?\\bstop\\b|\\b(?:stop|end)s?\\s+at\\s+[`\\\"'“‘]?Act\\b"
       }
     ],
-    "why": "2026-10-01: two prompts a session wrote ended 'Land it on staging per this repo's conventions'. Morgan had not said Booked, and routine work lands on pre-staging, never staging. fence-block-for-paste passed both, because it checks that a block says where it goes, not what it authorizes. Morgan: 'No, we always want to do it in the local container (\"Act\") and then I'll authorize it to go to pre-staging via \"Promote\" etc.'",
+    "why": "2026-10-01: two prompts a session wrote ended 'Land it on staging per this repo's conventions'. Morgan had not said Booked, and routine work lands on pre-staging, never staging. fence-block-for-paste passed both, because it checks that a block says where it goes, not what it authorizes. Morgan: 'No, we always want to do it in the local container (\"Act\") and then I'll authorize it to go to pre-staging via \"Promote\" etc.' 2026-10-08: a block that ends at the feature branch may NARRATE a past landing (a session or tool did it, past tense, no 'you') without being read as an order (BestPractice tools/precedent_reply_check.py, narration_exempt_if_block_matches).",
     "checks_practice_at": "practices/go-update.md",
     "id": "prompt-please-landing-authority"
   }
