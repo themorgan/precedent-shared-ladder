@@ -6,7 +6,7 @@ This repo IS `precedent-shared-ladder` -- a **shared** source, named for its sub
 
 <!-- Regenerate with: python3 tools/build_views.py -- do not hand-edit this block; `python3 tools/build_views.py --check` exits non-zero on drift. Source: practices/ -- edit the practice file, never this block. -->
 
-## Resident block (~114 of 250 token budget, 1 of 14 practices)
+## Resident block (~114 of 250 token budget, 1 of 15 practices)
 
 **brainstorm-holds-commits.** When a conversation is a **Brainstorm** -- the person says the word, or the
 thread is plainly exploratory ("I'm wondering", "what are my options", "do
