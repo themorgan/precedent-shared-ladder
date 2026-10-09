@@ -56,12 +56,13 @@ timezone (`others_did_hour` in their identity.json changes the hour), and
 nothing once they have been told since that hour. A day with news only from
 the person themself writes nothing and says one line at session start.
 
-**Where it remembers.** `tools/others_did_watermark.json` in the repository,
-one row per person, keyed by their declared name. The tool commits it
-straight onto the landing branch on origin, never through the working tree,
-so a session's own work is never swept into it. If that push is refused,
-the container keeps a note and the worst case is the same report again in
-another container, never a missed one.
+**Where it remembers.** On origin's `refs/precedent/others-did`, a ref
+outside every branch holding one file, `others_did_watermark.json`, one row
+per person, keyed by their declared name. The tool writes it there by name,
+never through the working tree, so a session's own work is never swept into
+it, and it never shows in a branch list, rides a Promote or lands on a tier.
+If that push is refused, the container keeps a note and the worst case is
+the same report again in another container, never a missed one.
 
 ## Story
 
@@ -72,3 +73,8 @@ past the part of the start-up output the session is shown, and it could
 save "told" only into a checkout sitting idle on staging, so it never
 reached him. This practice moved the report to the first prompt and the
 mark onto the landing branch.
+
+Later the same day that mark showed its own cost: a status check run in a
+consuming repository's first reply pushed "Others-did mark ... [skip ci]"
+straight onto its pre-staging, and the next Produce carried it up to main.
+So the mark moved off every branch, to `refs/precedent/others-did`.
