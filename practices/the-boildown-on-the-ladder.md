@@ -16,6 +16,7 @@ in_force_at: null
 expires:     null
 supersedes:  []
 overrides:   null
+adds_to:     the-boildown
 added:       "2026-10-06"
 approved_by: "Morgan, 2026-10-06 (strength: decided): \"rules should not be repeated, but supporting repos can have additions for them\" -- this holds what the ladder set's full copy of the-boildown changed, split out the same day. Its parts were each decided earlier: the stage in the first line, 2026-09-29; a Promote never blocks archive, 2026-09-25; never suggest a Promote another window is running, 2026-09-27; Promote lines only for this session's own batch, 2026-09-29."
 ---
