@@ -38,7 +38,16 @@ exactly as the other rules describe them.
 - **Produce** moves `staging` into `main` with the quick checks:
   `python3 tools/precedent_branches.py --promote --to main --fast`, then
   the pull request it names is merged at once and GitHub's full test is
-  watched after the merge. A red result is fixed in the same sitting.
+  watched after the merge. Where GitHub's test does not run on that move
+  (a private repository tests `main` at most every so many hours), the
+  full local suite runs on `main` after the merge instead, in the
+  background: `python3 tools/precedent_branches.py --run-tests main`. Four
+  things waive it (Morgan, 2026-10-09), and the Produce names which: Debut
+  passed on exactly this; only prose changed; or he asked for a fast one
+  ("Produce fast": add `--no-full-after`), which marks `main` as moved
+  without a full check until the next full run. A red result is fixed in
+  the same sitting, and the turn does not end while an owed run has not
+  started.
   After a failed "Run tests" on that commit it shows the failures and asks
   once (exit 4); a yes goes on with `--despite-failed-tests`.
 
