@@ -35,9 +35,12 @@ what they are today on `pre-staging`: only the files the change touches, in
 seconds.
 
 **2. "Run tests", when you want it.** It runs what Debut runs today, the
-full local suite, on `staging`, and moves nothing. With the change being
-built on 2026-10-09 (a test re-runs only when a file it reads has changed),
-it should usually take a minute or two.
+full local suite, on `staging`, and moves nothing: about 11 minutes. (A
+per-test record that would have re-run only changed tests was tried on
+2026-10-09 and taken back out: recording what each test reads cost more
+than it saved.) **"Debut" stays as another word for it** (Morgan,
+2026-10-09), so Debut becomes the optional stage: test the batch fully
+before production when you want to.
 
 **3. Produce is always fast.** Quick checks, a pull request into `main`,
 merged at once. GitHub's full test runs on it straight after, and the
@@ -127,19 +130,43 @@ deleted by a session.
 - **If GitHub's test is down or stalls,** Produce still lands, and piece A
   holds every repository at the last confirmed `main` until the test runs.
 
-## Open questions for Morgan
+## Decisions (Morgan, 2026-10-09)
 
-1. **Should piece A apply to everyone, Alex included,** or only to people
-   who bring the ladder? Recommended: everyone, since it also protects
-   repositories from a direct push to `main` that breaks something. That
-   changes Alex's Update Vendors too, so it needs his yes as well.
-2. **What becomes of the word "Debut"?** Retire it, or keep it as another
-   word for "Run tests". Recommended: keep it, so the habit still works.
-3. **Should Produce refuse when the last "Run tests" on `staging` failed?**
-   Recommended: yes, since a known failure should not go to `main`.
-4. **Numbering.** Booked stays step 3 and Produce step 5, with "Run tests"
-   as step 4, so "Promote N" and every reply's "step N of 5" keep their
-   meaning.
+1. **Piece A applies to everyone, Alex included.** And when Update Vendors
+   takes a version that is not the newest `main`, it says so: which commit
+   it took, how far behind the newest it is, and why (that commit's GitHub
+   test is still running, or failed), so the person knows they do not have
+   the latest.
+2. **"Debut" is kept as another word for "Run tests"**, which makes Debut
+   the optional stage.
+3. **Still open: when should Produce refuse after a failed "Run tests"?**
+   Morgan: "often these tests fail for trivial reasons, and sometimes I
+   really just need to push something to live quickly." See below.
+4. **Numbering stays:** Booked is step 3, "Run tests" (Debut) step 4,
+   Produce step 5.
+
+### Question 3, proposed answer
+
+**Produce never refuses on a failed "Run tests"; it shows the failures and
+asks once.** Telling a critical failure from a trivial one by machine would
+mean sorting more than 600 tests by hand, and the sorting would go stale.
+The person is the better judge, and the question costs seconds: *"Run tests
+found 2 failures: <each test, one line on what it covers>. Produce
+anyway?"* A yes goes straight on.
+
+**What a yes costs, said plainly at that moment:** GitHub runs the same
+tests after the merge, so a failure that is real there turns `main` red, and
+under piece A your other repositories keep the previous version until it is
+fixed. On 2026-10-09 that is what happened to two urgent fixes: they reached
+`main` in minutes, a test that no longer fit turned it red, and fixing the
+test took about 45 minutes. So shipping past a failure gets the change onto
+`main` fast, while getting it into the other repositories still needs the
+failure fixed. The session that ran Produce fixes it at once (piece B,
+layer 1).
+
+**For a true emergency, one override:** Update Vendors can take a specific
+red `main` commit when the person names it in their own words ("take
+<commit> anyway"), and records that it did.
 
 ## Order of work, once approved
 
