@@ -56,12 +56,35 @@ that hour would have taken it. So Update Vendors would take the newest
 which commit it took and why. `main` can then move fast while every
 repository only ever receives a confirmed version.
 
-**B. A red `main` is fixed at once.** The session that ran Produce waits
-for GitHub's test and fixes any failure in the same sitting, as was done on
-2026-10-09. If it cannot finish, the failure is filed where the next session
-sees it at session start (BestPractice's
-[open_failures.py](https://github.com/alex137/BestPractice/blob/main/tools/open_failures.py)
-already does this for failures found after a push).
+**B. A red `main` is fixed at once, in three layers** (Morgan asked
+how this works when he is offline, 2026-10-09):
+
+1. **Usually, in the same sitting.** The session that ran Produce waits
+   for GitHub's test, about 10 minutes, and fixes any failure itself before
+   it stops. Produce is the authorization for that fix. This is what
+   happened twice on 2026-10-09: a test that no longer fit was found and
+   fixed within the hour, with nothing asked of Morgan.
+2. **If the session ends first or cannot fix it, the failure is written
+   down where it cannot be missed:**
+   - **A GitHub issue opens by itself.** One small step in GitHub's test
+     files an issue in the repository when the test on `main` fails, or
+     adds to the open one. GitHub also emails the person whose push it
+     tested, by default.
+   - **The next session in that repository starts with it.** BestPractice's
+     [open_failures.py](https://github.com/alex137/BestPractice/blob/main/tools/open_failures.py)
+     already files a failure into the repository's open items and lists it
+     at session start. That session raises it in its first reply and fixes
+     it before other work, unless Morgan says otherwise.
+   - **Morgan's other repositories say so too.** With piece A, Update
+     Vendors anywhere reports "BestPractice's `main` is red, so I took the
+     last green version", so he hears about it wherever he works next.
+3. **Meanwhile nothing breaks for anyone.** Piece A keeps every repository
+   on the last `main` that passed until the fix lands.
+
+**Not done: an unattended fix on a timer.** A fix to the engine every
+repository takes has a session, and Morgan, behind it; a scheduled job
+fixing it alone is the pattern Morgan's own rules
+(`crons-are-a-last-resort`) keep for when nothing else can work.
 
 ## What it costs and what changes
 
@@ -120,9 +143,10 @@ deleted by a session.
 
 ## Order of work, once approved
 
-1. BestPractice: piece A (Update Vendors takes a green `main`), the fast
-   Produce mode, and the "Run tests" entry point, landed and live first, so
-   the safety is in place before anything goes faster.
+1. BestPractice: piece A (Update Vendors takes a green `main`), the GitHub
+   issue on a failed `main` test (piece B, layer 2), the fast Produce mode,
+   and the "Run tests" entry point, landed and live first, so the safety is
+   in place before anything goes faster.
 2. This set: the rule changes above.
 3. Morgan's individual set: `landing_branch` and `stage-words`.
 4. Each repository on the ladder: one last Debut, then Update Vendors.
