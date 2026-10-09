@@ -9,7 +9,6 @@ occasion:    "a person says \"Prompt Please\" while the five-stage ladder is in 
 gates:       ["reply"]
 gates_why:   "The same moment as universal's prompt-please: the reply is the whole artifact, so the two load together at the reply gate."
 index_clause: "a handed-off prompt stops at Act; with Booked it names the landing branch"
-index_required: true
 checked_by:  null
 defines:     []
 status:      active
@@ -17,6 +16,7 @@ in_force_at: null
 expires:     null
 supersedes:  []
 overrides:   null
+adds_to:     prompt-please
 added:       "2026-10-06"
 approved_by: "Morgan, 2026-10-06 (strength: decided): \"rules should not be repeated, but supporting repos can have additions for them\" -- this holds what the ladder set's full copy of prompt-please changed, split out the same day. Its parts were decided earlier: a prompt without Booked ends at Act, 2026-10-01; the copy into this set, 2026-10-02."
 ---
