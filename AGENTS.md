@@ -25,7 +25,7 @@ When a person says "Chief of Staff":
   chief-of-staff — on request only; name the window read, link each session; Promotion Reviews last
 When a person says "No ladders", or asks to see what somebody who does not use the ladder sees:
   no-ladders — a new session with PRECEDENT_NO_LADDERS=1; never this one; it pushes nothing
-When a person says "Promote", "Promote N" or a stage word ("Consider", "Act", "Debut", "Produce", "Make live"), or asks to plan, build or move work up a tier:
+When a person says "Promote", "Promote N" or a stage word ("Consider", "Act", "Debut", "Run tests", "Produce", "Make live"), or asks to plan, build, test or move work up a tier:
   act — stage 2: build on the session's feature branch, pushed so it survives
   consider — stage 1: pick the plan size -- one line, Brainstorm, Plan it, Write it up
   promote — the next tier up, chosen from the work and said first; "Promote N" does stage N

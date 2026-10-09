@@ -1,86 +1,79 @@
 ---
 slug:        debut
-title:       "\"Debut\" is stage 4: move pre-staging into staging, with the full checks"
+title:       "\"Debut\" (\"Run tests\") is stage 4, optional: the full local suite on staging, moving nothing"
 tier:        on-demand
 severity:    default
 applies_to:  ["**"]
-applies_to_why: "A phrase in a MESSAGE (\"Debut\", \"Promote 4\") -- stage 4, a Promote with the step named, like promote's entry. Routed by the `merge` gate. Decided: 2026-09-29, when the practice landed."
-occasion:    "a person says \"Promote\", \"Promote N\" or a stage word (\"Consider\", \"Act\", \"Debut\", \"Produce\", \"Make live\"), or asks to plan, build or move work up a tier"
+applies_to_why: "A phrase in a MESSAGE (\"Run tests\", \"Debut\", \"Promote 4\") -- stage 4, named like promote's entry. Routed by the `merge` gate, beside the moves it can come before. Decided: 2026-09-29, when the practice landed; kept on 2026-10-09, when stage 4 stopped being a move."
+occasion:    "a person says \"Promote\", \"Promote N\" or a stage word (\"Consider\", \"Act\", \"Debut\", \"Run tests\", \"Produce\", \"Make live\"), or asks to plan, build, test or move work up a tier"
 gates:       ["merge"]
-gates_why:   "Debut and Produce are merges between branch tiers -- the moment that gate exists for, as for promote."
-index_clause: "stage 4: pre-staging into staging, full checks"
+gates_why:   "Run tests is the full check a person can ask for before Produce, the merge into main; it loads with the moves it can come before."
+index_clause: "stage 4, optional: Run tests -- the full local suite on staging, moving nothing"
 checked_by:  null
-defines:     ["Debut", "Test Readiness"]
-command:     {"Debut": "Stage 4 (Promote 4), also called Test Readiness: move pre-staging into staging, with the full local checks, saying so first -- saving this session's own work to pre-staging first if it is not there yet. It takes in whatever reached main without the ladder, checks that and pre-staging together once, and moves staging and pre-staging level; when that check fails, whoever's commit broke it, the session fixes it in the same turn on the fix branch the Debut names and runs it again."}
+defines:     ["Run tests", "Debut", "Test Readiness"]
+command:     {"Run tests": "Stage 4 (Promote 4), optional: run the full local test suite on staging, with whatever reached main directly brought in the same way a landing brings it, and move nothing. About ten minutes. It tells you what failed, if anything; a Produce afterwards shows those failures and asks once before going on.", "Debut": "The same as **Run tests** (stage 4). Until 2026-10-09 it moved pre-staging into staging; it no longer moves anything.", "Test Readiness": "The same as **Run tests**."}
 status:      active
 in_force_at: null
 visible_to:  code-owners
 supersedes:  []
 overrides:   null
 added:       "2026-10-02"
-approved_by: "Morgan F, 2026-10-02, withdrawn from the universal set BestPractice, which keeps no copy (there: Morgan, 2026-09-27 -- stage 4 of the five stages, \"Debut (Test Readiness: To Staging)\")"
+approved_by: "Morgan F, 2026-10-02, withdrawn from the universal set BestPractice, which keeps no copy (there: Morgan, 2026-09-27 -- stage 4 of the five stages, \"Debut (Test Readiness: To Staging)\"). Rewritten 2026-10-09 to the ladder redesign plan, Morgan: \"Act on the ladder plan\", with its decisions -- \"Debut\" kept as another word for \"Run tests\", which makes Debut the optional stage, and the numbering kept (spec/LADDER_REDESIGN_PLAN.md)"
 strength:    decided
 ---
 ## Rule
-**Debut is step 4 of the five-stage ladder ([promote](promote.md)): a
-Promote from pre-staging into staging.** It runs exactly what
-[Promote](promote.md) runs with the step named:
+**Run tests is step 4 of the five-stage ladder ([promote](promote.md)), and
+it is optional. "Debut", "Test Readiness" and "Promote 4" mean the same.**
+It runs the full local test suite on staging and moves nothing:
 
-    python3 tools/precedent_branches.py --promote --to staging --work BRANCH
+    python3 tools/precedent_branches.py --run-tests
 
-([tools/precedent_branches.py](https://github.com/alex137/BestPractice/blob/staging/tools/precedent_branches.py)), and everything Promote says holds:
-the lock, the full local check on the batch, nothing moving unless it
-passes. Work still on this session's feature branch goes through
-[Booked](go-update.md) first, and the read-back names both stages.
+([tools/precedent_branches.py](https://github.com/alex137/BestPractice/blob/staging/tools/precedent_branches.py)).
+With no branch named it tests the person's landing branch, staging. It
+builds the same tree a landing builds -- staging, then whatever reached
+main directly -- in a throwaway worktree, runs the full push check on it
+once, and records the result for the move into main. Its last line is
+`RUN TESTS RESULT: ...`; it exits 0 on a pass and 1 on a failure. About ten
+minutes.
 
-**A Debut takes in what reached main without the ladder, and moves both
-tiers.** People off the ladder push straight to main, and that goes on. So
-a Debut builds one tree -- staging, then main's new work, then
-pre-staging -- rebuilds the generated files main left stale, runs the full
-check on it once, and only then moves staging and pre-staging to that same
-commit (Morgan, 2026-10-03, strength: decided).
+**Nothing waits for it.** Booked lands work on staging with the quick
+checks, and [Produce](produce.md) moves staging into main with the quick
+checks too; GitHub's full test runs right after that merge. Run tests is
+the slow, careful version a person asks for when they want the batch fully
+tested on their machine before it goes live. A bare Promote never runs it
+on its own, and nothing refuses for want of it.
 
-**When that check fails or the merge conflicts, nothing moves, and the
-session finishes it in the same turn, whoever's commit broke it** -- main's
-included, never "main is not mine" and never deferred (Morgan, 2026-10-03:
-*"if it fails because of a problem on main (caused by someone not using
-this process) -- then you have to fix it as part of this process"*,
-strength: decided). The Debut leaves the tree it checked on a
-local `DATE-promote-fix-ID` branch (pushed only with a fix, since 2026-10-06) and says what failed, naming main's commits as
-the place to look first. Run what failed on each tip to see which side
-brought it, fix it on that branch, run every step once (`## Detail`),
-push, and Debut again with `--work DATE-promote-fix-ID`: that takes the fix in
-first and finishes. A fix to the session's own booked work may go through
-Booked instead, as before (Morgan, 2026-10-01, strength: assented).
-
-**Where a repository has no pre-staging** -- a person who lands on staging
--- Debut has nothing to do, and says so.
-
-## Detail
-A refusal shows only part of what is wrong: the push check stops at its
-first failing step, and a test that crashes takes the rest of its batch
-down with it. So after fixing what it named, on the fix branch, run:
-
-    PRECEDENT_PUSH_CHECK_ALL=1 python3 tools/precedent_push_check.py --tier full --because "a Debut was refused"
-
-Fix all of what that finds, push it to the fix branch, and Debut again:
-
-    python3 tools/precedent_branches.py --promote --to staging --work DATE-promote-fix-ID
-
-The next Debut reuses that pass for the same files rather than running it
-a second time. A conflict in hand-written text is the same route: the
-Debut names the merge to make on the fix branch (`git merge SHA`), and the
-session resolves it there. Only a Promote's fix branch is taken in this
-way (`DATE-promote-fix-ID`, named like every temporary branch since
-2026-10-06; an older `promote-fix-DATE` still counts); any other `--work` that is not on pre-staging is named and left for
+**A failure is reported, never fixed into a refusal.** Say what failed, in
+plain words, one line per failing check. When the person goes on to
+Produce, the move shows those failures again and asks once (see
+[produce](produce.md)); a failed Run tests never blocks it. A failure the
+session can fix is fixed the ordinary way: on a feature branch, then
 Booked.
 
-The fix branch has done its job once the Debut takes it in; it is never
-deleted by a session, and the Debut's last lines link its branches page.
+**Read it back like any stage**: *"Now Promote 4: Run tests (Debut) -- the
+full local suite on staging, moving nothing (BestPractice)."*
+
+**Where a person still lands on pre-staging**, the old Debut, the move from
+pre-staging into staging with the full check, is still what
+`python3 tools/precedent_branches.py --promote --to staging` does
+([promote](promote.md)). It is the way an unconverted repository empties
+pre-staging before Update Vendors retires it.
+
+## Detail
+The full check stops at its first failing step, so one run can hide a
+second failure behind the first. To see all of them at once on a fix
+branch:
+
+    PRECEDENT_PUSH_CHECK_ALL=1 python3 tools/precedent_push_check.py --tier full --because "Run tests failed"
+
+The result Run tests records is for staging's commit at the time. Once
+staging moves, a Produce reports the old result as stale and does not ask
+about it.
 
 ## Why
-"Debut" names the step for what it means: the work's first appearance where
-it is fully checked, ready to be judged for production.
+"Debut" named the work's first appearance where it was fully checked.
+Since 2026-10-09 the full check is something a person asks for rather than
+a gate every batch waits on, so the word stays and names that check.
 
 ## Story
 Named 2026-09-27 with the rest of the ladder.
@@ -102,6 +95,16 @@ main and the next Produce was set to meet the conflict. Morgan's answer
 was to compose main's work into every Debut, check it with the ladder's
 own, fix any failure there and then, and move both tiers level.
 
+**2026-10-09: Debut stops being a move.** Two small urgent fixes were
+quoted 90 minutes to reach main by the ladder, about half of it the full
+suite run locally at Debut and again on GitHub at Produce. Morgan approved
+the ladder redesign plan the same day ("Act on the ladder plan"): Booked
+lands on staging, Produce is fast and GitHub's test runs after the merge,
+and "Debut" is kept as another word for "Run tests", which makes it the
+optional stage. pre-staging is no longer used
+(`spec/LADDER_REDESIGN_PLAN.md`).
+
 ## Install
-Nothing new: the promotion tool and its checks are
-[promote](promote.md)'s.
+Nothing new: `--run-tests` ships in the engine's
+[precedent_branches.py](../tools/precedent_branches.py), with
+[promote](promote.md)'s tool.

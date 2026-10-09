@@ -7,19 +7,19 @@
   "words": [
     {
       "word": "landing branch",
-      "meaning": "The branch your saved work lands on when you say \"Booked\" (or \"Go update\"): pre-staging if you use all three branch tiers, otherwise staging, or main."
+      "meaning": "The branch your saved work lands on when you say \"Booked\" (or \"Go update\"): staging if you are on the ladder, otherwise main. Until 2026-10-09 the ladder landed work on pre-staging."
     },
     {
-      "word": "pre-staging, staging, main",
-      "meaning": "The three branches work climbs through, in that order. Pre-staging is where saved work waits, staging is where it is fully checked, and main is production -- what everyone gets."
+      "word": "staging, main",
+      "meaning": "The two branches work climbs through, in that order. Staging is where saved work lands and waits until you say Produce, and main is production -- what everyone gets. A third branch below staging, pre-staging, was retired from the ladder on 2026-10-09: each repository's next Update Vendors moves what is left on it into staging and gives you a link to delete it."
     },
     {
       "word": "tier branch",
-      "meaning": "One of these branches: pre-staging, staging or main, plus the two that travel with them -- staging's old name `precedent-beta-v01` and Promote's lock branch `precedent-promote-lock`. A tier branch is never offered for deletion."
+      "meaning": "One of these branches: staging or main (and pre-staging where it is still in use), plus the two that travel with them -- staging's old name `precedent-beta-v01` and Promote's lock branch `precedent-promote-lock`. A tier branch is never offered for deletion, except a retired pre-staging that holds nothing staging lacks."
     },
     {
       "word": "stage",
-      "meaning": "One of the five steps work climbs from idea to production: Consider, Act, Booked, Debut, Produce. \"Promote 3\" means stage 3, and each stage is read back before it runs."
+      "meaning": "One of the five steps work climbs from idea to production: Consider, Act, Booked, Run tests (also called Debut; optional), Produce. \"Promote 3\" means stage 3, and each stage is read back before it runs."
     }
   ]
 }

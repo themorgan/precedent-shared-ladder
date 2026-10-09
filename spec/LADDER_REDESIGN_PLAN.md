@@ -1,7 +1,9 @@
 # Ladder redesign plan
 
-**Status: a proposal for Morgan's review, 2026-10-09. Nothing here is in
-force yet.** It changes only the ladder this set carries, for the people who
+**Status: Approved 2026-10-09; being built.** Morgan approved it that day
+("Act on the ladder plan"), with the decisions below. It is not done until
+the engine changes, this set's rules, his individual set and each
+repository's rollout have all landed. It changes only the ladder this set carries, for the people who
 bring it. Anyone landing straight on `main`, Alex included, works exactly as
 before.
 
@@ -122,10 +124,9 @@ then waits on GitHub's test; Update Vendors learns to pick the newest
 `main` commit whose test passed (piece A); and a "Run tests" entry point runs
 the full local suite on a branch without moving it.
 
-**In every repository on the ladder:** `pre-staging` stops being used. Before
-the switch, one last Debut moves anything still on it into `staging`. The
-branch itself is left in place and offered for deletion as a link, never
-deleted by a session.
+**In every repository on the ladder:** `pre-staging` stops being used, by the
+rollout below. The branch itself is offered for deletion as a link once it
+holds nothing `staging` lacks, never deleted by a session.
 
 ## What we give up
 
@@ -187,4 +188,34 @@ red `main` commit when the person names it in their own words ("take
    in place before anything goes faster.
 2. This set: the rule changes above.
 3. Morgan's individual set: `landing_branch` and `stage-words`.
-4. Each repository on the ladder: one last Debut, then Update Vendors.
+4. Each repository on the ladder: its next Update Vendors, which rolls the
+   change out (below).
+
+## Rolling it out to each repository
+
+Morgan, 2026-10-09: *"When we roll this out to repos into which [BestPractice] is
+vendored in, make sure we have a smooth upgrade process for each. Merging
+the branches, telling he can delete pre-staging, updating previous
+mentions/links within each repo, etc etc."*
+
+It happens in each repository's next **Update Vendors**, by a new step in
+BestPractice's engine, with nothing for the person to do but read the
+report:
+
+1. **Work on `pre-staging` that `staging` lacks is brought into
+   `staging`**, the same way a landing brings work in: composed with
+   `main`'s direct commits, nothing dropped. A conflict stops the step,
+   moves nothing, and says what to merge and where.
+2. **Once `pre-staging` holds nothing `staging` lacks, the update says it
+   is no longer used and gives its one-click delete link.** It is never
+   deleted for him, and never offered while it holds work. `staging` and
+   `main` are never offered.
+3. **The repository's own wording is brought up to date.** Text that tells
+   a reader work lands on `pre-staging`, and links to `pre-staging`, are
+   repointed to `staging`. Dated history -- Stories, gotchas, closed items,
+   dated decisions -- is left alone and listed, so nothing that happened
+   is rewritten.
+4. **The generated views are refreshed** (the instructions file's loader
+   block, the map, the glossary).
+5. **One short report block** says what moved, what was reworded, and the
+   delete link.

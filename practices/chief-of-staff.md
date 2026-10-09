@@ -11,13 +11,13 @@ gates_why:   "The whole obligation is the shape of one report: the state-not-pro
 index_clause: "on request only; name the window read, link each session; Promotion Reviews last"
 checked_by:  null
 defines:     ["Chief of Staff", "the sweeper", "the desk", "Promotion Reviews"]
-command:     {"Chief of Staff": "Stop and route this: tell you what every open session is blocked on and what is colliding, with a clickable link to each, and end on Promotion Reviews: across every repo with Precedent installed, what waits on pre-staging for staging and on staging for main, and which of this week's branches are stale."}
+command:     {"Chief of Staff": "Stop and route this: tell you what every open session is blocked on and what is colliding, with a clickable link to each, and end on Promotion Reviews: across every repo with Precedent installed, what waits on staging for main (and on pre-staging, where any is still left), and which of this week's branches are stale."}
 status:      active
 in_force_at: null
 supersedes:  []
 overrides:   null
 added:       "2026-10-02"
-approved_by: "Morgan F, 2026-10-02, withdrawn from the universal set BestPractice, which keeps no copy (there: extended 2026-09-28, Morgan (strength: decided) -- Promotion Reviews A and B cover every repository with a Precedent install, not only the week's active ones; extended 2026-09-26 again, Morgan (strength: decided) -- the branch list is a one-click page, never a downloaded file; extended 2026-09-26, Morgan (strength: decided) -- asked for a Promotion Reviews section, last in the report, covering staging into main, pre-staging into staging, and a stale-branch review with its unlanded work read; the state-based reading of stale and of uncommitted are the session's resolutions of what that ask left open; extended 2026-09-21, Morgan (strength: decided, relayed) -- after a fleet audit found 110 merged-but-undeleted branches across 9 repos, he asked for them rendered as filtered branches-page links and placed the fleet sweep here, with very-deep-check keeping only its own checkout; the repo-set bound on the branch half is the session's resolution of a question that decision left open; Morgan, 2026-09-14 -- chose it from the options after two wrong rows in a live sweep; strength: decided)"
+approved_by: "Morgan F, 2026-10-02, withdrawn from the universal set BestPractice, which keeps no copy (there: extended 2026-09-28, Morgan (strength: decided) -- Promotion Reviews A and B cover every repository with a Precedent install, not only the week's active ones; extended 2026-09-26 again, Morgan (strength: decided) -- the branch list is a one-click page, never a downloaded file; extended 2026-09-26, Morgan (strength: decided) -- asked for a Promotion Reviews section, last in the report, covering staging into main, pre-staging into staging, and a stale-branch review with its unlanded work read; the state-based reading of stale and of uncommitted are the session's resolutions of what that ask left open; extended 2026-09-21, Morgan (strength: decided, relayed) -- after a fleet audit found 110 merged-but-undeleted branches across 9 repos, he asked for them rendered as filtered branches-page links and placed the fleet sweep here, with very-deep-check keeping only its own checkout; the repo-set bound on the branch half is the session's resolution of a question that decision left open; Morgan, 2026-09-14 -- chose it from the options after two wrong rows in a live sweep; strength: decided; updated 2026-10-09, Morgan -- \"Act on the ladder plan\" retired pre-staging from the ladder, and \"telling he can delete pre-staging\": B now reports a leftover pre-staging, and offers a retired one for deletion)"
 ---
 ## Rule
 When the person says **"Chief of Staff"**, read the whole fleet and say what
@@ -41,8 +41,8 @@ is a one-click delete link, built the one way
 there, in full, and is not restated here.
 
 **It ends on Promotion Reviews**: across **every repository with a
-Precedent install**, whether pre-staging waits to go into staging and whether
-staging waits to go into main; and, for the repositories worked in that week,
+Precedent install**, whether staging waits to go into main and whether a
+leftover pre-staging still holds work; and, for the repositories worked in that week,
 which of the week's branches are stale, with the unlanded work on each read
 and judged keep or discard. Detail says how.
 
@@ -164,7 +164,12 @@ sessions, the collisions and the branch sweep, and before
 block answers three questions:
 
 - **A. Does staging need promoting into main?**
-- **B. Does pre-staging need promoting into staging?**
+- **B. Is a pre-staging left over?** The ladder stopped using it on
+  2026-10-09. Where one still holds work staging lacks, say so: the next
+  Update Vendors brings it into staging (or "Promote" does, now). Where it
+  holds nothing staging lacks, say it is no longer used and give its
+  one-click delete link, built as the branch sweep builds them; never
+  delete it, and never offer `staging` or `main`.
 - **C. Which branches from the last seven days are stale, and is the work on
   them worth keeping?**
 
@@ -191,7 +196,7 @@ in a repository nobody had touched that week went unreported.)
 rules, never from memory: staging is `precedent-beta-v01` wherever the rename
 has not happened, and a repository whose `base_branch` is `main` has no
 separate staging tier, so its A reads *"no staging tier — main is staging
-here"*. A repository with no pre-staging branch says so on B. Where the tier
+here"*. A repository with no pre-staging branch gets no B line at all. Where the tier
 exists, each answer is one line:
 
 - **how many commits the lower branch carries that the upper one does not**,
@@ -201,9 +206,8 @@ exists, each answer is one line:
 - **a verdict**: *nothing to promote*, *ready — say "Promote" in any session
   rooted here*, or *hold*, with the red check named as the reason.
 
-A pre-staging that is behind staging, as well as ahead of it, is noted and
-not treated as a problem: [promote](promote.md) copies down before it
-promotes. **Say the counts plainly and without urgency.** A waiting Promote
+A pre-staging that is behind staging is no problem: on the ladder it is
+retired, and B says only whether it still holds work. **Say the counts plainly and without urgency.** A waiting Promote
 keeps nothing open (promote's own rule), and the person asked to see the
 state, not to be pressed.
 
@@ -368,6 +372,12 @@ Promotion Reviews handed its 267 delete links over as a markdown file, and
 Morgan pointed out that opening one means downloading it: *"the branches to
 merge list should be an artefact so I can click and open and it has the
 links (with an .md I need to download it and I want to avoid that)."*
+
+**2026-10-09: B turned around.** The ladder stopped using pre-staging that
+day (Morgan, "Act on the ladder plan",
+`spec/LADDER_REDESIGN_PLAN.md`), so a
+pre-staging waiting to go into staging became a leftover to empty, and an
+empty one a branch Morgan can delete, with the link to do it.
 
 ## Install
 The sweeper is a Routine on the person's own account, created once — it is not

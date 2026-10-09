@@ -11,27 +11,26 @@ gates_why:   "Its whole subject is what happens at a merge."
 index_clause: "stage 3, Booked: land it on the landing branch; high-risk: PR and merge"
 checked_by:  null
 defines:     ["Booked", "Go update", "Approved", "Book", "Book it", "Shared Save"]
-command:     {"Booked": "Stage 3 (Promote 3): save the work, land it on your landing branch on GitHub (pre-staging, for anyone who uses the three tiers) where it won't be lost, and tell you which branch it went to. By default that is a direct push, with no pull request; a high-risk change goes through one. Its older name, \"Go update\", still means this.", "Approved": "The same as **Booked**.", "Book it": "The same as **Booked** (also just **Book**).", "Shared Save": "The same as **Booked**."}
+command:     {"Booked": "Stage 3 (Promote 3): save the work, land it on your landing branch on GitHub (staging, for anyone on the ladder, with the quick checks and whatever reached main directly brought in first) where it won't be lost, and tell you which branch it went to. By default that is a direct push, with no pull request; a high-risk change goes through one. Its older name, \"Go update\", still means this.", "Approved": "The same as **Booked**.", "Book it": "The same as **Booked** (also just **Book**).", "Shared Save": "The same as **Booked**."}
 status:      active
 in_force_at: null
 supersedes:  ["merge-authorization-keyword"]
 overrides:   null
 added:       "2026-10-02"
-approved_by: "Morgan F, 2026-10-02, withdrawn from the universal set BestPractice, which keeps no copy (there: Morgan, 2026-09-08 -- moved up from his individual set to universal; loosened 2026-09-12, Morgan, after sessions began refusing the phrase he had just typed; extended 2026-09-13, Morgan, who raised the blocked-step handoff himself out of a refusal he had just hit; second phrase added 2026-09-13, Morgan -- \"if I say 'approved', that also means the same as go merge\"; trivial/substantial split added 2026-09-15, Morgan -- \"Sold. Let's do it. Go merge\", choosing it over a rename to a new command; third phrase added later the same day, Morgan, reconsidering the rename he had just set aside -- \"I think the solution is to allow BOTH words to be used\"; extended 2026-09-16, Morgan, on Alex's intent-over-keyword point -- \"apply the same to the ones that are a serious decision such as Go Merge, Weak Yes, etc -- and just note that (if the exact phrase isn't used), then use your judgment and ASK the person if you have doubt\"; reversed 2026-09-18, Morgan -- \"let's reverse it so that Go update is the primary one, that you recommend and use\" and \"it's not about the merge because many times it's not a merge but a direct edit,\" declining a rename again for the same reason as 2026-09-15; trivial/substantial replaced with a push-by-default/high-risk split 2026-09-20, Morgan, after a session's own CI-cost review of a dependent repo found the trivial carve-out too narrow to spend a real cost correctly -- \"it is not just SINGLE WORDING changes; it should be for all NON-HUGE changes... have VERY STRICT CRITERIA for being a huge change\", and \"Make this a universal rule 100%. This should be changed universally\"; `Go merge` retired as a separate trigger later the same day, Morgan -- \"I think we changed 'go update' and are no longer using 'go merge'... let's remove entirely the 'go merge' phrase/trigger, and only 'go update' for that,\" keeping `Go update` and `Approved` as the two -- see push-directly.md for the narrower phrase coined the same conversation; the landing target made explicit 2026-09-22, Morgan -- \"Does the 'go update' command make clear that this means that the update should be made to main / precedent-beta-v01 or whatever the primary branch is of that repo? If not, it should. (This helps avoid the problem of, I tell it to update, and it does so but only the local clone only.)\"; slug renamed go-merge to go-update 2026-09-26, Morgan -- \"Go update, rename go-merge to go-update\"; \"Book\" and \"Book it\" added 2026-09-28, Morgan -- \"Add 'book' and 'book it' as synonyms\", the Booked stage of spec/FIVE_STAGES_AND_OUR_LANGUAGE_PLAN.md, and \"don't just literally look at the words but think about the words I say, the context, what we had been discussing\")"
+approved_by: "Morgan F, 2026-10-02, withdrawn from the universal set BestPractice, which keeps no copy (there: Morgan, 2026-09-08 -- moved up from his individual set to universal; loosened 2026-09-12, Morgan, after sessions began refusing the phrase he had just typed; extended 2026-09-13, Morgan, who raised the blocked-step handoff himself out of a refusal he had just hit; second phrase added 2026-09-13, Morgan -- \"if I say 'approved', that also means the same as go merge\"; trivial/substantial split added 2026-09-15, Morgan -- \"Sold. Let's do it. Go merge\", choosing it over a rename to a new command; third phrase added later the same day, Morgan, reconsidering the rename he had just set aside -- \"I think the solution is to allow BOTH words to be used\"; extended 2026-09-16, Morgan, on Alex's intent-over-keyword point -- \"apply the same to the ones that are a serious decision such as Go Merge, Weak Yes, etc -- and just note that (if the exact phrase isn't used), then use your judgment and ASK the person if you have doubt\"; reversed 2026-09-18, Morgan -- \"let's reverse it so that Go update is the primary one, that you recommend and use\" and \"it's not about the merge because many times it's not a merge but a direct edit,\" declining a rename again for the same reason as 2026-09-15; trivial/substantial replaced with a push-by-default/high-risk split 2026-09-20, Morgan, after a session's own CI-cost review of a dependent repo found the trivial carve-out too narrow to spend a real cost correctly -- \"it is not just SINGLE WORDING changes; it should be for all NON-HUGE changes... have VERY STRICT CRITERIA for being a huge change\", and \"Make this a universal rule 100%. This should be changed universally\"; `Go merge` retired as a separate trigger later the same day, Morgan -- \"I think we changed 'go update' and are no longer using 'go merge'... let's remove entirely the 'go merge' phrase/trigger, and only 'go update' for that,\" keeping `Go update` and `Approved` as the two -- see push-directly.md for the narrower phrase coined the same conversation; the landing target made explicit 2026-09-22, Morgan -- \"Does the 'go update' command make clear that this means that the update should be made to main / precedent-beta-v01 or whatever the primary branch is of that repo? If not, it should. (This helps avoid the problem of, I tell it to update, and it does so but only the local clone only.)\"; slug renamed go-merge to go-update 2026-09-26, Morgan -- \"Go update, rename go-merge to go-update\"; \"Book\" and \"Book it\" added 2026-09-28, Morgan -- \"Add 'book' and 'book it' as synonyms\", the Booked stage of spec/FIVE_STAGES_AND_OUR_LANGUAGE_PLAN.md, and \"don't just literally look at the words but think about the words I say, the context, what we had been discussing\"; the landing branch moved from pre-staging to staging on 2026-10-09, Morgan -- \"Act on the ladder plan\" (precedent-shared-ladder spec/LADDER_REDESIGN_PLAN.md))"
 strength:    decided
 ---
 ## Rule
 **"Booked" is this step's name. "Go update", "Approved", "Book", "Book it",
 "Shared Save" and "Promote 3" all mean the same thing**: land the work on
-the landing branch -- pre-staging, the shared save, for anyone who uses the
-three tiers. Say "Booked" when talking about the step; "Go update" is its
+the landing branch -- staging, the shared save, for anyone on the ladder. Say "Booked" when talking about the step; "Go update" is its
 older name and keeps working. This file is stage 3,
 **Booked**, of the five-stage ladder ([promote](promote.md), and
 [spec/FIVE_STAGES_AND_OUR_LANGUAGE_PLAN.md](https://github.com/alex137/BestPractice/blob/staging/spec/FIVE_STAGES_AND_OUR_LANGUAGE_PLAN.md)):
 the step that moves a session's work off its feature branch to somewhere it
 won't be lost. When it is asked for by a stage word, it is read back as a
-stage first (*"Now Promote 3: Booked, the Shared Save -- moving
-`<date>-<slug>-<id>` into pre-staging (BestPractice)"*). For anyone
+stage first (*"Now Promote 3: Booked, the Shared Save -- landing
+`<date>-<slug>-<id>` on staging (BestPractice)"*). For anyone
 not using the ladder, Booked (`Go update`) behaves exactly as below, word for word.
 Read any of these words for what the message means in the conversation it
 arrives in, not as a string to match: "book it if there's anything to
@@ -111,8 +110,9 @@ changes:**
   that alone makes a change high-risk. **Size and reach are not the test; only
   the four bullets above are.** The light check still runs before the
   commit and the push check still runs before the push either way, at the
-  tier the target branch gets -- basic for pre-staging, full for staging
-  and main ([spec/BRANCH_TIERS_PLAN.md](https://github.com/alex137/BestPractice/blob/staging/spec/BRANCH_TIERS_PLAN.md)) --
+  tier the target branch gets -- the quick checks on your landing branch
+  (staging, on the ladder), the full suite on main
+  ([spec/BRANCH_TIERS_PLAN.md](https://github.com/alex137/BestPractice/blob/staging/spec/BRANCH_TIERS_PLAN.md)) --
   so verification never gets skipped, only the PR wrapper does.
 
 **Either path ends on the shared branch, never in the local clone.**
@@ -120,15 +120,15 @@ changes:**
 the repository's own rules say routine work lands on, and the full chain
 merges into that same branch -- in both cases a real branch on `origin`,
 and never a repository's *configured default* branch picked just because
-it is configured that way. **When that branch is pre-staging and the change was high-risk, the reply
+it is configured that way. **When that branch is staging and the change was high-risk, the reply
 says so in one plain line, in The Boildown** -- not bolded, not urgent,
-for example *"Pre-staging is 2 commits ahead of staging; it can be
-promoted whenever it suits."* It is information, not a call to act now, and never a reason to keep the
+for example *"Staging is 2 commits ahead of main; Run tests checks them
+fully, and Produce moves them whenever it suits."* It is information, not a call to act now, and never a reason to keep the
 session open: the archive line ignores it
 ([the-boildown-on-the-ladder](the-boildown-on-the-ladder.md)).
-A high-risk change lands on pre-staging like any other rather than jumping
-the queue, so the two branches do not drift apart, and gets its full check
-at the next Promote, whenever that comes. Morgan, 2026-09-25, reversing the
+A high-risk change lands on staging like any other rather than jumping
+the queue, and gets its full check from Run tests when the person asks, or
+from GitHub's test right after the next Produce. Morgan, 2026-09-25, reversing the
 bolded "Please move this to staging soon" call to action set earlier that
 day: the bold, urgent wording pressed him to promote very often, and with
 several windows open that had two sessions promoting at once and racing
@@ -139,22 +139,36 @@ person's primary branch
 `python3 tools/precedent_branches.py --landing` names it: the branch the
 repository declares, `base_branch` in its `precedent.json`, which in most
 repositories is `main` -- unless the person's `landing_branch` says
-`pre-staging`, the tiered route, opt-in per person since 2026-09-26 (Morgan:
+`staging`, the ladder's route since 2026-10-09 (Morgan, "Act on the ladder
+plan"; `pre-staging` before that, opt-in per person since 2026-09-26:
 *"This forced pre-staging -> staging -> main should be mandatory for me, but
 not necessarily anyone else"*, strength: decided), or `main` itself, which skips staging but never
 the checks, and still answers to the repository's own rule about main. **A person's own
 `landing_branch` always wins; a repository's, in its `precedent.json`, is its default
-for anyone who names none**, and a new install or an Update Vendors writes it as
-`pre-staging` where it is missing (Morgan, 2026-09-27, strength: decided: *"have the
-individual repo take precedence over the others (if it set, use that)"*). **Landing on pre-staging,
-bring it in first**: `python3 tools/precedent_branches.py
---sync-pre-staging` creates it from staging when origin has none, and
-copies into it what reached staging or main by another route once that
-has had its tier's checks -- it only looks here, since a GitHub test can
-take many minutes, and names `--check` for anything still unchecked, which
-[promote](promote.md) runs -- then merge `origin/pre-staging` into the work
-before pushing, so every window lands on top of the others. Getting it onto staging is a separate step,
-[promote](promote.md).
+for anyone who names none**, and a new install or an Update Vendors writes a
+default where it is missing (Morgan, 2026-09-27, strength: decided: *"have the
+individual repo take precedence over the others (if it set, use that)"*). **Landing on staging,
+use the landing command**:
+
+    python3 tools/precedent_branches.py --land BRANCH
+
+It builds staging, then whatever reached main directly, then the work,
+each by a merge commit -- the same reconciliation a move into staging has
+always made, so nothing that reached main directly is dropped (Morgan,
+2026-10-09: *"make sure that staging doesn't change what it does now, in
+reconciling the versions sent directly to main with our staging"*) --
+runs the quick checks on the change, and pushes staging, never forced. Its
+last line is `LAND RESULT: ...`: exit 0 landed or nothing to land, 1
+refused (a conflict, a failing quick check, or staging moved meanwhile:
+land again), 2 not this person's route. A plain push or a pull request
+into staging that lacks main's direct commits is refused and pointed at
+`--land`; a high-risk change's pull request into staging needs
+`origin/main` merged into its branch first. Getting it into main is a
+separate step, [Produce](produce.md).
+**Anyone still landing on pre-staging** brings it in first, as before:
+`python3 tools/precedent_branches.py --sync-pre-staging`, then merge
+`origin/pre-staging` into the work before pushing; [promote](promote.md)
+moves it into staging.
 **A commit sitting in the working copy has not satisfied the phrase, and
 neither has a push you only know succeeded because the command said so:**
 name the postcondition and test it
@@ -249,7 +263,7 @@ can refuse a push or a merge this repository's rules allow ("Merge
 Without Review", 2026-10-01). Handing that to another session would be
 routing around it. Say in one line that auto mode stopped it, not this
 repository's rules, and ask for it again in words that name it: "Merge
-PR #N into pre-staging".
+PR #N into staging".
 
 **What the receiving session may then DO with the relayed phrase is
 [relayed-authorization](relayed-authorization.md)'s**: it merges only where
@@ -580,6 +594,14 @@ with Booked, so Vocabulary prints Booked with "Go update" trailing as a
 synonym, and a session names the step Booked. The slug stays `go-update`:
 renaming it would break links in every consuming repo for a name no reader
 sees.
+
+**2026-10-09: Booked lands on staging.** The ladder redesign Morgan
+approved that day ("Act on the ladder plan",
+`spec/LADDER_REDESIGN_PLAN.md`) retired
+pre-staging for the ladder: Booked lands on staging with `--land`, which
+runs the same quick checks pre-staging got and brings in main's direct
+commits the way a Debut used to. Staging became where finished work waits
+for Produce.
 
 ## Install
 No mechanical check, and not for lack of trying: this governs how a chat

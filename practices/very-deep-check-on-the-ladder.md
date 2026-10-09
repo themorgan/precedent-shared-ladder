@@ -19,18 +19,18 @@ supersedes:  []
 overrides:   null
 adds_to:     very-deep-check
 added:       "2026-10-06"
-approved_by: "Morgan, 2026-10-06 (strength: decided): \"rules should not be repeated, but supporting repos can have additions for them\" -- this holds what the ladder set's full copy of very-deep-check changed, split out the same day. Its parts were each decided on 2026-09-28: read main and write by Booked then Promote; never offer pre-staging or staging for deletion; drift and rehearsal on every tier pair."
+approved_by: "Morgan, 2026-10-06 (strength: decided): \"rules should not be repeated, but supporting repos can have additions for them\" -- this holds what the ladder set's full copy of very-deep-check changed, split out the same day. Its parts were each decided on 2026-09-28: read main and write by Booked then Promote; never offer pre-staging or staging for deletion; drift and rehearsal on every tier pair. Updated 2026-10-09, Morgan: \"Act on the ladder plan\" retired pre-staging from the ladder (spec/LADDER_REDESIGN_PLAN.md), and the rollout is to tell him \"he can delete pre-staging\" once it is retired."
 ---
 ## Rule
 **Adds to universal's [very-deep-check](https://github.com/alex137/BestPractice/blob/staging/practices/very-deep-check.md), for people who bring the ladder.** Everything there holds; this says how the check meets the five stages.
 
-**Read `main`, write through Booked.** Every fix the check makes is committed on its working branch and lands the ordinary way: Booked (`Go update`) onto the person's landing branch, and a Promote from there, never pushed to `main`. A retired set's `drop-retired` is Booked onto its landing branch like any other change. Before fixing a finding in a file the `LIVE VERSUS LANDING` section names, check whether pre-staging already fixed it and is only waiting to be promoted.
+**Read `main`, write through Booked.** Every fix the check makes is committed on its working branch and lands the ordinary way: Booked (`Go update`) onto the person's landing branch, staging, and Produce from there, never pushed to `main`. A retired set's `drop-retired` is Booked onto its landing branch like any other change. Before fixing a finding in a file the `LIVE VERSUS LANDING` section names, check whether staging already fixed it and is only waiting for Produce.
 
-**A tier branch is never offered for deletion**, by any list the check prints or writes: `pre-staging`, `staging`, `main`, staging's old name `precedent-beta-v01`, and Promote's lock branch, in every repo in force, merged or not. Every Promote fast-forwards the lower tiers, so an ancestor test calls them "merged" right after one.
+**A tier branch is never offered for deletion**, by any list the check prints or writes: `staging`, `main`, staging's old name `precedent-beta-v01`, and Promote's lock branch, in every repo in force, merged or not. Every Promote fast-forwards the lower tiers, so an ancestor test calls them "merged" right after one. **`pre-staging` is the one exception, once retired**: the ladder stopped using it on 2026-10-09, and where nobody lands on it and it holds nothing staging lacks, it may be offered, marked as no longer used ([tier-branch](tier-branch.md)). While it holds work, it is a finding instead: the next Update Vendors brings that work into staging.
 
-**Drift is asked of every tier pair**: what `staging` and `main` carry that `pre-staging` never took, and what `main` carries that `staging` never took. A row on a pair into `pre-staging` is not a choice to put to the person: everything above belongs below, and `python3 tools/precedent_branches.py --sync-pre-staging` (which a Promote runs first anyway) brings it down. A row nobody wants is a revert owed on the upper branch.
+**Drift is asked of the tier pair**: what `main` carries that `staging` never took. That row is not a choice to put to the person: everything on main belongs on staging, and the next landing (`--land`) or Run tests brings it in. A row nobody wants is a revert owed on main. Where a pre-staging is left over, what it carries that staging lacks is reported too.
 
-**Every merge a Promote makes is rehearsed**, in order: `pre-staging` into `staging`, then `staging` into `main`.
+**The merge a Produce makes is rehearsed**: `staging` into `main` (and `pre-staging` into `staging` first, where one still holds work).
 
 ## Detail
 The fleet version of the branch sweep, across every repo the person owns, is [chief-of-staff](chief-of-staff.md)'s; this check stays inside the repos it already reads.
@@ -40,6 +40,8 @@ The check reads what people run, which is `main`; a fix pushed straight there sk
 
 ## Story
 Morgan, 2026-09-28 (strength: decided): *"it's better to do a deep check on the live version (main), but we don't want to edit it, to edit it we should use the normal process."* Until then a run read whatever the harness checked out -- `main` in one repo and `pre-staging` in four others, the same afternoon. The same day: *"it needs to never never offer to delete pre-staging nor staging"* -- until then the sweep protected only the declared base and the default branch, and would have handed both `pre-staging` and `precedent-beta-v01` over with a delete link. Also the same day, the drift question moved down a tier and the rehearsal took both Promote merges, since the first is the one that happens every day.
+
+**2026-10-09: one tier pair.** The ladder stopped using pre-staging (Morgan, "Act on the ladder plan", `spec/LADDER_REDESIGN_PLAN.md`), so drift and the rehearsal came down to staging and main, and a retired pre-staging stopped being protected from a delete link. Staging and main still never get one.
 
 **2026-10-06: split out of a full copy.** From 2026-10-02 the ladder set carried its own full copy of very-deep-check, nearly three thousand lines, overriding universal's to say these points in the ladder's words. Every change had to be made twice, and the copies drifted. Morgan: *"rules should not be repeated, but supporting repos can have additions for them."* This file holds only the additions; the set's copy of very-deep-check is deduplicated.
 

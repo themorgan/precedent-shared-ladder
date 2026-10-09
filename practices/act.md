@@ -5,7 +5,7 @@ tier:        on-demand
 severity:    default
 applies_to:  ["**"]
 applies_to_why: "A phrase in a MESSAGE (\"Act\", \"Promote 2\") -- stage 2 of the five-stage ladder; no file path reaches it. Reached through the occasion index; no gate, since building is every moment rather than one. Decided: 2026-09-29, when the practice landed."
-occasion:    "a person says \"Promote\", \"Promote N\" or a stage word (\"Consider\", \"Act\", \"Debut\", \"Produce\", \"Make live\"), or asks to plan, build or move work up a tier"
+occasion:    "a person says \"Promote\", \"Promote N\" or a stage word (\"Consider\", \"Act\", \"Debut\", \"Run tests\", \"Produce\", \"Make live\"), or asks to plan, build, test or move work up a tier"
 gates:       []
 index_clause: "stage 2: build on the session's feature branch, pushed so it survives"
 checked_by:  null
@@ -16,7 +16,7 @@ in_force_at: null
 supersedes:  []
 overrides:   null
 added:       "2026-10-02"
-approved_by: "Morgan F, 2026-10-02, withdrawn from the universal set BestPractice, which keeps no copy (there: Morgan, 2026-09-27 -- Act lives on the session's temporary (feature) branch and \"booked is all about moving it from there to pre-staging so ... it won't get lost\"). Amended 2026-10-06, Morgan, \"Please evaluate and act\" on a session's finding that this rule and Claude Code on the web's designated branch contradicted each other (strength: assented; the wording is the session's)"
+approved_by: "Morgan F, 2026-10-02, withdrawn from the universal set BestPractice, which keeps no copy (there: Morgan, 2026-09-27 -- Act lives on the session's temporary (feature) branch and \"booked is all about moving it from there to pre-staging so ... it won't get lost\"). Amended 2026-10-06, Morgan, \"Please evaluate and act\" on a session's finding that this rule and Claude Code on the web's designated branch contradicted each other (strength: assented; the wording is the session's). Updated 2026-10-09 for the ladder without pre-staging, Morgan: \"Act on the ladder plan\" (spec/LADDER_REDESIGN_PLAN.md)."
 strength:    decided
 ---
 ## Rule
@@ -24,7 +24,7 @@ strength:    decided
 change.** The work lives on this session's own **feature branch** -- the
 short-lived branch named like `<date>-<slug>-<id>` -- and is **pushed
 there**, so a reclaimed container loses nothing. It is not shared yet:
-nothing reaches pre-staging until [Booked](go-update.md).
+nothing reaches staging, the landing branch, until [Booked](go-update.md).
 
 **The branch is named when Act starts, by
 [tools/precedent_branch_name.py](../tools/precedent_branch_name.py), never
@@ -88,6 +88,8 @@ check actually refuses.
 of your temp github [branches] you create start with 'claude/' - I think
 update the rule to eliminate that prefix". The tool's names now open with
 the date (strength: decided); a harness-given name keeps its own.
+
+**2026-10-09: Booked lands on staging.** With the ladder redesign Morgan approved that day ("Act on the ladder plan", `spec/LADDER_REDESIGN_PLAN.md`), the shared branch Act stops short of is staging; pre-staging is no longer used.
 
 ## Install
 The naming tool ships with the engine ([precedent_branch_name.py](../tools/precedent_branch_name.py) in

@@ -18,7 +18,7 @@ visible_to:  code-owners
 supersedes:  []
 overrides:   null
 added:       "2026-10-05"
-approved_by: "Morgan F, 2026-10-05 -- \"in the Boildown, give the user an artifact with a list of all stale temp github repos that can be deleted, from all repos that are open in that session. Don't do that if there aren't any. If in doubt, do NOT include it\"; the closing reply only, and for code owners only (strength: decided)"
+approved_by: "Morgan F, 2026-10-05 -- \"in the Boildown, give the user an artifact with a list of all stale temp github repos that can be deleted, from all repos that are open in that session. Don't do that if there aren't any. If in doubt, do NOT include it\"; the closing reply only, and for code owners only (strength: decided). Extended 2026-10-09, Morgan, rolling out the ladder without pre-staging: \"telling he can delete pre-staging\" -- a retired pre-staging that holds nothing staging lacks may be listed"
 ---
 
 ## Rule
@@ -27,8 +27,11 @@ approved_by: "Morgan F, 2026-10-05 -- \"in the Boildown, give the user an artifa
 can be deleted, publish a page listing them and link it in one Boildown
 line.** The list covers every repository open in the session where the
 person is a code owner. A branch is on it only when it is already in
-`main`, so deleting it loses nothing; `main`, `staging`, `pre-staging` and
-the engine's own branches never are.
+`main`, so deleting it loses nothing; `main`, `staging` and the engine's
+own branches never are. **`pre-staging` is listed only once it is
+retired** -- the ladder stopped using it on 2026-10-09, nobody in that
+repository lands there, and it holds nothing staging lacks -- marked as no
+longer used. While it holds work staging lacks, it is never listed.
 
 **No branches, no page. In doubt, no page.** Not in any other reply either:
 it rides with the archive line, so it does not come back every message.
@@ -87,3 +90,8 @@ says, and the Artifact publish gate refused it as "not a render of any
 registered document". Two rules in force contradicted each other, and the
 session fell back to linking branches in chat. The engine now registers the
 tool as a page generator, so the page passes, and this rule says so.
+
+2026-10-09: the ladder stopped using pre-staging (Morgan, "Act on the
+ladder plan", `spec/LADDER_REDESIGN_PLAN.md`),
+and asked that rolling it out tell him he can delete it. A pre-staging that
+holds nothing staging lacks joined what this page may list.

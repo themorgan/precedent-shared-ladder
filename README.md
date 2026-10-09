@@ -15,7 +15,7 @@ they ask for it too.
 - [Who gets it](#who-gets-it)
 - [The five steps](#the-five-steps)
 - [How much planning: four sizes](#how-much-planning-four-sizes)
-- [The three branches work climbs](#the-three-branches-work-climbs)
+- [The two branches work climbs](#the-two-branches-work-climbs)
 - [What you will see in replies](#what-you-will-see-in-replies)
 - [Everyone else](#everyone-else)
 - [Seeing what everyone else sees](#seeing-what-everyone-else-sees)
@@ -51,20 +51,25 @@ the other not.
 |---|---|---|---|
 | 1 | **Consider** | Plan, Promote 1 | Decides how much planning the work needs, and does that much (the next section). |
 | 2 | **Act** | Build, Promote 2 | Makes the change on the session's own working branch, and saves it to GitHub so a lost session loses nothing. Nobody else sees it yet. |
-| 3 | **Booked** | Book it, Approved, Go update, Shared Save, Promote 3 | Lands the work on your landing branch (the first of the three branches below), where the rest of the team can see it. |
-| 4 | **Debut** | Test Readiness, Promote 4 | Moves everything waiting on pre-staging into staging, after the full checks pass. |
-| 5 | **Produce** | Make live, Promote 5 | Moves staging into main, which is production: what everyone gets. The full checks and GitHub's own test must both pass. |
+| 3 | **Booked** | Book it, Approved, Go update, Shared Save, Promote 3 | Lands the work on staging, where the rest of the team can see it, after the quick checks. Anything that reached main without the ladder is brought in first. |
+| 4 | **Run tests** | Debut, Test Readiness, Promote 4 | Optional. Runs the full set of tests on staging on Claude's machine, about ten minutes, and moves nothing. Say it when you want the batch fully tested before it goes live. |
+| 5 | **Produce** | Make live, Promote 5 | Moves staging into main, which is production: what everyone gets. Quick checks, then straight in; GitHub's own full test runs right after, and if it fails, the same session fixes it before it stops. |
 
 A plain **"Promote"** means "the next step up that the work needs", and
 Claude says which one before it starts.
 
 **Every step is read back before it runs**, with its number, its name and
-where it goes: *"Now Promote 4: Debut, Test Readiness, moving pre-staging
-into staging."* If that is not what you meant, one word stops it.
+where it goes: *"Now Promote 5: Produce, Make live, moving staging into
+main."* If that is not what you meant, one word stops it.
 
 **Step 5 is read strictly.** "Produce" and "make live" turn up in ordinary
 sentences, and this is the step that changes what everyone gets, so where
 the meaning is a judgment call Claude asks before anything moves.
+
+**If Run tests found failures, Produce asks once before going on.** It
+lists them and asks whether to go ahead anyway, since tests often fail for
+trivial reasons. A yes goes straight on; GitHub runs the same tests after
+the merge, so a real failure turns main red until it is fixed.
 
 **Nothing is shared without your word.** Steps 1 and 2 happen when you ask
 for the work; steps 3, 4 and 5 each wait for you to say so. An approval
@@ -83,25 +88,33 @@ a wrong pick is fixed in a word.
 | **Plan it** | Plan it | A written plan in the conversation, handed back as one block you can paste into a new session. |
 | **Write it up** | Write it up, Spec it out | A full report committed to the repository: the problem, the options tried and attacked, and the one that survived. |
 
-## The three branches work climbs
+## The two branches work climbs
 
-Each repository that uses the ladder fully has three shared branches, one
+Each repository that uses the ladder fully has two shared branches, one
 above the other:
 
-- **pre-staging**: where saved work lands (step 3). Quick checks, only on
-  what changed.
-- **staging**: where it is checked thoroughly (step 4). Every check, on
-  every file.
-- **main**: production (step 5). Every check, plus GitHub's own test.
+- **staging**: where saved work lands (step 3) and waits until you say
+  Produce. Quick checks, only on what changed; every check on every file
+  when you say Run tests (step 4).
+- **main**: production (step 5). Quick checks before, and GitHub's own full
+  test right after.
 
 A repository with fewer branches simply has fewer steps. In a repository
 that has only main, step 3 lands your work on main and steps 4 and 5 have
 nothing to do. **Nothing ever creates these branches in a repository that
 did not ask for them.**
 
-When main's GitHub test is failing, a Debut still carries your own work up
-to staging, and says plainly that the newest work on main was not brought
-down and why. Produce waits until main's test passes again.
+**There used to be a third, pre-staging, below staging.** The ladder
+stopped using it on 2026-10-09, to make the trip to main minutes instead of
+an hour or more. Each repository's next Update Vendors moves anything still
+on it into staging, rewords the files that said work lands there, and then
+tells you it is no longer used, with a link to delete it. Nothing deletes
+it for you.
+
+**Two things keep a fast main safe.** Update Vendors, in every repository,
+takes only a version of main that passed GitHub's test, and says so when it
+took an older one. And when GitHub's test fails on main, it opens an issue
+by itself, and the next session in that repository starts with it.
 
 ## What you will see in replies
 
@@ -109,7 +122,7 @@ down and why. Produce waits until main's test passes again.
   (step 3 of 5). Later mentions in the same reply stay bare.
 - **Every reply ends with a short summary**, and its first line says where
   the work is and which step it has finished: *"The work of this session
-  is now on: pre-staging (you have finished step 3 of 5, Booked)."*
+  is now on: staging (you have finished step 3 of 5, Booked)."*
 - **Vocabulary** lists every word you can say, this set's included, each
   marked with the set it comes from.
 - **Chief of Staff** stops the work and reports instead: what every open
@@ -129,7 +142,8 @@ repository, including ones you share with them:
   practice checks) runs for them exactly as for you.
 
 The two of you can work in the same repository on the same day. Your
-Debut and Produce move what is waiting; their work goes straight to main.
+Produce moves what is waiting; their work goes straight to main, and your
+next landing brings it into staging.
 When their work and yours collide, your session sorts it out; they are
 never asked.
 
@@ -171,7 +185,7 @@ built-in exception instead of adding one.
   "autoMode": {
     "allow": [
       "$defaults",
-      "Precedent Promote into main: running tools/precedent_branches.py --promote --to main is allowed when the person asked in this session for Promote, Produce or Promote 5. That tool moves main only through a pull request, after the full local check and the GitHub test pass."
+      "Precedent Promote into main: running tools/precedent_branches.py --promote --to main is allowed when the person asked in this session for Promote, Produce or Promote 5. That tool moves main only through a pull request, after its checks pass, and the GitHub test runs on main right after the merge."
     ]
   }
 }

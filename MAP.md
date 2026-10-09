@@ -14,19 +14,19 @@ This repository's map of the practice catalogue in force here and the engine's o
 
 | Practice | Tier | Occasion / scope |
 |---|---|---|
-| [act](practices/act.md) | on-demand | a person says "Promote", "Promote N" or a stage word ("Consider", "Act", "Debut", "Produce", "Make live"), or asks to plan, build or move work up a tier |
+| [act](practices/act.md) | on-demand | a person says "Promote", "Promote N" or a stage word ("Consider", "Act", "Debut", "Run tests", "Produce", "Make live"), or asks to plan, build, test or move work up a tier |
 | [brainstorm-holds-commits](practices/brainstorm-holds-commits.md) | resident | a conversation is exploratory, or a person calls it a brainstorm |
 | [checks-follow-the-tier](practices/checks-follow-the-tier.md) | on-demand | adding a check, or deciding which branch tier a check runs at |
 | [chief-of-staff](practices/chief-of-staff.md) | on-demand | a person says "Chief of Staff" |
-| [consider](practices/consider.md) | on-demand | a person says "Promote", "Promote N" or a stage word ("Consider", "Act", "Debut", "Produce", "Make live"), or asks to plan, build or move work up a tier |
-| [debut](practices/debut.md) | on-demand | a person says "Promote", "Promote N" or a stage word ("Consider", "Act", "Debut", "Produce", "Make live"), or asks to plan, build or move work up a tier |
+| [consider](practices/consider.md) | on-demand | a person says "Promote", "Promote N" or a stage word ("Consider", "Act", "Debut", "Run tests", "Produce", "Make live"), or asks to plan, build, test or move work up a tier |
+| [debut](practices/debut.md) | on-demand | a person says "Promote", "Promote N" or a stage word ("Consider", "Act", "Debut", "Run tests", "Produce", "Make live"), or asks to plan, build, test or move work up a tier |
 | [generated-docs-in-output](practices/generated-docs-in-output.md) | on-demand | building a document from a repository's content -- a Word file, a web page, a PDF, a deck -- or finding one that sits beside its sources |
 | [go-update](practices/go-update.md) | on-demand | a message says "Booked", "Approved", "Book it" or "Promote 3", or plainly authorizes a merge |
 | [no-ladders](practices/no-ladders.md) | on-demand | a person says "No ladders", or asks to see what somebody who does not use the ladder sees |
 | [others-did](practices/others-did.md) | on-demand | the first session of a day, after 07:00 in the person's own timezone, when someone else has landed work since the person was last told |
 | [primary-branch](practices/primary-branch.md) | on-demand | ** |
-| [produce](practices/produce.md) | on-demand | a person says "Promote", "Promote N" or a stage word ("Consider", "Act", "Debut", "Produce", "Make live"), or asks to plan, build or move work up a tier |
-| [promote](practices/promote.md) | on-demand | a person says "Promote", "Promote N" or a stage word ("Consider", "Act", "Debut", "Produce", "Make live"), or asks to plan, build or move work up a tier |
+| [produce](practices/produce.md) | on-demand | a person says "Promote", "Promote N" or a stage word ("Consider", "Act", "Debut", "Run tests", "Produce", "Make live"), or asks to plan, build, test or move work up a tier |
+| [promote](practices/promote.md) | on-demand | a person says "Promote", "Promote N" or a stage word ("Consider", "Act", "Debut", "Run tests", "Produce", "Make live"), or asks to plan, build, test or move work up a tier |
 | [prompt-please-on-the-ladder](practices/prompt-please-on-the-ladder.md) | on-demand | a person says "Prompt Please" while the five-stage ladder is in force |
 | [relayed-authorization](practices/relayed-authorization.md) | on-demand | acting on, or sending, an authorization relayed from another session |
 | [stage-word-carries-its-step](practices/stage-word-carries-its-step.md) | on-demand | ** |

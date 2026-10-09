@@ -15,20 +15,20 @@ in_force_at: null
 supersedes:  []
 overrides:   null
 added:       "2026-10-02"
-approved_by: "Morgan F, 2026-10-02, withdrawn from the universal set BestPractice, which keeps no copy (there: Morgan, 2026-09-29)"
+approved_by: "Morgan F, 2026-10-02, withdrawn from the universal set BestPractice, which keeps no copy (there: Morgan, 2026-09-29). Updated 2026-10-09 for the ladder without pre-staging, Morgan: \"Act on the ladder plan\" (spec/LADDER_REDESIGN_PLAN.md)."
 strength:    decided
 ---
 ## Rule
 **The first time a reply uses a stage word, put its step right after it in
 parentheses: Consider (step 1 of 5), Act (step 2 of 5), Booked (step 3 of
-5), Debut (step 4 of 5), Produce (step 5 of 5).** Later uses in the same
+5), Run tests (step 4 of 5), Produce (step 5 of 5).** Later uses in the same
 reply stay bare. Each reply starts over, since the reader may have skipped
 the last one.
 
 **The other names for a stage count too.** "Go update", "Book it" and
-"Approved" are step 3; "Test Readiness" is step 4; "Make live" is step 5. A
-bare "Promote" names a move rather than one step, so it says which one:
-Promote (step 4 of 5) or Promote (step 5 of 5).
+"Approved" are step 3; "Debut" and "Test Readiness" are step 4; "Make live"
+is step 5. A bare "Promote" names a move rather than one step, so it says
+which one: Promote (step 3 of 5) or Promote (step 5 of 5).
 
 **Only for the stage, not the everyday word.** "Act on it" and "consider
 this" are ordinary English and get nothing.
@@ -56,6 +56,8 @@ use to carry its place in the ladder. He picked the lighter version: once
 per reply, at the first use, not on every repeat. In the same message his
 own example put "book" at step two, which is the confusion this is for:
 Booked is step 3.
+
+**2026-10-09: step 4 is Run tests.** The ladder redesign Morgan approved that day (`spec/LADDER_REDESIGN_PLAN.md`) made stage 4 the optional Run tests, keeping "Debut" as another word for it, so the list leads with the new name. A bare Promote can no longer mean step 4, since Run tests moves nothing.
 
 ## Install
 Nothing to install. It reaches a session through the `reply` gate, which is

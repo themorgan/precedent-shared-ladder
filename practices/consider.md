@@ -5,7 +5,7 @@ tier:        on-demand
 severity:    default
 applies_to:  ["**"]
 applies_to_why: "A phrase in a MESSAGE (\"Consider\", \"Promote 1\") -- stage 1 of the five-stage ladder, like promote's entry; no file path reaches it. Reached through the occasion index; no gate, since the plan it asks for comes before any file moment. Decided: 2026-09-29, when the practice landed."
-occasion:    "a person says \"Promote\", \"Promote N\" or a stage word (\"Consider\", \"Act\", \"Debut\", \"Produce\", \"Make live\"), or asks to plan, build or move work up a tier"
+occasion:    "a person says \"Promote\", \"Promote N\" or a stage word (\"Consider\", \"Act\", \"Debut\", \"Run tests\", \"Produce\", \"Make live\"), or asks to plan, build, test or move work up a tier"
 gates:       []
 index_clause: "stage 1: pick the plan size -- one line, Brainstorm, Plan it, Write it up"
 checked_by:  null
@@ -16,7 +16,7 @@ in_force_at: null
 supersedes:  []
 overrides:   null
 added:       "2026-10-02"
-approved_by: "Morgan F, 2026-10-02, withdrawn from the universal set BestPractice, which keeps no copy (there: Morgan, 2026-09-27/28 -- the five stages (spec/FIVE_STAGES_AND_OUR_LANGUAGE_PLAN.md); \"You should choose, based on the context, the complexity, and also, I will sometimes give you verbal guidance\"; on the one-line plan: \"Very, very, very important.\")"
+approved_by: "Morgan F, 2026-10-02, withdrawn from the universal set BestPractice, which keeps no copy (there: Morgan, 2026-09-27/28 -- the five stages (spec/FIVE_STAGES_AND_OUR_LANGUAGE_PLAN.md); \"You should choose, based on the context, the complexity, and also, I will sometimes give you verbal guidance\"; on the one-line plan: \"Very, very, very important.\"). Updated 2026-10-09 for the ladder without pre-staging, Morgan: \"Act on the ladder plan\" (spec/LADDER_REDESIGN_PLAN.md)."
 strength:    decided
 ---
 ## Rule
@@ -75,6 +75,8 @@ choosing between a brainstorm and a write-up, then added the middle ground
 (Plan it) and, on the session's push, the one-line plan for tiny changes,
 which he called "very, very, very important". On 2026-09-28 he settled that
 the session chooses the size itself.
+
+**2026-10-09: "Run tests" joins the stage words.** The ladder redesign Morgan approved that day ("Act on the ladder plan", `spec/LADDER_REDESIGN_PLAN.md`) made stage 4 the optional Run tests, with "Debut" kept as another word for it; the occasion this file shares with the other stages names it. Consider itself did not change.
 
 ## Install
 Nothing checks it: whether a plan fit the work is a judgment. A person's

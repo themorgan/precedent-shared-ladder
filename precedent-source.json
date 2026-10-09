@@ -2,7 +2,7 @@
   "name": "precedent-shared-ladder",
   "level": "shared",
   "visibility": "public",
-  "subject": "the five-stage ladder -- Consider, Act, Booked, Debut, Produce -- and the branch tiers it climbs, for the people who bring it",
+  "subject": "the five-stage ladder -- Consider, Act, Booked, Run tests, Produce -- and the branch tiers it climbs, for the people who bring it",
   "provides": [
     "ladder"
   ],

@@ -17,7 +17,7 @@ in_force_at: null
 supersedes:  []
 overrides:   null
 added:       "2026-10-08"
-approved_by: "Morgan F, 2026-10-08 -- \"This new practice you define is great, approved\"; in the ladder set because not everyone may want it; the mechanism is part of Precedent so future people in the repository get it; Claude-signed commits attributed by their session (strength: decided)"
+approved_by: "Morgan F, 2026-10-08 -- \"This new practice you define is great, approved\"; in the ladder set because not everyone may want it; the mechanism is part of Precedent so future people in the repository get it; Claude-signed commits attributed by their session (strength: decided). Updated 2026-10-09 for the ladder without pre-staging, Morgan: \"Act on the ladder plan\" (spec/LADDER_REDESIGN_PLAN.md)."
 strength:    decided
 ---
 ## Rule
@@ -46,7 +46,7 @@ else's.
 **What runs it.** `tools/precedent_others_did.py` ships with the engine,
 so every repository with Precedent installed has it. It runs at session
 start for anyone with this set, and does nothing for anyone without it.
-It reads `main`, the staging branch and `pre-staging`, takes every commit
+It reads `main`, the staging branch and `pre-staging` where one is left (the ladder stopped using it on 2026-10-09), takes every commit
 since the last report that is not the person's own, and leaves the block
 for the reply gate. Merge commits are left out; the work they merged is
 counted on its own.
@@ -78,3 +78,5 @@ Later the same day that mark showed its own cost: a status check run in a
 consuming repository's first reply pushed "Others-did mark ... [skip ci]"
 straight onto its pre-staging, and the next Produce carried it up to main.
 So the mark moved off every branch, to `refs/precedent/others-did`.
+
+2026-10-09: the ladder stopped using pre-staging (`spec/LADDER_REDESIGN_PLAN.md`); the report still reads one where it is left, so work nobody has moved yet is not missed.

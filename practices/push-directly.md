@@ -32,7 +32,9 @@ approved_by: "Morgan, 2026-09-20 -- coined in the same conversation that
   update the definition so that IF they don't say 'to [main]', then you
   ASSUME it is the primary branch they are working towards.\" Invoked in
   the same message, in its amended form, to authorize landing the
-  amendment itself: \"Push directly to precedent-beta-v01.\""
+  amendment itself: \"Push directly to precedent-beta-v01.\" Updated
+  2026-10-09 for the ladder without pre-staging, Morgan: \"Act on the
+  ladder plan\" (spec/LADDER_REDESIGN_PLAN.md)."
 strength:    decided
 ---
 ## Rule
@@ -56,8 +58,10 @@ own work has actually been developed and committed against, never a
 repository's configured default branch chosen just because it is
 configured that way. Under the branch tiers that is where this person's
 Booked (`Go update`) lands, which `python3 tools/precedent_branches.py --landing`
-names -- `pre-staging` for a person whose `landing_branch` says so (the
-tiered route is opt-in since 2026-09-26); for everyone else, where the repository declares a branch -- `base_branch` in its
+names -- `staging` for a person on the ladder since 2026-10-09
+(`pre-staging` before; the tiered route is opt-in since 2026-09-26), where
+a direct push must carry `main`'s direct commits or is pointed at
+`python3 tools/precedent_branches.py --land`; for everyone else, where the repository declares a branch -- `base_branch` in its
 `precedent.json`, or a rule of its own -- the declaration decides it
 ([primary-branch](primary-branch.md)); absent one, it is whichever branch
 the change in front of you is already on.
@@ -76,8 +80,8 @@ next change that does not carry this phrase.
 
 Same verification as [go-update](go-update.md): the light check still runs
 before the commit and the push check still runs before the push, at the
-tier the target branch gets -- basic for pre-staging, full for staging and
-main -- so this phrase skips the PR wrapper and the classification, never
+tier the target branch gets -- the quick checks on the landing branch
+(staging on the ladder, or pre-staging), the full suite on main -- so this phrase skips the PR wrapper and the classification, never
 the checks. **And
 the same landing**: the target is that branch on `origin`, confirmed by a
 fetch before the reply reports it
@@ -148,6 +152,8 @@ amendment, to authorize landing the amendment itself: "Push directly to
 precedent-beta-v01" -- naming this repo's actual routine branch, not
 `main`, exactly the distinction [merge-target-is-beta-branch](https://github.com/alex137/BestPractice/blob/staging/local/practices/merge-target-is-beta-branch.md)
 exists to keep a session from blurring.
+
+**2026-10-09: the bare target became staging on the ladder.** The ladder redesign Morgan approved that day (`spec/LADDER_REDESIGN_PLAN.md`) moved where Booked lands, and so where a bare "Push directly" lands, from pre-staging to staging.
 
 ## Install
 Nothing mechanical checks that the phrase was honoured, same reason

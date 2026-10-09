@@ -34,6 +34,7 @@ Built from every practice's `defines:` frontmatter field -- the terms that pract
 | Promote N | [promote](practices/promote.md) |
 | Promotion Reviews | [chief-of-staff](practices/chief-of-staff.md) |
 | Relayed authorization | [relayed-authorization](practices/relayed-authorization.md) |
+| Run tests | [debut](practices/debut.md) |
 | Shared Save | [go-update](practices/go-update.md) |
 | Spec it out | [write-it-up](practices/write-it-up.md) |
 | Test Readiness | [debut](practices/debut.md) |
