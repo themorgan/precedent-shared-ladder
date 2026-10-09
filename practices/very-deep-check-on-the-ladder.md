@@ -17,6 +17,7 @@ expires:     null
 visible_to:  code-owners
 supersedes:  []
 overrides:   null
+adds_to:     very-deep-check
 added:       "2026-10-06"
 approved_by: "Morgan, 2026-10-06 (strength: decided): \"rules should not be repeated, but supporting repos can have additions for them\" -- this holds what the ladder set's full copy of very-deep-check changed, split out the same day. Its parts were each decided on 2026-09-28: read main and write by Booked then Promote; never offer pre-staging or staging for deletion; drift and rehearsal on every tier pair."
 ---

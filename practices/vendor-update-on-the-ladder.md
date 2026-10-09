@@ -9,7 +9,6 @@ occasion:    "a person says \"Update Vendors\" in a repo on the five-stage ladde
 gates:       ["merge"]
 gates_why:   "The same moment as universal's vendor-update-runbook, so the two load together at the merge gate."
 index_clause: "Update Vendors lands by Booked; the full check waits for the Promote"
-index_required: true
 checked_by:  null
 defines:     []
 status:      active
@@ -18,13 +17,14 @@ expires:     null
 visible_to:  code-owners
 supersedes:  []
 overrides:   null
+adds_to:     vendor-update-runbook
 added:       "2026-10-06"
 approved_by: "Morgan, 2026-10-06 (strength: decided): \"rules should not be repeated, but supporting repos can have additions for them\" -- this holds what the ladder set's full copy of vendor-update-runbook changed, split out the same day. Its parts were decided earlier: missing tiers made by the update, 2026-09-27; the full check at staging, not pre-staging, 2026-09-27; every repo gets all three branches, 2026-09-25."
 ---
 ## Rule
 **Adds to universal's [vendor-update-runbook](https://github.com/alex137/BestPractice/blob/staging/practices/vendor-update-runbook.md), for people who bring the ladder.** Everything there holds; this says how the update meets the five stages.
 
-**Step 12 is [go-update](go-update.md)'s chain.** "Update Vendors" carries Booked for what it produced: say the landing branch out loud, commit, push, open the pull request into pre-staging, merge. When auto mode refuses that merge, ask for it in words that name it: "Merge PR #N into pre-staging". **Booked runs the update for you when anything is behind**: `python3 tools/precedent_merge_vendors.py` commits a finished update as a commit of its own before Booked lands the rest.
+**Step 12 is [go-update](go-update.md)'s chain.** "Update Vendors" carries Booked for what it produced: say the landing branch out loud, commit, push, open the pull request into pre-staging, merge. When auto mode refuses that merge, ask for it in words that name it: "Merge PR #N into pre-staging". When the merge goes through and auto mode then refuses the check after it, the merge tool's result (`merged: true`, the merge SHA) stands for this turn and the branch check opens the next one ([go-update](go-update.md)). **Booked runs the update for you when anything is behind**: `python3 tools/precedent_merge_vendors.py` commits a finished update as a commit of its own before Booked lands the rest.
 
 **Step 6 runs the landing tier's check, and the full check waits for the Promote to staging.** Into pre-staging that is the fast checks on what the update changed ([checks-follow-the-tier](checks-follow-the-tier.md)).
 

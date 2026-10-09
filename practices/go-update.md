@@ -160,7 +160,12 @@ neither has a push you only know succeeded because the command said so:**
 name the postcondition and test it
 ([verify-postcondition](https://github.com/alex137/BestPractice/blob/staging/practices/verify-postcondition.md)) -- fetch, and confirm
 `origin/<branch>` actually carries the commit -- before reporting where the
-work went. Where the push cannot run from this session at all, that is the
+work went. **For a merge, the merge tool's own result is that postcondition
+in the same turn:** `merged: true` and the merge commit's SHA, quoted in the
+reply. Claude Code's auto mode can refuse the fetch that follows a merge the
+person's own words did not name, even a successful one (two consuming
+repositories, 2026-10-08 and 2026-10-09), so the branch check then opens the
+next turn, and the reply says it is still to come. Where the push cannot run from this session at all, that is the
 blocked-step handoff below, said plainly; it is never a local commit
 reported as done.
 
