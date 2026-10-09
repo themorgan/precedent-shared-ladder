@@ -111,10 +111,12 @@ move, or kept as another word for "Run tests"),
 [stage-word-carries-its-step](../practices/stage-word-carries-its-step.md)
 and [vendor-update-on-the-ladder](../practices/vendor-update-on-the-ladder.md).
 
-**In Morgan's individual set:** `landing_branch` in `identity.json` moves
-from `pre-staging` to `staging`, a setting rather than code, and the
-`stage-words` rule reads "3 Booked = branch -> staging; 5 Produce = staging
--> main".
+**In Morgan's individual set:** `landing_branch` comes out of
+`identity.json` and `"retire_pre_staging": true` goes in, so each
+repository's own `precedent.json` decides where work lands, one repository
+at a time (Morgan, 2026-10-09: "I want to fully complete one repo at a
+time"). The `stage-words` rule names both readings until the last
+repository has moved.
 
 **In BestPractice's engine, written generically (no ladder words there):**
 the Promote into `main` gains a mode that runs the quick checks, merges and
@@ -186,5 +188,14 @@ red `main` commit when the person names it in their own words ("take
    and the "Run tests" entry point, landed and live first, so the safety is
    in place before anything goes faster.
 2. This set: the rule changes above.
-3. Morgan's individual set: `landing_branch` and `stage-words`.
-4. Each repository on the ladder: one last Debut, then Update Vendors.
+3. Morgan's individual set: `retire_pre_staging` in place of
+   `landing_branch`, and `stage-words`.
+4. **One repository at a time** (Morgan, 2026-10-09), starting with
+   one of Morgan's project repositories: Update Vendors, landed all the way to `main`, brings the
+   engine and changes nothing else; a second Update Vendors switches that
+   repository's `landing_branch` to `staging`, brings in what was left on
+   `pre-staging`, rewords its instructions and prints the delete link.
+   Only once that repository works smoothly does the next one start. Until
+   the last has moved, [ladder-in-a-repo-on-staging](../practices/ladder-in-a-repo-on-staging.md)
+   says how the stage words work in a repository already on `staging`, and
+   the rest of this set's rules keep describing `pre-staging`.
