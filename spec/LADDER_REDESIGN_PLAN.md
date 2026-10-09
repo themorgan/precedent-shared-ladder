@@ -191,7 +191,7 @@ red `main` commit when the person names it in their own words ("take
 3. Morgan's individual set: `retire_pre_staging` in place of
    `landing_branch`, and `stage-words`.
 4. **One repository at a time** (Morgan, 2026-10-09), starting with
-   HavrutaPlanning: Update Vendors, landed all the way to `main`, brings the
+   one of Morgan's project repositories: Update Vendors, landed all the way to `main`, brings the
    engine and changes nothing else; a second Update Vendors switches that
    repository's `landing_branch` to `staging`, brings in what was left on
    `pre-staging`, rewords its instructions and prints the delete link.
