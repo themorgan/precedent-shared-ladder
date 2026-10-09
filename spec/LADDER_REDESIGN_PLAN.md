@@ -29,6 +29,16 @@ the local one something you ask for.
 | **Run tests** | (none) | Optional, on request: the full local suite on `staging` |
 | **Produce** | `staging` into `main`, full local suite plus GitHub's test, before the merge | `staging` into `main` with the quick checks; **GitHub's full test runs right after the merge** |
 
+**Reconciling with `main` does not change** (Morgan, 2026-10-09: "make
+sure that staging doesn't change what it does now, in reconciling the
+versions sent directly to main with our staging"). Today a Debut takes in
+whatever reached `main` without the ladder: it builds `staging`, then
+`main`'s direct commits, then the new work, checks them together, and
+leaves `staging` holding everything `main` has. That same step, done the
+same way, now runs wherever work enters `staging` (Booked) and at "Run
+tests"; and Produce still builds its copy on top of `main`, so nothing that
+reached `main` directly is ever dropped or overwritten.
+
 **1. No more `pre-staging`.** Booked lands work on `staging`, which becomes
 where your finished work waits until you say Produce. The quick checks stay
 what they are today on `pre-staging`: only the files the change touches, in
@@ -139,13 +149,14 @@ deleted by a session.
    the latest.
 2. **"Debut" is kept as another word for "Run tests"**, which makes Debut
    the optional stage.
-3. **Still open: when should Produce refuse after a failed "Run tests"?**
-   Morgan: "often these tests fail for trivial reasons, and sometimes I
-   really just need to push something to live quickly." See below.
+3. **Produce never refuses after a failed "Run tests"; it shows the
+   failures and asks once** (proposed below, agreed). Morgan: "often these
+   tests fail for trivial reasons, and sometimes I really just need to push
+   something to live quickly."
 4. **Numbering stays:** Booked is step 3, "Run tests" (Debut) step 4,
    Produce step 5.
 
-### Question 3, proposed answer
+### Question 3, the answer
 
 **Produce never refuses on a failed "Run tests"; it shows the failures and
 asks once.** Telling a critical failure from a trivial one by machine would
