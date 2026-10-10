@@ -19,7 +19,7 @@ approved_by: "Morgan, 2026-10-06 (strength: decided): \"rules should not be repe
 strength:    decided
 ---
 ## Rule
-**Deduplicated.** The rule is universal's [prompt-please](https://github.com/alex137/BestPractice/blob/staging/practices/prompt-please.md), and what this set adds to it -- the stop at Act and the landing branch named with Booked -- is in [prompt-please-on-the-ladder](prompt-please-on-the-ladder.md). Read those two; nothing here is in force.
+**Deduplicated.** The rule is universal's [prompt-please](https://github.com/alex137/BestPractice/blob/staging/practices/prompt-please.md), and what this set adds to it -- how far handed-off work goes -- is in [prompt-please-on-the-ladder](prompt-please-on-the-ladder.md). Read those two; nothing here is in force.
 
 ## Detail
 
