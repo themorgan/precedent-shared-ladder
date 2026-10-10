@@ -1,6 +1,6 @@
 ---
 slug:        prompt-please-on-the-ladder
-title:       "Adds to prompt-please, with the ladder: a handed-off prompt stops at Act unless the person said Booked"
+title:       "Adds to prompt-please, with the ladder: a handed-off prompt says nothing about landing; the receiving session lands it by risk"
 tier:        on-demand
 severity:    default
 applies_to:  ["**"]
@@ -8,7 +8,7 @@ applies_to_why: "Fires with the rule it adds to: a phrase in a message, reached 
 occasion:    "a person says \"Prompt Please\" while the five-stage ladder is in force"
 gates:       ["reply"]
 gates_why:   "The same moment as universal's prompt-please: the reply is the whole artifact, so the two load together at the reply gate."
-index_clause: "a handed-off prompt stops at Act; with Booked it names the landing branch"
+index_clause: "prompt is silent on landing; small work to main, big stops at Act"
 checked_by:  null
 defines:     []
 status:      active
@@ -23,22 +23,38 @@ approved_by: "Morgan, 2026-10-06 (strength: decided): \"rules should not be repe
 ## Rule
 **Adds to universal's [prompt-please](https://github.com/alex137/BestPractice/blob/staging/practices/prompt-please.md), for people who bring the ladder.** Everything there holds; this says where the handed-off work stops in the ladder's words.
 
-**Without the person's Booked for this handoff, the prompt ends at Act.** The default text says so directly:
+**The prompt says nothing about how far the work goes.** No "stop at Act",
+no "land it", and no tier branch named as somewhere to land, merge or open a
+pull request. The person says which they want, when they want to, in the
+note they paste above it (Morgan, 2026-10-09: "Sometimes it's one sometimes
+it's the other ... in the preface comment I paste above when I paste it in,
+I can say which I prefer").
 
-> **STOP AT ACT: build it on your feature branch, push it there, and stop.
-> Open no pull request and merge nothing; the person lands it with Booked.**
+**Where the note says nothing, the receiving session decides by risk.**
+Small or low-risk work it takes all the way to `main` -- Booked, then
+Produce -- with that repository's checks, and GitHub's test or the full
+local check after, as the ladder requires. Big, complex or high-risk work
+(go-update's high-risk: an install, a migration, a shared file other repos
+read, anything hard to undo, or anything it is unsure is none of those) it
+builds and pushes on its feature branch, stops at Act, and gives the person
+its read: what it built, what worries it, and what it recommends. Unsure
+which? Big.
 
-It names no tier branch -- not `pre-staging`, `staging` or `main` -- as somewhere to land, merge or open a pull request, since landing is Booked's and needs the person's word.
-
-**With Booked, it names the person's landing branch** -- what `python3 tools/precedent_branches.py --landing` answers in the seed repo, `pre-staging` for a person who lands there -- and never `staging` or `main`, which only the person's Promote reaches. A repository's declared base branch is not the answer either, because it names staging. When you cannot run the command, write "your landing branch" and let the receiving session resolve it.
-
-**Booked travels only as the person's own words, quoted and dated in the block** -- `Prompt Please` said together with Booked (`Go update`, `Approved`), or anything that plainly gives both in the same breath. It is bounded exactly as [go-update](go-update.md) bounds it: the handed-off work only, the landing branch, and conditional on that repository's own checks passing.
+**A landing word in a prompt is only ever the person's own, quoted and dated in the block** -- `Prompt Please` said together with Booked (`Go update`, `Approved`), or anything that plainly gives both in the same breath -- and it is bounded exactly as [go-update](go-update.md) bounds it: the handed-off work only, and conditional on that repository's own checks passing. A session never writes one of its own.
 
 ## Why
-Landing is the person's step on the ladder. A prompt that tells another session to merge into pre-staging, or to open a pull request into staging, hands that step to a session the person never spoke to, and the receiving session has no way to tell it apart from the person's word.
+Landing is the person's step on the ladder, and the person decides how much
+of it to hand over; a prompt written by another session cannot. A prompt that tells another session to merge into pre-staging, or to open a pull request into staging, hands that step to a session the person never spoke to, and the receiving session has no way to tell it apart from the person's word.
 
 ## Story
 Morgan, 2026-10-01 (strength: decided), after two prompts a session wrote told the receiving session to open pull requests into tier branches nobody had authorized: *"No, we always want to do it in the local container (\"Act\") and then I'll authorize it to go to pre-staging via \"Promote\" etc."* So a prompt without his Booked ends at Act.
+
+**2026-10-09: by risk, and in his own note.** A handoff that stopped at Act
+kept a small fix waiting on a second word from him after he had asked for it
+to reach main ("I told you twice"). Morgan: *"I'd say nothing in the prompt
+about that ... on low risk or small stuff, go right through to main but on
+big or complex or high risk stuff you should not yet do it but give me
+feedback."*
 
 **2026-10-06: split out of a full copy.** From 2026-10-02 the ladder set carried its own full copy of prompt-please, overriding universal's, to say this in the ladder's words. Every change to the rule had to be made twice; the 2026-10-06 change to its opening line was. Morgan: *"rules should not be repeated, but supporting repos can have additions for them."* This file holds only the addition; the set's copy of prompt-please is deduplicated.
 
