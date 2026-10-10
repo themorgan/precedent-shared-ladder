@@ -18,5 +18,37 @@
       "ceiling": 4800,
       "_note": "3997 tokens measured at bootstrap (2026-10-02). Ceiling is current + ~20%."
     }
+  },
+  "approved_budgets": {
+    "occasion_index": {
+      "max": 550,
+      "strength": "baseline",
+      "approved_by": "baseline 2026-10-10: the values in force when the registry was first given approvals; every budget but surfaces/AGENTS.md is at or below its first commit (7c7f028e)"
+    },
+    "occasion_share_tokens": {
+      "max": 550,
+      "strength": "baseline",
+      "approved_by": "baseline 2026-10-10: the values in force when the registry was first given approvals; every budget but surfaces/AGENTS.md is at or below its first commit (7c7f028e)"
+    },
+    "resident_block_tokens": {
+      "max": 250,
+      "strength": "baseline",
+      "approved_by": "baseline 2026-10-10: the values in force when the registry was first given approvals; every budget but surfaces/AGENTS.md is at or below its first commit (7c7f028e)"
+    },
+    "surfaces/.precedent/SESSION_PRACTICES.md": {
+      "max": 4800,
+      "strength": "baseline",
+      "approved_by": "baseline 2026-10-10: the values in force when the registry was first given approvals; every budget but surfaces/AGENTS.md is at or below its first commit (7c7f028e)"
+    },
+    "surfaces/AGENTS.md": {
+      "max": 1300,
+      "strength": "decided",
+      "approved_by": "Morgan F, 2026-10-02 -- approved the ladder opt-in plan (\"Go ... Let's do it, Act on the plan!\", BestPractice spec/LADDER_OPT_IN_PLAN.md), whose D15 carved this set's allowance out of universal's, so a ladder user's total did not change: 600 at bootstrap to 1,300, universal's AGENTS.md ceiling 7,650 to 6,950 the same day"
+    },
+    "surfaces/CLAUDE.md": {
+      "max": 150,
+      "strength": "baseline",
+      "approved_by": "baseline 2026-10-10: the values in force when the registry was first given approvals; every budget but surfaces/AGENTS.md is at or below its first commit (7c7f028e)"
+    }
   }
 }
