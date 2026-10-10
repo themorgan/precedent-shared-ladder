@@ -31,6 +31,7 @@
         ],
         "must_also_match": "[\\\"“'‘]\\s*(?:Booked|Approved|Go update|Book it)\\b|^>\\s[^\\n]*\\b(?:Booked|Approved|Go update|Book it)\\b",
         "why": "a paste block that tells another session to land, merge, push or open a pull request onto pre-staging, staging or main, or says the same in other words (a stage word as the order, make it live, ship it, merge the PR, --promote, gh pr merge, git push origin main) carries landing authority, and only the person's own Booked (or Approved, Go update) for this handoff gives it -- quoted in the block, so the receiving session can check it. Without that word, the prompt ends at Act: build on the feature branch, push it there, and stop",
+        "narration_exempt": true,
         "narration_exempt_if_block_matches": "\\bfeature branch\\b[^\\n]{0,80}?\\bstop\\b|\\b(?:stop|end)s?\\s+at\\s+[`\\\"'“‘]?Act\\b",
         "negation_exempt_if_clause_negates": {
           "before": "\\b(?:do not|does not|did not|not|never|no|nothing|none|neither|nor|\\w+n['’]t)\\b(?!\\s+(?:hesitate|forget|fail|wait|delay|bother|need|only|just|matter|later|longer|questions?|problem|stop)\\b)|\\bwithout\\b(?!\\s+(?!(?:land|merg|push|promot|open|ship|deploy|releas|mak|fast)\\w*)\\w+ing\\b)",
