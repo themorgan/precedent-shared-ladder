@@ -7,7 +7,7 @@
       "path": "../BestPractice"
     }
   ],
-  "landing_branch": "pre-staging",
+  "landing_branch": "staging",
   "_landing_branch_comment": [
     "Where Go update lands for anyone whose own identity.json names no",
     "landing_branch -- a person's own setting always wins. pre-staging is",
