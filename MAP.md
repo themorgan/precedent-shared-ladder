@@ -24,7 +24,7 @@ This repository's map of the practice catalogue in force here and the engine's o
 | [go-update](practices/go-update.md) | on-demand | a message says "Booked", "Approved", "Book it" or "Promote 3", or plainly authorizes a merge |
 | [ladder-in-a-repo-on-staging](practices/ladder-in-a-repo-on-staging.md) | on-demand | a person says "Booked", "Debut", "Run tests" or "Produce" in a repository whose landing branch is staging |
 | [no-ladders](practices/no-ladders.md) | on-demand | a person says "No ladders", or asks to see what somebody who does not use the ladder sees |
-| [others-did](practices/others-did.md) | on-demand | the first session of a day, after 07:00 in the person's own timezone, when someone else has landed work since the person was last told |
+| [others-did](practices/others-did.md) | on-demand | the first session of a day, after 07:00 in the person's own timezone, when someone else has landed work since the person's own last commit there |
 | [primary-branch](practices/primary-branch.md) | on-demand | ** |
 | [produce](practices/produce.md) | on-demand | a person says "Promote", "Promote N" or a stage word ("Consider", "Act", "Debut", "Produce", "Make live"), or asks to plan, build or move work up a tier |
 | [promote](practices/promote.md) | on-demand | a person says "Promote", "Promote N" or a stage word ("Consider", "Act", "Debut", "Produce", "Make live"), or asks to plan, build or move work up a tier |
