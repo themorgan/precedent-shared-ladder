@@ -17,15 +17,17 @@ in_force_at: null
 supersedes:  []
 overrides:   null
 added:       "2026-10-08"
-approved_by: "Morgan F, 2026-10-08 -- \"This new practice you define is great, approved\"; in the ladder set because not everyone may want it; the mechanism is part of Precedent so future people in the repository get it; Claude-signed commits attributed by their session (strength: decided); 2026-10-10 -- \"Go with option 1\": count from the person's own last commit and store no mark (strength: decided)"
+approved_by: "Morgan F, 2026-10-08 -- \"This new practice you define is great, approved\"; in the ladder set because not everyone may want it; the mechanism is part of Precedent so future people in the repository get it; Claude-signed commits attributed by their session (strength: decided); 2026-10-10 -- \"Go with option 1\": count from the person's own last commit and store no mark (strength: decided); 2026-10-10 -- \"It should not list EVERYTHING, just the three or four most important things\" (strength: decided)"
 strength:    decided
 ---
 ## Rule
 
 **When the reply gate hands over a block headed "WHAT OTHERS DID", the
-reply opens with it, before answering the question.** A short summary in
-What's New style: about three bullets, each opening with its key phrase in
-bold, saying who did it and what it changes for the person. **A change to a
+reply opens with it, before answering the question.** **The three or four
+most important things in it, never the whole list**: three or four bullets
+in What's New style, each opening with its key phrase in bold, saying who
+did it and what it changes for the person. Pick by what changes for them,
+and leave the rest out; the person can ask for more. **A change to a
 rule, or to how sessions behave, is always named**, however small it looks:
 that is the change that makes a session act differently from what the
 person expects. Then answer the question. Say it once; later replies do
