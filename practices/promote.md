@@ -17,7 +17,7 @@ in_force_at: null
 supersedes:  []
 overrides:   null
 added:       "2026-10-02"
-approved_by: "Morgan F, 2026-10-02, withdrawn from the universal set BestPractice, which keeps no copy (there: Morgan, 2026-09-27 (decided) -- never recommend a Promote another window is already running; Morgan, 2026-09-25 -- the three branch tiers are his own design (\"to prestaging only the most minimal test; to staging/precedent-beta-v01 all local tests; and then to main, you get all those local tests AND the most important GitHub test\", strength: decided), with promotion by a person rather than a schedule (\"I think that it should not be on a cron\", decided). The word itself was the session's recommendation, approved with the plan as a whole: \"Otherwise, this looks great, let's do it, go ahead, go update\". Not re-running the suite on files that already passed it is his rule too (Morgan, 2026-09-25: \"staging will not run the full suite of tests if it's being promoted from pre-staging to staging and the full suite of tests ran on pre-staging and nothing has changed\", strength: decided). Saving the session's own work with Go update before promoting is his rule too (Morgan, 2026-09-25, strength: decided). An ambiguous Promote -- both steps with work waiting -- moves pre-staging into staging (Morgan, 2026-09-26: \"if my 'promote' is ambiguous and you don't know which of the two types of promotion it should refer to - then choose to do pre-staging to staging\", strength: decided). \"Graduate\" as a second word for the same command is his too (Morgan, 2026-09-26: \"Let's add a new vocab word 'graduate' to be used as a synonym for 'promote'\", strength: decided); \"Promote N\" and the five stages, 2026-09-27/28 (spec/FIVE_STAGES_AND_OUR_LANGUAGE_PLAN.md, strength: decided).)"
+approved_by: "Morgan F, 2026-10-02, withdrawn from the universal set BestPractice, which keeps no copy (there: Morgan, 2026-09-27 (decided) -- never recommend a Promote another window is already running; Morgan, 2026-09-25 -- the three branch tiers are his own design (\"to prestaging only the most minimal test; to staging/precedent-beta-v01 all local tests; and then to main, you get all those local tests AND the most important GitHub test\", strength: decided), with promotion by a person rather than a schedule (\"I think that it should not be on a cron\", decided). The word itself was the session's recommendation, approved with the plan as a whole: \"Otherwise, this looks great, let's do it, go ahead, go update\". Not re-running the suite on files that already passed it is his rule too (Morgan, 2026-09-25: \"staging will not run the full suite of tests if it's being promoted from pre-staging to staging and the full suite of tests ran on pre-staging and nothing has changed\", strength: decided). Saving the session's own work with Go update before promoting is his rule too (Morgan, 2026-09-25, strength: decided). An ambiguous Promote -- both steps with work waiting -- moves pre-staging into staging (Morgan, 2026-09-26: \"if my 'promote' is ambiguous and you don't know which of the two types of promotion it should refer to - then choose to do pre-staging to staging\", strength: decided). \"Graduate\" as a second word for the same command is his too (Morgan, 2026-09-26: \"Let's add a new vocab word 'graduate' to be used as a synonym for 'promote'\", strength: decided); \"Promote N\" and the five stages, 2026-09-27/28 (spec/FIVE_STAGES_AND_OUR_LANGUAGE_PLAN.md, strength: decided). Debut is optional, and staging into main is always Produce (Morgan, 2026-10-11, strength: decided).)"
 strength:    assented
 ---
 ## Rule
@@ -36,6 +36,12 @@ N**, and each stage has its own word and a synonym:
 The ladder is **optional for everyone**: anyone may use its words, nobody
 has to, and a repository without pre-staging simply has fewer stages. A
 person's own individual set may require it for them.
+
+**Debut is optional: a step in the middle to test the work on staging.**
+Staging into main is always **Produce**, never Debut, and work that
+landed straight on staging goes there with no Debut at all (Morgan,
+2026-10-11, strength: decided: "the next step is Produce, staging into
+main. (Debut is an optional step in the middle to test it.)").
 
 - **Read back every stage before it runs**, with its number, word and
   synonym and the repository and branches: *"Now Promote 4: Debut, Test
@@ -299,6 +305,11 @@ checks into staging and main's into main -- so only the summary changed, to
 say so.
 
 **2026-10-06: a Promote's branches named like a session's.** Morgan, reading a fix branch named `promote-fix-20261006T165108-0300` in a reply: *"isn't our URL format for temporary GitHub repo URLs to start with the timestamps then the slug then a few random characters? ... let's do that"*. The fix branch and the copy of staging are named by [tools/precedent_branch_name.py](../tools/precedent_branch_name.py) now, like every temporary branch; the old `promote-fix-DATE` and `to-main-DATE` names are still recognized, and a repository whose GitHub test knows only those keeps getting them until Update Vendors brings the new workflow. strength: decided.
+
+**Debut is optional**, 2026-10-11. With work landed straight on staging,
+a session called the next step "Debut, staging into main". Morgan
+corrected it: staging into main is Produce, and Debut is an optional step
+in the middle to test it.
 
 ## Install
 Nothing to install beyond the engine: [precedent_branches.py](../tools/precedent_branches.py) ships in
