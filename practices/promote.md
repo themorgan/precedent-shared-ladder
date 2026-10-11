@@ -196,7 +196,8 @@ The command does the whole promotion, and a session adds nothing to it:
 
 **Staging into main is the fast move unless the person asks for the full
 one** ([produce](produce.md), Morgan, 2026-10-11): quick checks, the copy,
-merged at once, GitHub's test after. **The full one, `--full`, runs step 1
+merged at once, GitHub's test after. **The long one, only on the person's
+own words (`--full --because '<their words>'`), runs step 1
 first, then the same full check** on staging merged into main
 (standing on an earlier pass of the same files, as above). **It waits while
 main's own GitHub test is running, and is held while that test is
@@ -221,8 +222,10 @@ fetch that `origin/main` carries staging's tip.
 Promote reads the person's value first, then the repository's, and when the
 test passed more recently than that it names the copy
 `DATE-promote-to-main-not-due-ID`: the light check skips that pull request before a
-runner starts, and `--wait-main-test` says **NOT DUE** and exits 0, so merge
-on the full local check. It runs anyway after a failed run until one
+runner starts, and `--wait-main-test` says **NOT DUE** and exits 0. On the
+short way, the full local suite then runs on `main` after the merge
+([produce](produce.md)); on the long way, the full local check before it
+stands in. It runs anyway after a failed run until one
 passes, when GitHub cannot be asked, and with `PRECEDENT_CI_NOW=1`; a
 change to a workflow or the vendored engine is not forced. In a private
 repository nothing but a due Promote copy runs the test: a pull request
