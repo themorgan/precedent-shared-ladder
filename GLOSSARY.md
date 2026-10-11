@@ -18,6 +18,7 @@ Built from every practice's `defines:` frontmatter field -- the terms that pract
 | Brainstorm | [brainstorm-holds-commits](practices/brainstorm-holds-commits.md) |
 | Chief of Staff | [chief-of-staff](practices/chief-of-staff.md) |
 | Consider | [consider](practices/consider.md) |
+| Data branch | [data-branch-names](practices/data-branch-names.md) |
 | Debut | [debut](practices/debut.md) |
 | Go update | [go-update](practices/go-update.md) |
 | Graduate | [promote](practices/promote.md) |
