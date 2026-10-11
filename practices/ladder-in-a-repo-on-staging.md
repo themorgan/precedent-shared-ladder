@@ -8,7 +8,7 @@ applies_to_why: "Fires with the rule it adds to: a stage word said in a reposito
 occasion:    "a person says \"Booked\", \"Debut\", \"Run tests\" or \"Produce\" in a repository whose landing branch is staging"
 gates:       ["merge"]
 gates_why:   "The same moment as debut, so the two load together at the merge gate."
-index_clause: "on staging: Booked is --land, Debut only tests, Produce is --fast"
+index_clause: "on staging: Booked is --land, Debut only tests, Produce is the fast move"
 checked_by:  null
 defines:     []
 status:      active
@@ -36,7 +36,8 @@ exactly as the other rules describe them.
   moves nothing: `python3 tools/precedent_branches.py --run-tests`. It is
   optional.
 - **Produce** moves `staging` into `main` with the quick checks:
-  `python3 tools/precedent_branches.py --promote --to main --fast`, then
+  `python3 tools/precedent_branches.py --promote --to main` (the fast move
+  is the default everywhere since 2026-10-11; `--fast` is still taken), then
   the pull request it names is merged at once and GitHub's full test is
   watched after the merge. Where GitHub's test does not run on that move
   (a private repository tests `main` at most every so many hours), the
