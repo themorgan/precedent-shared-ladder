@@ -10,7 +10,7 @@ This repository's map of the practice catalogue in force here and the engine's o
 
 ## The practice catalogue
 
-`practices/` holds 23 practice files (1 resident, 22 on-demand). One file per practice.
+`practices/` holds 24 practice files (1 resident, 23 on-demand). One file per practice.
 
 | Practice | Tier | Occasion / scope |
 |---|---|---|
@@ -34,6 +34,7 @@ This repository's map of the practice catalogue in force here and the engine's o
 | [stale-branch-cleanup](practices/stale-branch-cleanup.md) | on-demand | the reply that says the session can be archived |
 | [the-boildown-on-the-ladder](practices/the-boildown-on-the-ladder.md) | on-demand | ** |
 | [tier-branch](practices/tier-branch.md) | on-demand | ** |
+| [upstream-review](practices/upstream-review.md) | on-demand | Update Vendors finishes, or a Booked, Debut or Produce lands |
 | [vendor-update-on-the-ladder](practices/vendor-update-on-the-ladder.md) | on-demand | a person says "Update Vendors" in a repo on the five-stage ladder |
 | [very-deep-check-on-the-ladder](practices/very-deep-check-on-the-ladder.md) | on-demand | running a very deep check where the five-stage ladder is in force |
 | [write-it-up](practices/write-it-up.md) | on-demand | a person says "Write it up", or asks for a write-up |

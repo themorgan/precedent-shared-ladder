@@ -41,6 +41,8 @@ Built from every practice's `defines:` frontmatter field -- the terms that pract
 | the five stages | [promote](practices/promote.md) |
 | the sweeper | [chief-of-staff](practices/chief-of-staff.md) |
 | Tier branch | [tier-branch](practices/tier-branch.md) |
+| Upstream review | [upstream-review](practices/upstream-review.md) |
+| Upstream-seen | [upstream-review](practices/upstream-review.md) |
 | Write it up | [write-it-up](practices/write-it-up.md) |
 
 ## Engine vocabulary
