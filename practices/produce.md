@@ -18,24 +18,59 @@ visible_to:  code-owners
 supersedes:  []
 overrides:   null
 added:       "2026-10-02"
-approved_by: "Morgan F, 2026-10-02, withdrawn from the universal set BestPractice, which keeps no copy (there: Morgan, 2026-09-28 -- \"the stage 5 word should be \\\"Produce\\\" to make it a verb like the previous ones\", with \"production\" kept as the noun for main; the session must read it in context, \"should not just do a simple grep for that exact word\"); the fast move made the default, Morgan F, 2026-10-11 -- \"I think we should default to the fast route unless I explicitly agree to or request the slow route\""
+approved_by: "Morgan F, 2026-10-02, withdrawn from the universal set BestPractice, which keeps no copy (there: Morgan, 2026-09-28 -- \"the stage 5 word should be \\\"Produce\\\" to make it a verb like the previous ones\", with \"production\" kept as the noun for main; the session must read it in context, \"should not just do a simple grep for that exact word\"); the fast move made the default, Morgan F, 2026-10-11 -- \"I think we should default to the fast route unless I explicitly agree to or request the slow route\", and checked: \"Add in the explicit and strong and checked, only do the long way when explicitly authorized otherwise the short way with the tests after pushing it\""
 strength:    decided
 ---
 ## Rule
 **Produce is step 5 of the five-stage ladder ([promote](promote.md)): a
 Promote from staging into main.** `main` is **production** -- what everyone
-gets. It runs Promote with the step named:
+gets. A Produce is the named go-ahead that merging into `main` needs.
+
+**Take the short way, every time, unless the person asks for the long one:**
 
     python3 tools/precedent_branches.py --promote --to main --work BRANCH
 
-([tools/precedent_branches.py](https://github.com/alex137/BestPractice/blob/staging/tools/precedent_branches.py)).
-**It is the fast move unless the person asks for the slow one**: the quick
-checks, then the pull request it names is merged at once, and GitHub's test
-runs after the merge (`--wait-main-test COPY`); a red `main` is fixed in
-the same sitting. **The full local suite before the merge, with GitHub's
-test waited on first, is `--full`, and only when the person agrees to or
-asks for it** (Morgan, 2026-10-11). A Produce is the named go-ahead that
-merging into `main` needs.
+([tools/precedent_branches.py](https://github.com/alex137/BestPractice/blob/staging/tools/precedent_branches.py))
+
+1. **The quick checks** on what moves. If the last Debut ("Run tests")
+   failed on exactly this staging commit, it lists the failures and asks
+   once (exit 4); on a yes, run it again with `--despite-failed-tests`.
+2. **It pushes a copy** of staging merged with main and stops (exit 3:
+   main has not moved). Open the pull request from that copy into main and
+   **merge it at once**, at the full head commit it prints. Never wait for
+   a test first.
+3. **The tests run after the merge**, and the Produce says which:
+   - **GitHub's test, when it is due.** Wait on it with
+     `--wait-main-test COPY`. A red `main` is fixed in the same sitting.
+   - **When GitHub's test is not due, the full local suite runs on `main`
+     after the merge instead**, in the background:
+     `--run-tests main`. Do not end the turn while an owed run has not
+     started.
+   - **Nothing runs after** when Debut already passed on exactly this
+     staging and main, when only prose changed, or when the person asked
+     for a fast one ("Produce fast": `--no-full-after`, which marks `main`
+     as moved without a full check until the next full run).
+
+**When GitHub's test is due.** In a public repository, on every Produce.
+In a private one, the repository's `github_ci_main_test` decides first:
+`never`, `always` (GitHub tests the push to `main` once, after the merge),
+a number of hours, or `individual`, the default, which hands it to the
+person: their `github_ci_workflows` switch, then `github_ci_every_hours`
+(the person's `identity.json` first, then the repository's) -- 168 means at
+most once a week since the last pass. It is due anyway when the last run
+failed, until one passes; when no passing run is found or GitHub cannot be
+asked; when a workflow predates the not-due skip; and with
+`PRECEDENT_CI_NOW=1`. The tool decides this, not the session: read its
+line, and never re-derive it.
+
+**The long way is taken only on the person's own words, and that is
+checked.** `--full` runs the full local suite before the merge and waits on
+GitHub's test before merging. It is for when the person explicitly asks for
+it, or agrees to it when asked, in this conversation -- never because a
+session judged a change risky, and never on an old instruction. The tool
+refuses `--full` unless it carries `--because '<their own words>'`, and
+prints those words when it runs. If the long way looks warranted, say why
+and ask; until they say yes, take the short way.
 
 **Read it strictly.** "Produce", "production" and "make live" all occur in
 ordinary sentences, and this is the step that changes what everyone gets.
@@ -66,8 +101,15 @@ before the merge, failed on one stale test case, and the whole Produce took
 most of an hour for a two-file change. Morgan: *"Why did you take the slow
 route? I think we should default to the fast route unless I explicitly
 agree to or request the slow route."* The tool's default changed the same
-day, and so did this rule.
+day, and so did this rule. Later that day he asked for this paragraph to
+carry the whole short way, the rules for when GitHub's test runs, and the
+long way as an exception that is "explicit and strong and checked": the
+tool now refuses `--full` without the person's words.
 
 ## Install
 Nothing new: the promotion tool and its checks are
-[promote](promote.md)'s.
+[promote](promote.md)'s. The refusal of `--full` without `--because` is in
+the engine's `full_route_refusal`
+([tools/precedent_branches.py](https://github.com/alex137/BestPractice/blob/staging/tools/precedent_branches.py)),
+with its planted cases in
+`check_landing_on_staging_run_tests_and_fast_move_into_main`.
