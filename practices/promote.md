@@ -31,7 +31,7 @@ N**, and each stage has its own word and a synonym:
 | 2 | **Act** | Build | Build it on this session's feature branch, pushed so it survives. | [act](act.md) |
 | 3 | **Booked** | Shared Save | Move it from the feature branch to the landing branch (pre-staging). Also **Go update**, **Book it**. | [go-update](go-update.md) |
 | 4 | **Debut** | Test Readiness | Promote pre-staging into staging, full checks. | [debut](debut.md) |
-| 5 | **Produce** | Make live | Promote staging into main -- production -- full checks plus the GitHub test. | [produce](produce.md) |
+| 5 | **Produce** | Make live | Promote staging into main -- production -- quick checks, GitHub's test after the merge. | [produce](produce.md) |
 
 The ladder is **optional for everyone**: anyone may use its words, nobody
 has to, and a repository without pre-staging simply has fewer stages. A
@@ -194,7 +194,10 @@ The command does the whole promotion, and a session adds nothing to it:
    When nothing waits to be promoted but main or staging carries work
    pre-staging lacks, Promote still runs these steps and says so.
 
-**Staging into main runs step 1 first, then the same full check** on staging merged into main
+**Staging into main is the fast move unless the person asks for the full
+one** ([produce](produce.md), Morgan, 2026-10-11): quick checks, the copy,
+merged at once, GitHub's test after. **The full one, `--full`, runs step 1
+first, then the same full check** on staging merged into main
 (standing on an earlier pass of the same files, as above). **It waits while
 main's own GitHub test is running, and is held while that test is
 failing** -- unless staging already carries main's failing tip and
