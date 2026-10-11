@@ -22,18 +22,20 @@ strength:    decided
 ## Rule
 **Act is step 2 of the five-stage ladder ([promote](promote.md)): make the
 change.** The work lives on this session's own **feature branch** -- the
-short-lived branch named like `<date>-<slug>-<id>` -- and is **pushed
+short-lived branch named like `<date>-<slug>-<session>-<random>` -- and is **pushed
 there**, so a reclaimed container loses nothing. It is not shared yet:
 nothing reaches pre-staging until [Booked](go-update.md).
 
 **The branch is named when Act starts, by
 [tools/precedent_branch_name.py](../tools/precedent_branch_name.py), never
 by hand**: `git switch -c "$(python3 tools/precedent_branch_name.py <a few
-words>)"` gives `2026-10-01-feature-branch-naming-awpkv` -- the day,
-what the work is, and the last five characters of the session's ID,
-lowercased, so the name leads back to the session. With no session ID, or
-the name already on GitHub, the tool puts five random characters there
-instead and says so. A branch the harness named when the session opened,
+words>)"` gives `2026-10-01-feature-branch-naming-awpkv-q7m2x` -- the
+day, what the work is, the last five characters of the session's ID,
+lowercased, so the name leads back to the session, and five random
+characters on every name, so a session's second branch of the day with
+the same slug never needs a longer name than its first (Morgan,
+2026-10-11, strength: decided). With no session ID the session part is
+random too, and the tool says so. A branch the harness named when the session opened,
 before the task was known (`claude/hopeful-carson-yy42sb`), is left alone:
 the session makes its named branch at Act and works there. **Claude Code
 on the web tells a session to develop on that harness branch and not to
