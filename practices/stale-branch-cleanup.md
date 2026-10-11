@@ -1,6 +1,6 @@
 ---
 slug:        stale-branch-cleanup
-title:       "The closing Boildown links a page of every branch the person can delete"
+title:       "The closing Boildown links the person's one pinned page of every branch they can delete"
 tier:        on-demand
 severity:    default
 applies_to:  ["**"]
@@ -8,7 +8,7 @@ applies_to_why: "A moment, not a place: the reply that closes a session. Routed 
 occasion:    "the reply that says the session can be archived"
 gates:       ["reply"]
 gates_why:   "The reply gate counts the stale branches at the start of every turn and prints the line only when there are any, so the closing reply is the one that can still carry the link."
-index_clause: "closing Boildown: link a page of deletable branches, only if any"
+index_clause: "closing Boildown: refresh the pinned page of deletable branches, only if any"
 index_required: false
 checked_by:  null
 defines:     []
@@ -18,7 +18,7 @@ visible_to:  code-owners
 supersedes:  []
 overrides:   null
 added:       "2026-10-05"
-approved_by: "Morgan F, 2026-10-05 -- \"in the Boildown, give the user an artifact with a list of all stale temp github repos that can be deleted, from all repos that are open in that session. Don't do that if there aren't any. If in doubt, do NOT include it\"; the closing reply only, and for code owners only (strength: decided)"
+approved_by: "Morgan F, 2026-10-11 -- one pinned page updated in place, its address in his identity.json, instead of a new page every session: \"Let's do this\" (strength: decided). Earlier, Morgan F, 2026-10-05 -- \"in the Boildown, give the user an artifact with a list of all stale temp github repos that can be deleted, from all repos that are open in that session. Don't do that if there aren't any. If in doubt, do NOT include it\"; the closing reply only, and for code owners only (strength: decided)"
 ---
 
 ## Rule
@@ -33,9 +33,14 @@ the engine's own branches never are.
 **No branches, no page. In doubt, no page.** Not in any other reply either:
 it rides with the archive line, so it does not come back every message.
 
-Build it with `python3 tools/precedent_stale_branches.py --fetch --html
-<scratchpad>/branch-cleanup.html`, publish that file as an artifact, unedited
-and within the hour, and write the line as: *"Branches you can delete: Branch cleanup, N across M
+**It is one page, updated in place.** Build it with `python3
+tools/precedent_stale_branches.py --fetch --html
+<scratchpad>/branch-cleanup.html`. When it prints a saved page's address,
+publish the file to that address (the Artifact tool's `url`), so the person
+keeps the one page pinned in their sidebar. When it says none is saved,
+publish it as a new page, pin it, and save its address as
+`branch_cleanup_page` in the person's individual `identity.json` -- the
+next close then updates it. Either way, unedited and within the hour. Write the line as: *"Branches you can delete: Branch cleanup, N across M
 repositories"*, with the page's name linked to it. The reply gate prints the count at the start of a
 turn when there is one, so the session knows before it writes the close.
 
@@ -48,6 +53,15 @@ the person's place, in their browser only. The page deletes nothing, and the
 session never does either: a remote branch is the person's to delete
 ([never-delete-a-remote-branch](https://github.com/alex137/BestPractice/blob/staging/practices/never-delete-a-remote-branch.md),
 universal).
+
+**Why one page.** A new page every session left a pile of snapshots, each
+showing branches already deleted. The pinned page is where the person looks,
+any time. It says when it was refreshed, in their own timezone, because
+between closes it shows the last close's list. Its ticks belong to that
+build: a refreshed list starts unticked, since a branch still on it was not
+deleted. A page the person owns cannot be updated from somebody else's
+account, which is why the address is theirs, in their individual source,
+and never in a shared one.
 
 **It passes the publish gate.** Universal's
 [docs-track-models](https://github.com/alex137/BestPractice/blob/staging/practices/docs-track-models.md)
@@ -87,3 +101,9 @@ says, and the Artifact publish gate refused it as "not a render of any
 registered document". Two rules in force contradicted each other, and the
 session fell back to linking branches in chat. The engine now registers the
 tool as a page generator, so the page passes, and this rule says so.
+
+2026-10-11: Morgan asked whether a template or a living file in each repo
+would be cheaper. Neither: the page already comes from a program, and a
+committed file goes stale the moment a branch is deleted. What his question
+did point at was the new link every session, so the page became one pinned
+page with a "Refreshed" line, updated in place.
