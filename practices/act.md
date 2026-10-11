@@ -46,6 +46,11 @@ the rename command, so a hand-typed name never reaches GitHub; it lets the
 harness's own name through, so a session that kept it is never left with
 work it cannot push (Morgan, 2026-10-06, strength: decided: "how can we
 make sure that you always use the new format for temporary branches?").
+**Let through is not unsaid:** since 2026-10-11 every push to the
+harness's name hands the session a note with the rename command, so a
+session that forgot this rule hears it at its first push, not from the
+person afterwards (precedent_branch_name.harness_name_note, passed on by
+push-check-gate.sh).
 
 **Act comes after [Consider](consider.md)**, even if the plan is one line.
 A request to build with no plan yet gets the one-line plan first, in the
