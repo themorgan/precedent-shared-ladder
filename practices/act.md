@@ -56,7 +56,11 @@ characters -- is left alone: the session makes its named branch at Act and
 works there. **Claude Code on the web tells a session to develop on that
 harness branch and not to push to another without explicit permission:
 this rule is that permission**, so the session makes its named branch
-without stopping to ask. **The push check refuses a session branch named
+without stopping to ask. **It covers any sister branch, a rename included;
+only a step up the ladder -- into staging or main -- needs the person's
+word** (Morgan, 2026-10-11, strength: decided: "it's okay to move to
+sister branches like renaming without my permission (you need my
+permission only for the ladder upgrades like to staging or to main)"). **The push check refuses a session branch named
 by hand**, printing the rename command, so a hand-typed name never reaches
 GitHub; it lets the harness's own name through, so a session that kept it
 is never left with work it cannot push (Morgan, 2026-10-06, strength:
@@ -127,6 +131,15 @@ think the username should be first". Asked where the username comes from
 tool to "look it up with github's 'who am I' and offer to write it into
 the identity.json" (strength: decided). The first-commit note came the
 same day.
+
+Later that day a session got the first-commit note and stayed on the
+harness branch anyway: its opening instructions forbade pushing elsewhere
+without explicit permission, and the note said "switch" without saying
+that this rule is the permission. The rule said it; the note did not, and
+the session had not loaded the rule. Morgan asked why, then said moving to
+any sister branch needs no permission, only a step up the ladder does
+(strength: decided). The sentence above records that, and both of the
+naming tool's notes now say it too.
 
 ## Install
 The naming tool ships with the engine ([precedent_branch_name.py](../tools/precedent_branch_name.py) in
