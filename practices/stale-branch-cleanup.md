@@ -35,9 +35,15 @@ it rides with the archive line, so it does not come back every message.
 
 **It is one page, updated in place.** Build it with `python3
 tools/precedent_stale_branches.py --fetch --html
-<scratchpad>/branch-cleanup.html`. When it prints a saved page's address,
-publish the file to that address (the Artifact tool's `url`), so the person
-keeps the one page pinned in their sidebar. When it says none is saved,
+<scratchpad>/branch-cleanup.html`. **With a saved page it first asks for
+that page as it stands, and writes nothing until it has it:** save it to a
+file (the Artifact tool's read of that address, with path `index.html`) and
+run the command again adding `--merge <that file>`. The page then keeps the
+rows of every repository this session cannot see, under the date they were
+last checked, and replaces the rest; `--replace` is only for a saved page
+that is gone or unreadable. Then publish the file to that address (the
+Artifact tool's `url`), so the person keeps the one page pinned in their
+sidebar. When it says none is saved,
 publish it as a new page, pin it, and save its address as
 `branch_cleanup_page` in the person's individual `identity.json` -- the
 next close then updates it. Either way, unedited and within the hour. Write the line as: *"Branches you can delete: Branch cleanup, N across M
@@ -107,3 +113,10 @@ would be cheaper. Neither: the page already comes from a program, and a
 committed file goes stale the moment a branch is deleted. What his question
 did point at was the new link every session, so the page became one pinned
 page with a "Refreshed" line, updated in place.
+
+2026-10-12: a consuming repository's Update Vendors pointed out that the
+tool only sees the clones on disk, so a session with fewer repositories
+open than the last one published over the page and wiped the rows the
+wider session had listed: "Merge them, or only replace when the repo set
+is the same." Merging keeps more, so `--html` now merges the saved page
+and refuses to write without it.
