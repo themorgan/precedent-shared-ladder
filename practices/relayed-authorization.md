@@ -110,8 +110,8 @@ approval this rule was written to remove. That is a trade, not an oversight.
 A rule that tells the sender to relay and leaves the receiver no way to act
 on the relay has not moved the work — it has moved where the work stops.
 Both halves were individually correct, which is what made the failure
-expensive: the sender obeyed `session-text`, the receiver
-obeyed its harness, and the person paid for both.
+expensive: the sender obeyed `session-text` (since absorbed into
+`prompt-please`), the receiver obeyed its harness, and the person paid for both.
 
 The general shape is worth keeping past this instance. **When a rule depends
 on trust that cannot be verified at the point of use, the fix is to move the
