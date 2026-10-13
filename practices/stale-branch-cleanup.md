@@ -46,7 +46,16 @@ Artifact tool's `url`), so the person keeps the one page pinned in their
 sidebar. When it says none is saved,
 publish it as a new page, pin it, and save its address as
 `branch_cleanup_page` in the person's individual `identity.json` -- the
-next close then updates it. Either way, unedited and within the hour. Write the line as: *"Branches you can delete: Branch cleanup, N across M
+next close then updates it. Either way, unedited and within the hour.
+
+**An engine too old for this skips the page.** If the tool here does not
+accept `--merge`, or session start reported the engine behind upstream
+(ENGINE BEHIND UPSTREAM), do not publish: an older tool writes only the
+repositories this session can see, and publishing it over the saved page
+erases every other repository's rows and the page's saved ticks. Say in
+the Boildown line that the page was skipped and that Update Vendors here
+fixes it (2026-10-13: a to-do repository's older tool would have erased
+42 branches across seven repositories). Write the line as: *"Branches you can delete: Branch cleanup, N across M
 repositories"*, with the page's name linked to it. The reply gate prints the count at the start of a
 turn when there is one, so the session knows before it writes the close.
 
