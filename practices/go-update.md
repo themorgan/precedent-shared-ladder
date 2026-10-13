@@ -45,7 +45,13 @@ sentence, or as a clause inside a longer one -- treat it as authorization,
 right there, to: **sync your local branch with origin, say out loud which
 branch you are merging into, commit the pending work, push the branch, open
 a pull request (or confirm one is already open), and merge it** -- using the
-repo's usual conventions, without asking again first.
+repo's usual conventions, without asking again first. **A session that has
+no branch of its own yet names it with
+[`tools/precedent_branch_name.py`](https://github.com/alex137/BestPractice/blob/staging/tools/precedent_branch_name.py)**,
+never by hand, as [act](act.md) says: for a person on the ladder the push
+check refuses any other name, and a Booked that skips Act never reads that
+rule there (2026-10-13, a to-do repository's "Add" went straight to Booked
+and lost a push to it).
 
 **The phrase is not scoped to the git sequence itself — it authorizes doing
 whatever finishing the thing in front of it actually requires.** Where
