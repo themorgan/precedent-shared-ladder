@@ -11,7 +11,7 @@ gates_why:   "Its whole subject is what happens at a merge."
 index_clause: "stage 3, Booked: land it on the landing branch; high-risk: PR and merge"
 checked_by:  null
 defines:     ["Booked", "Go update", "Approved", "Book", "Book it", "Shared Save"]
-command:     {"Booked": "Stage 3 (Promote 3): save the work, land it on your landing branch on GitHub (pre-staging, for anyone who uses the three tiers) where it won't be lost, and tell you which branch it went to. By default that is a direct push, with no pull request; a high-risk change goes through one. Its older name, \"Go update\", still means this.", "Approved": "The same as **Booked**.", "Book it": "The same as **Booked** (also just **Book**).", "Shared Save": "The same as **Booked**."}
+command:     {"Booked": "Stage 3 (Promote 3): save the work, land it on your landing branch on GitHub (`precedent_branches.py --landing` names it: staging in a repository that has moved onto it, pre-staging in one still on three tiers) where it won't be lost, and tell you which branch it went to. By default that is a direct push, with no pull request; a high-risk change goes through one. Its older name, \"Go update\", still means this.", "Approved": "The same as **Booked**.", "Book it": "The same as **Booked** (also just **Book**).", "Shared Save": "The same as **Booked**."}
 status:      active
 in_force_at: null
 supersedes:  ["merge-authorization-keyword"]
@@ -23,15 +23,18 @@ strength:    decided
 ## Rule
 **"Booked" is this step's name. "Go update", "Approved", "Book", "Book it",
 "Shared Save" and "Promote 3" all mean the same thing**: land the work on
-the landing branch -- pre-staging, the shared save, for anyone who uses the
-three tiers. Say "Booked" when talking about the step; "Go update" is its
+the landing branch, the shared save, which `python3
+tools/precedent_branches.py --landing` names: `staging` in a repository
+that has moved onto it, where Booked is `precedent_branches.py --land
+BRANCH` ([ladder-in-a-repo-on-staging](ladder-in-a-repo-on-staging.md)),
+and `pre-staging` in one still on three tiers. Say "Booked" when talking about the step; "Go update" is its
 older name and keeps working. This file is stage 3,
 **Booked**, of the five-stage ladder ([promote](promote.md), and
 [spec/FIVE_STAGES_AND_OUR_LANGUAGE_PLAN.md](https://github.com/alex137/BestPractice/blob/staging/spec/FIVE_STAGES_AND_OUR_LANGUAGE_PLAN.md)):
 the step that moves a session's work off its feature branch to somewhere it
 won't be lost. When it is asked for by a stage word, it is read back as a
 stage first (*"Now Promote 3: Booked, the Shared Save -- moving
-`<date>-<slug>-<session>-<random>` into pre-staging (BestPractice)"*). For anyone
+`<date>-<slug>-<session>-<random>` onto staging (BestPractice)"*, naming whatever branch `--landing` names). For anyone
 not using the ladder, Booked (`Go update`) behaves exactly as below, word for word.
 Read any of these words for what the message means in the conversation it
 arrives in, not as a string to match: "book it if there's anything to
@@ -151,7 +154,9 @@ not necessarily anyone else"*, strength: decided), or `main` itself, which skips
 the checks, and still answers to the repository's own rule about main. **A person's own
 `landing_branch` always wins; a repository's, in its `precedent.json`, is its default
 for anyone who names none**, and a new install or an Update Vendors writes it as
-`pre-staging` where it is missing (Morgan, 2026-09-27, strength: decided: *"have the
+`pre-staging` where it is missing -- `staging` instead for a person who has
+retired pre-staging (`retire_pre_staging` in their identity.json, since
+2026-10-11) (Morgan, 2026-09-27, strength: decided: *"have the
 individual repo take precedence over the others (if it set, use that)"*). **Landing on pre-staging,
 bring it in first**: `python3 tools/precedent_branches.py
 --sync-pre-staging` creates it from staging when origin has none, and

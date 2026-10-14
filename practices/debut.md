@@ -1,6 +1,6 @@
 ---
 slug:        debut
-title:       "\"Debut\" is stage 4: move pre-staging into staging, with the full checks"
+title:       "\"Debut\" is stage 4: move pre-staging into staging, with the full checks -- or, on staging, run them there"
 tier:        on-demand
 severity:    default
 applies_to:  ["**"]
@@ -8,10 +8,10 @@ applies_to_why: "A phrase in a MESSAGE (\"Debut\", \"Promote 4\") -- stage 4, a 
 occasion:    "a person says \"Promote\", \"Promote N\" or a stage word (\"Consider\", \"Act\", \"Debut\", \"Produce\", \"Make live\"), or asks to plan, build or move work up a tier"
 gates:       ["merge"]
 gates_why:   "Debut and Produce are merges between branch tiers -- the moment that gate exists for, as for promote."
-index_clause: "stage 4: pre-staging into staging, full checks"
+index_clause: "stage 4: pre-staging into staging, full checks; on staging, only the tests"
 checked_by:  null
 defines:     ["Debut", "Test Readiness"]
-command:     {"Debut": "Stage 4 (Promote 4), also called Test Readiness: move pre-staging into staging, with the full local checks, saying so first -- saving this session's own work to pre-staging first if it is not there yet. It takes in whatever reached main without the ladder, checks that and pre-staging together once, and moves staging and pre-staging level; when that check fails, whoever's commit broke it, the session fixes it in the same turn on the fix branch the Debut names and runs it again."}
+command:     {"Debut": "Stage 4 (Promote 4), also called Test Readiness: in a repository on staging, run the full local tests there and move nothing; elsewhere, move pre-staging into staging, with the full local checks, saying so first -- saving this session's own work to pre-staging first if it is not there yet. It takes in whatever reached main without the ladder, checks that and pre-staging together once, and moves staging and pre-staging level; when that check fails, whoever's commit broke it, the session fixes it in the same turn on the fix branch the Debut names and runs it again."}
 status:      active
 in_force_at: null
 visible_to:  code-owners
@@ -53,8 +53,10 @@ push, and Debut again with `--work DATE-promote-fix-ID`: that takes the fix in
 first and finishes. A fix to the session's own booked work may go through
 Booked instead, as before (Morgan, 2026-10-01, strength: assented).
 
-**Where a repository has no pre-staging** -- a person who lands on staging
--- Debut has nothing to do, and says so.
+**Where the repository lands on staging** -- it has no pre-staging --
+Debut moves nothing and runs the full local suite on staging instead:
+`python3 tools/precedent_branches.py --run-tests`, as
+[ladder-in-a-repo-on-staging](ladder-in-a-repo-on-staging.md) says.
 
 ## Detail
 A refusal shows only part of what is wrong: the push check stops at its
