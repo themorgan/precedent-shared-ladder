@@ -1,6 +1,6 @@
 ---
 slug:        tier-branch
-title:       "\"Tier branch\" names one rung of the pre-staging -> staging -> main ladder"
+title:       "\"Tier branch\" names one rung of the staging -> main ladder"
 tier:        on-demand
 severity:    default
 applies_to:  ["**"]
@@ -8,7 +8,7 @@ applies_to_why: "A word, not an action -- no file path reaches it. Since 2026-09
 occasion:    null
 gates:       ["merge"]
 gates_why:   "A merge is where a tier branch matters: which one the work targets, and that none of them is ever deleted."
-index_clause: "pre-staging, staging or main -- plus staging's old name and Promote's lock"
+index_clause: "staging or main -- plus staging's old name and Promote's lock"
 checked_by:  null
 defines:     ["Tier branch", "Landing branch"]
 command:     null
@@ -24,8 +24,8 @@ strength:    decided
 ## Rule
 **"Tier branch" is this project's word for one rung of the branch ladder**
 ([spec/BRANCH_TIERS_PLAN.md](https://github.com/alex137/BestPractice/blob/staging/spec/BRANCH_TIERS_PLAN.md)):
-`pre-staging`, where work lands; `staging`, which a Promote moves it into;
-and `main`, the top. Two more branches count as tier branches because they
+`staging`, where work lands; and `main`, the top, which Produce moves it
+into. Two more branches count as tier branches because they
 exist only to serve the ladder: `precedent-beta-v01`, staging's name before
 2026-09-25, kept so an install still pinned to it takes its updates; and
 `precedent-promote-lock`, which a Promote holds so two sessions never
@@ -52,6 +52,10 @@ session used "tier branch" as shorthand for the branches the sweep must
 never offer to delete. Morgan asked what it meant, got the answer, and asked
 for it to join "Primary branch" as a vocabulary word that defines rather
 than acts.
+
+**2026-10-14: pre-staging retired for everyone** (Morgan: *"Only me, go ahead and plan it. Retire pre-staging."*, strength: decided). Until then
+the ladder had three rungs: `pre-staging`, where work landed; `staging`,
+which a Promote moved it into; and `main`.
 
 ## Install
 No check on the answer, for the reason [vocabulary](https://github.com/alex137/BestPractice/blob/staging/practices/vocabulary.md) gives:

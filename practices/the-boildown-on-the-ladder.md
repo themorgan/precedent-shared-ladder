@@ -25,27 +25,27 @@ approved_by: "Morgan, 2026-10-06 (strength: decided): \"rules should not be repe
 
 **The first line also names the stage.** After the branch, in parentheses, which of the five stages the work has finished -- or is in:
 
-- **The work of this session is now on:** `pre-staging` in BestPractice (you have finished step 3 of 5, Booked)
+- **The work of this session is now on:** `staging` in BestPractice (you have finished step 3 of 5, Booked)
 
 | Where the work is | What the parenthesis says |
 |---|---|
 | Nothing written yet: a plan was said, or a question answered | no branch yet (you have finished step 1 of 5, Consider) |
 | A local branch, not pushed | you are in step 2 of 5, Act -- not pushed yet |
 | A feature branch, pushed | you have finished step 2 of 5, Act |
-| The person's landing branch (`pre-staging`, or `staging` for someone who lands there) | you have finished step 3 of 5, Booked |
-| `staging`, promoted from `pre-staging` | you have finished step 4 of 5, Debut |
+| The person's landing branch (`staging`) | you have finished step 3 of 5, Booked |
+| `staging`, and a Debut passed on it | you have finished step 4 of 5, Debut |
 | `main` | you have finished step 5 of 5, Produce |
 
 The stage is read from where the work is, not from what was asked. A stage still under way says "you are in", not "you have finished": a pull request open into the landing branch but not merged is in step 3, and the line names the feature branch the work is actually on. The step goes before the word here, which answers [stage-word-carries-its-step](stage-word-carries-its-step.md) for the reply's first stage word.
 
-**A Promote still to run never holds the archive line.** Work that has landed on pre-staging is on `origin`; moving it to staging is the pipeline's next step toward live, whenever the person chooses, and any session can run it later. It never fails archive condition 1, and it belongs with the things the closed list of blockers names as never holding the line. It gets one plain line in The Boildown -- only when the batch holds this session's own work -- and nothing more: never item 1's next steps, never item 2's blockers, never the reason behind the archive line.
+**A Promote still to run never holds the archive line.** Work that has landed on staging is on `origin`; moving it into main is the pipeline's next step toward live, whenever the person chooses, and any session can run it later. It never fails archive condition 1, and it belongs with the things the closed list of blockers names as never holding the line. It gets one plain line in The Boildown -- only when the batch holds this session's own work -- and nothing more: never item 1's next steps, never item 2's blockers, never the reason behind the archive line.
 
 **Never suggest a Promote another window is already running.** Item 1 never asks for a Promote, a Booked (`Go update`) or a merge that another session is already carrying out on the same work -- it says that it is under way instead ([promote](promote.md)). While another window is promoting a repository, that repository gets no Promote line at all, at most a plain statement that a Promote is under way. The reply gate checks the Promote lock and says which a repository gets; a claim older than the lock's 15 minutes is not a Promote running.
 
 ## Detail
-**Item 3's scope covers the Promote line too.** It reports work this session itself committed -- on a feature branch it worked on, or in a pre-staging batch it booked into. Another session's batch waiting on its own Promote, or a sibling practice source's pre-staging, gets no line, unless this session is blocked on it. Commits are counted the way item 3 counts them, for the Promote line as for every line that says one branch is ahead of another.
+**Item 3's scope covers the Promote line too.** It reports work this session itself committed -- on a feature branch it worked on, or in what it booked onto staging. Another session's work waiting on its own Promote, or a sibling practice source's staging, gets no line, unless this session is blocked on it. Commits are counted the way item 3 counts them, for the Promote line as for every line that says one branch is ahead of another.
 
-**The one exception to "never holds the line"** is a genuinely urgent reason to promote now -- a fix that something live is broken without, say -- and then item 1 names that reason concretely. "It hasn't been fully tested yet" is not one, because that is what every change on pre-staging is.
+**The one exception to "never holds the line"** is a genuinely urgent reason to promote now -- a fix that something live is broken without, say -- and then item 1 names that reason concretely. "It hasn't been fully tested yet" is not one, because that is what every change booked onto staging is until a Debut or a Produce runs the full tests.
 
 ## Why
 The person kept having to work out from the rest of a reply where the work stood; one fixed first line answers it before anything else is read. And a Promote is the pipeline's business, not the session's: holding a window open for it costs the person a session they could have closed, and suggesting one another window is already running starts a race.
@@ -56,6 +56,8 @@ Morgan, 2026-09-29 (strength: decided), on the first line: *"after you say the b
 Morgan, 2026-09-25 (strength: decided): *"promotion should NEVER be a blocker to archive a session (unless there is a very urgent reason to do so). Promotion is about the pipeline to get it to live, and that shouldn't stop us from closing a session."* And 2026-09-27 (strength: decided), after the per-turn line told him "a Promote can move them" twice while another window was promoting: *"NEVER recommend a promote when another session is already doing it!!!"* And 2026-09-29 (strength: decided): *"only tell me about that promotions that I need to do *ONLY* regarding the branch/flow that I edited/worked on in that session window. If that session window didn't touch it, don't tell me I should promote it *UNLESS* our session is blocked on it."*
 
 **2026-10-06: split out of a full copy.** Until this day the ladder set carried its own full copy of the-boildown, overriding universal's, to change the points above. Every change to the rule had to be made twice, and copies drifted. Morgan: *"rules should not be repeated, but supporting repos can have additions for them."* This file holds only the additions; the set's copy of the-boildown is deduplicated.
+
+**2026-10-14: pre-staging retired for everyone** (Morgan: *"Only me, go ahead and plan it. Retire pre-staging."*, strength: decided). Until then the first line's example read `pre-staging` in BestPractice, step 3 was the person's landing branch (`pre-staging`, or `staging` for someone who landed there), step 4 was `staging` promoted from `pre-staging`, and a pending Promote meant moving pre-staging to staging. With two tiers, Booked lands on staging, and step 4 is a Debut that passed there.
 
 ## Install
 Nothing to install. The reply gate prints it with the-boildown on every reply. The ladder set's `reply_check.json` entry `boildown-first-bullet` (practice [stage-word-carries-its-step](stage-word-carries-its-step.md)) refuses a first line without the stage, and the reply gate reads the Promote lock for the line it prints per repository.

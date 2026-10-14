@@ -46,10 +46,10 @@
     "id": "prompt-please-landing-authority"
   },
   {
-    "practice": "ladder-in-a-repo-on-staging",
+    "practice": "produce",
     "require_full_check_after_fast_main": true,
     "why": "Morgan, 2026-10-09: \"I want to make sure there's a full check *somewhere* on the push to main, afterwards\" -- with four exceptions: GitHub's test runs on it, Debut passed on exactly this, only prose changed, or he asked for a fast one. A merged fast move that owes the full local suite on main holds the turn until it has started, and while it has failed.",
-    "checks_practice_at": "practices/ladder-in-a-repo-on-staging.md",
+    "checks_practice_at": "practices/produce.md",
     "id": "full-check-after-fast-main"
   }
 ]
