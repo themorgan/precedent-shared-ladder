@@ -7,6 +7,8 @@
       "path": "../BestPractice"
     }
   ],
+  "base_branch": "main",
+  "staging_branch": "staging",
   "landing_branch": "staging",
   "_landing_branch_comment": [
     "Where Go update lands for anyone whose own identity.json names no",
