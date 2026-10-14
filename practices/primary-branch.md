@@ -39,9 +39,9 @@ default chosen just because it is configured that way.
 on** ([spec/BRANCH_TIERS_PLAN.md](https://github.com/alex137/BestPractice/blob/staging/spec/BRANCH_TIERS_PLAN.md)):
 `python3 tools/precedent_branches.py --landing` names it: the person's own
 `landing_branch` (identity.json) if set, else the repository's
-(precedent.json), else `staging` (Morgan, 2026-09-27, strength: decided); new
-repositories are written with `pre-staging`. Staging and main are then what the
-primary branch is promoted into, never where routine work is pushed.
+(precedent.json), else `staging` (Morgan, 2026-09-27, strength: decided). On
+the ladder that is `staging`, and `main` is then what it is promoted into,
+never where routine work is pushed.
 Morgan, 2026-09-25: *"we now have a concept called \"primary branch\" -
 that should probably be updated in reference to this"* (strength:
 decided).
@@ -53,8 +53,8 @@ each of those, the primary branch is whatever *that* repository declares.
 Morgan, 2026-09-24, about the one catalogue repository that does this:
 *"this rule doesn't get vendored in anywhere, the primary branch of the
 vendored-in repo should be used, often main."* The tiers are the one
-exception: `pre-staging`, `staging` and `main` are the same three names in
-every repository, so that part travels like any other practice.
+exception: `staging` and `main` are the same two names in every
+repository, so that part travels like any other practice.
 
 ## Why
 "Primary branch" and "trunk" name the same thing, but neither had been
@@ -71,6 +71,11 @@ push-directly (retired 2026-09-30) already called "the primary branch," told
 it was "trunk" in general developer usage, Morgan asked for the two to be
 tied together in the project's own vocabulary rather than left as a private
 mapping I'd have to re-derive each time.
+
+**2026-10-14: pre-staging retired for everyone** (Morgan: *"Only me, go ahead and plan it. Retire pre-staging."*, strength: decided). Until then
+new repositories were written with `pre-staging` as their landing branch,
+the tiers were three names -- `pre-staging`, `staging` and `main` -- and
+staging and main were both what the primary branch was promoted into.
 
 ## Install
 No check on the answer, same reason [vocabulary](https://github.com/alex137/BestPractice/blob/staging/practices/vocabulary.md) gives --

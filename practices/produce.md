@@ -106,10 +106,20 @@ carry the whole short way, the rules for when GitHub's test runs, and the
 long way as an exception that is "explicit and strong and checked": the
 tool now refuses `--full` without the person's words.
 
+**2026-10-14: pre-staging retired for everyone** (Morgan: *"Only me, go
+ahead and plan it. Retire pre-staging."*, strength: decided). Staging,
+where Booked now lands everywhere, is what Produce moves into main. The
+reply check that holds a turn until an owed full run on `main` has
+started had pointed at ladder-in-a-repo-on-staging, the rule for
+repositories already on staging; with that rule retired, it points here.
+
 ## Install
 Nothing new: the promotion tool and its checks are
 [promote](promote.md)'s. The refusal of `--full` without `--because` is in
 the engine's `full_route_refusal`
 ([tools/precedent_branches.py](https://github.com/alex137/BestPractice/blob/staging/tools/precedent_branches.py)),
 with its planted cases in
-`check_landing_on_staging_run_tests_and_fast_move_into_main`.
+`check_landing_on_staging_run_tests_and_fast_move_into_main`. This set's
+`reply_check.json` entry `full-check-after-fast-main` holds the turn while
+a merged fast move owes the full local suite on `main` and it has not
+started, or has failed.

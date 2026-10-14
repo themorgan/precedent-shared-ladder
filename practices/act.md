@@ -24,7 +24,7 @@ strength:    decided
 change.** The work lives on this session's own **feature branch** -- the
 short-lived branch named like `<date>-<username>-<slug>-<session>-<random>` -- and is **pushed
 there**, so a reclaimed container loses nothing. It is not shared yet:
-nothing reaches pre-staging until [Booked](go-update.md).
+nothing reaches staging until [Booked](go-update.md).
 
 **The branch is named when Act starts, by
 [tools/precedent_branch_name.py](../tools/precedent_branch_name.py), never
@@ -109,6 +109,8 @@ followed the harness, and noticed that the push check let it, though this
 rule then said any branch the tool did not name was refused. The rule now
 says it is the permission the harness asks for, and says what the push
 check actually refuses.
+
+**2026-10-14: pre-staging retired for everyone** (Morgan: *"Only me, go ahead and plan it. Retire pre-staging."*, strength: decided). Until then Booked moved the work from the feature branch to pre-staging, as the approval quotes; now it lands it on staging.
 
 2026-10-07: Morgan, on the temporary branches sessions leave on GitHub: "many
 of your temp github [branches] you create start with 'claude/' - I think

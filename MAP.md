@@ -10,7 +10,7 @@ This repository's map of the practice catalogue in force here and the engine's o
 
 ## The practice catalogue
 
-`practices/` holds 25 practice files (1 resident, 24 on-demand). One file per practice.
+`practices/` holds 24 practice files (1 resident, 23 on-demand). One file per practice.
 
 | Practice | Tier | Occasion / scope |
 |---|---|---|
@@ -23,7 +23,6 @@ This repository's map of the practice catalogue in force here and the engine's o
 | [debut](practices/debut.md) | on-demand | a person says "Promote", "Promote N" or a stage word ("Consider", "Act", "Debut", "Produce", "Make live"), or asks to plan, build or move work up a tier |
 | [generated-docs-in-output](practices/generated-docs-in-output.md) | on-demand | building a document from a repository's content -- a Word file, a web page, a PDF, a deck -- or finding one that sits beside its sources |
 | [go-update](practices/go-update.md) | on-demand | a message says "Booked", "Approved", "Book it" or "Promote 3", or plainly authorizes a merge |
-| [ladder-in-a-repo-on-staging](practices/ladder-in-a-repo-on-staging.md) | on-demand | a person says "Booked", "Debut", "Run tests" or "Produce" in a repository whose landing branch is staging |
 | [no-ladders](practices/no-ladders.md) | on-demand | a person says "No ladders", or asks to see what somebody who does not use the ladder sees |
 | [others-did](practices/others-did.md) | on-demand | the first session of a day, after 07:00 in the person's own timezone, when someone else has landed work since the person's own last commit there |
 | [primary-branch](practices/primary-branch.md) | on-demand | ** |
@@ -42,11 +41,12 @@ This repository's map of the practice catalogue in force here and the engine's o
 
 ## Withdrawn practices
 
-8 practice file(s) here are **not in force** and are left out of every table above. **The files are kept on purpose** -- a withdrawn rule and the argument against it are worth re-reading, and `retired` is not a synonym for deleted (that is `decommission-deletes-files`, and it is about mechanisms, not rules). Read one in full with `python3 tools/precedent_show.py SLUG`.
+9 practice file(s) here are **not in force** and are left out of every table above. **The files are kept on purpose** -- a withdrawn rule and the argument against it are worth re-reading, and `retired` is not a synonym for deleted (that is `decommission-deletes-files`, and it is about mechanisms, not rules). Read one in full with `python3 tools/precedent_show.py SLUG`.
 
 | Practice | Status | Now in force at | Why it was withdrawn |
 |---|---|---|---|
 | [go-merge](practices/go-merge.md) | deduplicated | [go-update](practices/go-update.md) | Renamed 2026-09-26 on Morgan's `Go update`. |
+| [ladder-in-a-repo-on-staging](practices/ladder-in-a-repo-on-staging.md) | retired | — (nowhere) | **Retired 2026-10-14: pre-staging retired for everyone** (Morgan: *"Only me, go ahead and plan it. |
 | [merge-authorization-keyword](practices/merge-authorization-keyword.md) | deduplicated | [go-update](practices/go-update.md) | **The 2026-09-07 retirement was reversed on 2026-09-08, and this is now a deduplication rather than a withdrawal.** `status: retired` said nobody wanted this rule anywhere. |
 | [plan-it](practices/plan-it.md) | deduplicated | [consider](practices/consider.md) | **Folded into consider, 2026-09-30.** Morgan: *"Plan it is just Stage 1 of our list, so isn't that listed there, in the 5 step names, and you can recognize it?"* Its Rule is Consider's Detail now, word for word. |
 | [prompt-please](practices/prompt-please.md) | deduplicated | [prompt-please](practices/prompt-please.md) | Copied into this set on 2026-10-02 under the same slug, when the ladder became a set a person brings, so people who bring it read the rule in the ladder's words. |

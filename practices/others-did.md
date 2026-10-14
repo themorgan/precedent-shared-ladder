@@ -48,7 +48,7 @@ else's.
 **What runs it.** `tools/precedent_others_did.py` ships with the engine,
 so every repository with Precedent installed has it. It runs at session
 start for anyone with this set, and does nothing for anyone without it.
-It reads `main`, the staging branch and `pre-staging`, takes every commit
+It reads `main` and the staging branch, takes every commit
 that landed there after the person's own last commit and is not theirs, and
 leaves the block for the reply gate. A commit counts by when it landed, not
 by its own date, so a colleague's older work merged later is still told. Merge commits are left out; the work they merged is
@@ -88,3 +88,7 @@ a separate branch, a file on the landing branch, the ref through the
 GitHub API, the person's own set, an issue -- Morgan chose to keep no mark
 and count from the person's own last commit (2026-10-10, "Go with option
 1").
+
+2026-10-14: with pre-staging retired for everyone (Morgan: *"Only me, go ahead and plan it. Retire pre-staging."*, strength: decided), the
+branches this reads are `main` and staging; until then it read
+`pre-staging` too.
