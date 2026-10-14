@@ -11,8 +11,8 @@ gates_why:   "The same moment as debut, so the two load together at the merge ga
 index_clause: "on staging: Booked is --land, Debut only tests, Produce is the fast move"
 checked_by:  null
 defines:     []
-status:      active
-in_force_at: null
+status:      retired
+in_force_at: none
 expires:     null
 visible_to:  code-owners
 supersedes:  []
@@ -46,6 +46,15 @@ words stay the same in both; the repository's own landing branch decides
 what each one does.
 
 ## Story
+**Retired 2026-10-14: pre-staging retired for everyone** (Morgan: *"Only
+me, go ahead and plan it. Retire pre-staging."*, strength: decided). With
+no repository left landing on pre-staging, the difference this rule drew
+between the two kinds of repository is gone, and what it said for a
+repository on staging is now simply how the stages work: Booked is
+`--land` ([go-update](go-update.md)), Debut only runs the tests
+([debut](debut.md)), and Produce is the short move into main
+([produce](produce.md)); [promote](promote.md) holds the stage table.
+
 Morgan, 2026-10-09: *"I want to fully complete one repo at a time ... every
 single time I do a vendor updates lately, and so many problems."* The first
 plan switched his landing branch in his own settings, which moves every

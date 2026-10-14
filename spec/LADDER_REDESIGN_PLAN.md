@@ -1,5 +1,13 @@
 # Ladder redesign plan
 
+**Status, 2026-10-14: pre-staging is retired for everyone.** Morgan
+decided it that day (strength: decided): *"Only me, go ahead and plan it.
+Retire pre-staging."* The ladder is two tiers -- feature branch, then
+`staging`, then `main` -- for everyone, and this set's rules describe it
+that way; Update Vendors moves any repository still carrying a
+`pre-staging` branch onto staging. The rest of this file is the plan as
+written, kept as history.
+
 **Status: a proposal for Morgan's review, 2026-10-09. Nothing here is in
 force yet.** It changes only the ladder this set carries, for the people who
 bring it. Anyone landing straight on `main`, Alex included, works exactly as
@@ -196,6 +204,7 @@ red `main` commit when the person names it in their own words ("take
    repository's `landing_branch` to `staging`, brings in what was left on
    `pre-staging`, rewords its instructions and prints the delete link.
    Only once that repository works smoothly does the next one start. Until
-   the last has moved, [ladder-in-a-repo-on-staging](../practices/ladder-in-a-repo-on-staging.md)
-   says how the stage words work in a repository already on `staging`, and
+   the last has moved, ladder-in-a-repo-on-staging (retired 2026-10-14;
+   its content now lives in [promote](../practices/promote.md) and the
+   stage practices it links) says how the stage words work in a repository already on `staging`, and
    the rest of this set's rules keep describing `pre-staging`.

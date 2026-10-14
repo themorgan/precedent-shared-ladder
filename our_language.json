@@ -7,15 +7,15 @@
   "words": [
     {
       "word": "landing branch",
-      "meaning": "The branch your saved work lands on when you say \"Booked\" (or \"Go update\"): pre-staging if you use all three branch tiers, otherwise staging, or main."
+      "meaning": "The branch your saved work lands on when you say \"Booked\" (or \"Go update\"): staging, or main in a repository that has no staging."
     },
     {
-      "word": "pre-staging, staging, main",
-      "meaning": "The three branches work climbs through, in that order. Pre-staging is where saved work waits, staging is where it is fully checked, and main is production -- what everyone gets."
+      "word": "staging, main",
+      "meaning": "The two branches work climbs through, in that order. Staging is where saved work lands, and where the full tests run when you ask for them; main is production -- what everyone gets."
     },
     {
       "word": "tier branch",
-      "meaning": "One of these branches: pre-staging, staging or main, plus the two that travel with them -- staging's old name `precedent-beta-v01` and Promote's lock branch `precedent-promote-lock`. A tier branch is never offered for deletion."
+      "meaning": "One of these branches: staging or main, plus the two that travel with them -- staging's old name `precedent-beta-v01` and Promote's lock branch `precedent-promote-lock`. A tier branch is never offered for deletion."
     },
     {
       "word": "stage",

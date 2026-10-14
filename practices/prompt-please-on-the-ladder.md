@@ -44,7 +44,7 @@ which? Big.
 
 ## Why
 Landing is the person's step on the ladder, and the person decides how much
-of it to hand over; a prompt written by another session cannot. A prompt that tells another session to merge into pre-staging, or to open a pull request into staging, hands that step to a session the person never spoke to, and the receiving session has no way to tell it apart from the person's word.
+of it to hand over; a prompt written by another session cannot. A prompt that tells another session to land on staging, or to open a pull request into main, hands that step to a session the person never spoke to, and the receiving session has no way to tell it apart from the person's word.
 
 ## Story
 Morgan, 2026-10-01 (strength: decided), after two prompts a session wrote told the receiving session to open pull requests into tier branches nobody had authorized: *"No, we always want to do it in the local container (\"Act\") and then I'll authorize it to go to pre-staging via \"Promote\" etc."* So a prompt without his Booked ends at Act.
@@ -58,5 +58,7 @@ feedback."*
 
 **2026-10-06: split out of a full copy.** From 2026-10-02 the ladder set carried its own full copy of prompt-please, overriding universal's, to say this in the ladder's words. Every change to the rule had to be made twice; the 2026-10-06 change to its opening line was. Morgan: *"rules should not be repeated, but supporting repos can have additions for them."* This file holds only the addition; the set's copy of prompt-please is deduplicated.
 
+**2026-10-14: pre-staging retired for everyone** (Morgan: *"Only me, go ahead and plan it. Retire pre-staging."*, strength: decided). The Why's example of an order a prompt must not carry was a merge into pre-staging; Booked now lands on staging.
+
 ## Install
-Nothing to install. The reply gate prints it with prompt-please. One mechanical check: `prompt-please-landing-authority` in this set's `reply_check.json` refuses a paste block that tells another session to land, merge, push or open a pull request onto `pre-staging`, `staging` or `main` without the person's own Booked (or `Approved`, `Go update`) for this handoff quoted in it.
+Nothing to install. The reply gate prints it with prompt-please. One mechanical check: `prompt-please-landing-authority` in this set's `reply_check.json` refuses a paste block that tells another session to land, merge, push or open a pull request onto a tier branch without the person's own Booked (or `Approved`, `Go update`) for this handoff quoted in it.

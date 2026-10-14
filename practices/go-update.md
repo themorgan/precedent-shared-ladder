@@ -1,6 +1,6 @@
 ---
 slug:        go-update
-title:       "\"Booked\" (stage 3; also \"Go update\", \"Approved\", \"Book it\") -- authorize sync, confirm branch, commit, push, PR, and merge (a direct push is the default; the full chain is for high-risk changes only)"
+title:       "\"Booked\" (stage 3; also \"Go update\", \"Approved\", \"Book it\") -- authorize sync, confirm branch, commit, and land it on staging (no pull request by default; a pull request into staging for high-risk changes only)"
 tier:        on-demand
 severity:    default
 applies_to:  ["**"]
@@ -11,7 +11,7 @@ gates_why:   "Its whole subject is what happens at a merge."
 index_clause: "stage 3, Booked: land it on the landing branch; high-risk: PR and merge"
 checked_by:  null
 defines:     ["Booked", "Go update", "Approved", "Book", "Book it", "Shared Save"]
-command:     {"Booked": "Stage 3 (Promote 3): save the work, land it on your landing branch on GitHub (`precedent_branches.py --landing` names it: staging in a repository that has moved onto it, pre-staging in one still on three tiers) where it won't be lost, and tell you which branch it went to. By default that is a direct push, with no pull request; a high-risk change goes through one. Its older name, \"Go update\", still means this.", "Approved": "The same as **Booked**.", "Book it": "The same as **Booked** (also just **Book**).", "Shared Save": "The same as **Booked**."}
+command:     {"Booked": "Stage 3 (Promote 3): save the work, land it on your landing branch on GitHub (`precedent_branches.py --landing` names it: staging, or main in a repository with no staging) where it won't be lost, and tell you which branch it went to. On staging that is `precedent_branches.py --land BRANCH`, with no pull request; a high-risk change goes through a pull request into staging. Its older name, \"Go update\", still means this.", "Approved": "The same as **Booked**.", "Book it": "The same as **Booked** (also just **Book**).", "Shared Save": "The same as **Booked**."}
 status:      active
 in_force_at: null
 supersedes:  ["merge-authorization-keyword"]
@@ -24,10 +24,13 @@ strength:    decided
 **"Booked" is this step's name. "Go update", "Approved", "Book", "Book it",
 "Shared Save" and "Promote 3" all mean the same thing**: land the work on
 the landing branch, the shared save, which `python3
-tools/precedent_branches.py --landing` names: `staging` in a repository
-that has moved onto it, where Booked is `precedent_branches.py --land
-BRANCH` ([ladder-in-a-repo-on-staging](ladder-in-a-repo-on-staging.md)),
-and `pre-staging` in one still on three tiers. Say "Booked" when talking about the step; "Go update" is its
+tools/precedent_branches.py --landing` names: `staging`, where Booked is
+
+    python3 tools/precedent_branches.py --land BRANCH
+
+It brings `main`'s direct commits in first, runs the quick checks, and ends
+`LAND RESULT: ...` ([promote](promote.md) says what it does step by step).
+Say "Booked" when talking about the step; "Go update" is its
 older name and keeps working. This file is stage 3,
 **Booked**, of the five-stage ladder ([promote](promote.md), and
 [spec/FIVE_STAGES_AND_OUR_LANGUAGE_PLAN.md](https://github.com/alex137/BestPractice/blob/staging/spec/FIVE_STAGES_AND_OUR_LANGUAGE_PLAN.md)):
@@ -114,58 +117,48 @@ changes:**
     to high-risk, never down — the cost of one unneeded PR is a few CI
     minutes; the cost of a bad direct push is whatever it broke, found
     later, by someone else.
-- **Everything else pushes straight to the branch, no PR.** A new
+- **Everything else lands straight on the branch, no PR** -- on staging,
+  by `--land BRANCH`. A new
   practice, a rule's meaning changing in ordinary content, real logic in
   ordinary code, a change spanning several files or systems — none of
   that alone makes a change high-risk. **Size and reach are not the test; only
   the four bullets above are.** The light check still runs before the
-  commit and the push check still runs before the push either way, at the
-  tier the target branch gets -- basic for pre-staging, full for staging
-  and main ([spec/BRANCH_TIERS_PLAN.md](https://github.com/alex137/BestPractice/blob/staging/spec/BRANCH_TIERS_PLAN.md)) --
-  so verification never gets skipped, only the PR wrapper does.
+  commit, and the landing's checks still run either way -- the quick
+  checks on the change landing on staging, and main's own checks into main
+  ([checks-follow-the-tier](checks-follow-the-tier.md)) -- so
+  verification never gets skipped, only the PR wrapper does.
 
 **Either path ends on the shared branch, never in the local clone.**
-`Go update` means make the change live: the direct push lands on the branch
+`Go update` means make the change live: the default lands on the branch
 the repository's own rules say routine work lands on, and the full chain
 merges into that same branch -- in both cases a real branch on `origin`,
 and never a repository's *configured default* branch picked just because
-it is configured that way. **When that branch is pre-staging and the change was high-risk, the reply
-says so in one plain line, in The Boildown** -- not bolded, not urgent,
-for example *"Pre-staging is 2 commits ahead of staging; it can be
-promoted whenever it suits."* It is information, not a call to act now, and never a reason to keep the
-session open: the archive line ignores it
-([the-boildown-on-the-ladder](the-boildown-on-the-ladder.md)).
-A high-risk change lands on pre-staging like any other rather than jumping
-the queue, so the two branches do not drift apart, and gets its full check
-at the next Promote, whenever that comes. Morgan, 2026-09-25, reversing the
-bolded "Please move this to staging soon" call to action set earlier that
-day: the bold, urgent wording pressed him to promote very often, and with
-several windows open that had two sessions promoting at once and racing
-(*"change that wording so it is NOT bolded and worded very gently, without
-urgency"*, strength: decided). That branch is the
-person's primary branch
+it is configured that way. That branch is the person's primary branch
 ([primary-branch](primary-branch.md)), and
-`python3 tools/precedent_branches.py --landing` names it: the branch the
-repository declares, `base_branch` in its `precedent.json`, which in most
-repositories is `main` -- unless the person's `landing_branch` says
-`pre-staging`, the tiered route, opt-in per person since 2026-09-26 (Morgan:
-*"This forced pre-staging -> staging -> main should be mandatory for me, but
-not necessarily anyone else"*, strength: decided), or `main` itself, which skips staging but never
-the checks, and still answers to the repository's own rule about main. **A person's own
-`landing_branch` always wins; a repository's, in its `precedent.json`, is its default
-for anyone who names none**, and a new install or an Update Vendors writes it as
-`pre-staging` where it is missing -- `staging` instead for a person who has
-retired pre-staging (`retire_pre_staging` in their identity.json, since
-2026-10-11) (Morgan, 2026-09-27, strength: decided: *"have the
-individual repo take precedence over the others (if it set, use that)"*). **Landing on pre-staging,
-bring it in first**: `python3 tools/precedent_branches.py
---sync-pre-staging` creates it from staging when origin has none, and
-copies into it what reached staging or main by another route once that
-has had its tier's checks -- it only looks here, since a GitHub test can
-take many minutes, and names `--check` for anything still unchecked, which
-[promote](promote.md) runs -- then merge `origin/pre-staging` into the work
-before pushing, so every window lands on top of the others. Getting it onto staging is a separate step,
-[promote](promote.md).
+`python3 tools/precedent_branches.py --landing` names it: the person's own
+`landing_branch` in their identity.json first, then the repository's in
+its `precedent.json`, then `staging` (Morgan, 2026-09-27, strength:
+decided: *"have the individual repo take precedence over the others (if it
+set, use that)"*). On the ladder that is `staging`. A landing branch of
+`main` skips staging but never the checks, and still answers to the
+repository's own rule about main.
+
+**Landing on staging is `--land`.** It composes staging, what reached main
+directly, and the work in a throwaway worktree, runs the quick checks on
+the change, and pushes staging to that commit, never forced. **A high-risk
+change goes through a pull request into staging instead**: merge
+`origin/staging` and `origin/main` into the work first, since a pull
+request into staging is let through only when it already carries
+everything main has. Getting it into main is a separate step,
+[Produce](produce.md).
+
+**Staging ahead of main gets one plain line in The Boildown**, when what
+waits holds this session's own work -- not bolded, not urgent, for example *"Staging is 2 commits ahead of main; it
+can be produced whenever it suits."* It is information, not a call to act
+now, and never a reason to keep the session open: the archive line ignores
+it ([the-boildown-on-the-ladder](the-boildown-on-the-ladder.md)). Morgan
+set that gentle wording on 2026-09-25 (strength: decided; his words are in
+the Story).
 **A commit sitting in the working copy has not satisfied the phrase, and
 neither has a push you only know succeeded because the command said so:**
 name the postcondition and test it
@@ -259,8 +252,9 @@ Reporting the refusal and stopping there is the one wrong answer.
 can refuse a push or a merge this repository's rules allow ("Merge
 Without Review", 2026-10-01). Handing that to another session would be
 routing around it. Say in one line that auto mode stopped it, not this
-repository's rules, and ask for it again in words that name it: "Merge
-PR #N into pre-staging".
+repository's rules, and ask for it again in words that name it:
+"Booked: land `<branch>` on staging" on the `--land` route, "Merge PR #N
+into staging" on the pull-request route.
 
 **What the receiving session may then DO with the relayed phrase is
 [relayed-authorization](relayed-authorization.md)'s**: it merges only where
@@ -271,12 +265,9 @@ declaration's absence, not a failed relay, and the reply says which word and
 where.
 
 **A branch another session made is merged only once that session, or the
-person, has said it is finished.** Its existence on the remote is not that.
-On 2026-09-29 a session merged `claude/derived-session-ceiling-7qk2` into
-precedent-individual's pre-staging, and a Promote carried it to main: a
-ceiling raise its own session had held back because Morgan had rejected it.
-When the branch's status cannot be settled from its session or its pull
-request, ask before merging it.
+person, has said it is finished.** Its existence on the remote is not that
+(the 2026-09-29 case is in the Story). When the branch's status cannot be
+settled from its session or its pull request, ask before merging it.
 
 **In a repository that vendors Precedent, the landing takes the vendor
 update with it.** After syncing with origin and committing, and before the
@@ -591,6 +582,40 @@ with Booked, so Vocabulary prints Booked with "Go update" trailing as a
 synonym, and a session names the step Booked. The slug stays `go-update`:
 renaming it would break links in every consuming repo for a name no reader
 sees.
+
+**2026-09-25: the gentle line.** Earlier that day a high-risk change that
+landed on pre-staging got a bolded "Please move this to staging soon" call
+to action. Morgan reversed it: the bold, urgent wording pressed him to
+promote very often, and with several windows open that had two sessions
+promoting at once and racing (*"change that wording so it is NOT bolded
+and worded very gently, without urgency"*, strength: decided). The line
+then read *"Pre-staging is 2 commits ahead of staging; it can be promoted
+whenever it suits."*, and a high-risk change landed on pre-staging like
+any other, getting its full check at the next Promote.
+
+**2026-09-26: pre-staging opt-in per person.** Morgan: *"This forced
+pre-staging -> staging -> main should be mandatory for me, but not
+necessarily anyone else"* (strength: decided). A new install or an Update
+Vendors then wrote `pre-staging` as a repository's `landing_branch` where
+it was missing -- `staging` for a person who had retired pre-staging
+(`retire_pre_staging` in their identity.json, from 2026-10-11). Landing on
+pre-staging meant `--sync-pre-staging` first, to create it from staging or
+copy down what had reached staging or main by another route, then merging
+`origin/pre-staging` into the work before pushing.
+
+**2026-09-29: a branch merged before its session said so.** A session
+merged `claude/derived-session-ceiling-7qk2` into precedent-individual's
+pre-staging, and a Promote carried it to main: a ceiling raise its own
+session had held back because Morgan had rejected it. That is why a branch
+another session made waits for that session's word.
+
+**2026-10-14: pre-staging retired for everyone** (Morgan: *"Only me, go
+ahead and plan it. Retire pre-staging."*, strength: decided). From
+2026-10-09 repositories moved onto staging one at a time, and in those
+Booked was already `--land` (ladder-in-a-repo-on-staging, now retired).
+Now it is `--land` everywhere: Booked lands on staging, with no pull
+request by default, and a high-risk change goes through a pull request
+into staging.
 
 ## Install
 No mechanical check, and not for lack of trying: this governs how a chat

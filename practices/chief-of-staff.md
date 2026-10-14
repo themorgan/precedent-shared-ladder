@@ -11,7 +11,7 @@ gates_why:   "The whole obligation is the shape of one report: the state-not-pro
 index_clause: "on request only; name the window read, link each session; Promotion Reviews last"
 checked_by:  null
 defines:     ["Chief of Staff", "the sweeper", "the desk", "Promotion Reviews"]
-command:     {"Chief of Staff": "Stop and route this: tell you what every open session is blocked on and what is colliding, with a clickable link to each, and end on Promotion Reviews: across every repo with Precedent installed, what waits on pre-staging for staging and on staging for main, and which of this week's branches are stale."}
+command:     {"Chief of Staff": "Stop and route this: tell you what every open session is blocked on and what is colliding, with a clickable link to each, and end on Promotion Reviews: across every repo with Precedent installed, what waits on staging for main, and which of this week's branches are stale."}
 status:      active
 in_force_at: null
 supersedes:  []
@@ -41,8 +41,8 @@ is a one-click delete link, built the one way
 there, in full, and is not restated here.
 
 **It ends on Promotion Reviews**: across **every repository with a
-Precedent install**, whether pre-staging waits to go into staging and whether
-staging waits to go into main; and, for the repositories worked in that week,
+Precedent install**, whether staging waits to go into main; and, for the
+repositories worked in that week,
 which of the week's branches are stale, with the unlanded work on each read
 and judged keep or discard. Detail says how.
 
@@ -161,38 +161,34 @@ the second window with a stale view that this practice exists to prevent.
 **The report ends on a section headed Promotion Reviews** — after the
 sessions, the collisions and the branch sweep, and before
 [The Boildown](https://github.com/alex137/BestPractice/blob/staging/practices/the-boildown.md). It takes one block per repository, and each
-block answers three questions:
+block answers two questions:
 
 - **A. Does staging need promoting into main?**
-- **B. Does pre-staging need promoting into staging?**
-- **C. Which branches from the last seven days are stale, and is the work on
+- **B. Which branches from the last seven days are stale, and is the work on
   them worth keeping?**
 
-**A and B read every repository with a Precedent install** -- the same set
+**A reads every repository with a Precedent install** -- the same set
 the branch sweep reads, named the same way. A promotion can wait anywhere: work
-landed on pre-staging last month and never promoted is exactly what a
-seven-day window hides, and it is what the person most needs told. Morgan,
-2026-09-28 (strength: decided): *"when I run the chief of staff command ...
-let the user know if there is anything on pre-staging across all my repos with
-best practice that has not been sent to staging, and similarly across all my
-repos, if there is anything on staging that has not been sent to main."* List
+landed on staging last month and never produced is exactly what a
+seven-day window hides, and it is what the person most needs told (Morgan,
+2026-09-28, strength: decided; his words are in the Story). List
 only the repositories with something waiting, then one line naming how many
 were checked and found level, so a clean fleet costs one line.
 
-**C reads the repositories the person was active in during the same seven
+**B reads the repositories the person was active in during the same seven
 days**: the repositories of every session updated inside the window, plus
 every repository `list_repos` shows pushed to inside it. Name that set and the
-window. A stale branch is a recent one by definition, so C keeps the week's
-bound. (Until 2026-09-28 A and B had this bound too, and a promotion waiting
-in a repository nobody had touched that week went unreported.)
+window. A stale branch is a recent one by definition, so B keeps the week's
+bound. (Until 2026-09-28 the promotion questions had this bound too, and a
+promotion waiting in a repository nobody had touched that week went
+unreported.)
 
-**A and B read the tiers each repository actually has.** The names come from
+**A reads the tiers each repository actually has.** The names come from
 [precedent_branches.py](https://github.com/alex137/BestPractice/blob/staging/tools/precedent_branches.py)'s
 rules, never from memory: staging is `precedent-beta-v01` wherever the rename
 has not happened, and a repository whose `base_branch` is `main` has no
 separate staging tier, so its A reads *"no staging tier — main is staging
-here"*. A repository with no pre-staging branch says so on B. Where the tier
-exists, each answer is one line:
+here"*. Where the tier exists, the answer is one line:
 
 - **how many commits the lower branch carries that the upper one does not**,
   and the date of the oldest of them;
@@ -201,13 +197,13 @@ exists, each answer is one line:
 - **a verdict**: *nothing to promote*, *ready — say "Promote" in any session
   rooted here*, or *hold*, with the red check named as the reason.
 
-A pre-staging that is behind staging, as well as ahead of it, is noted and
-not treated as a problem: [promote](promote.md) copies down before it
-promotes. **Say the counts plainly and without urgency.** A waiting Promote
+A staging that is behind main, as well as ahead of it, is noted and not
+treated as a problem: the next Booked brings main's work into staging
+([promote](promote.md)). **Say the counts plainly and without urgency.** A waiting Promote
 keeps nothing open (promote's own rule), and the person asked to see the
 state, not to be pressed.
 
-**C takes every branch whose newest commit falls inside the window**, minus
+**B takes every branch whose newest commit falls inside the window**, minus
 the tier branches themselves and the `precedent-promote-lock` branch. A branch
 whose work has fully landed is already a row in the branch sweep above: name
 it once here, as landed, and do not list it twice. Every other branch gets a
@@ -362,6 +358,19 @@ branches are stale, with any uncommitted work on them read and judged. A
 Chief of Staff cannot see another session's container, so the session
 resolved "uncommitted" into the two things it can read: the owning session's
 own archive line, and the commits a branch carries that landed nowhere.
+
+**2026-09-28: every repository, not only the week's.** Morgan (strength:
+decided): *"when I run the chief of staff command ... let the user know if
+there is anything on pre-staging across all my repos with best practice
+that has not been sent to staging, and similarly across all my repos, if
+there is anything on staging that has not been sent to main."*
+
+**2026-10-14: pre-staging retired for everyone** (Morgan: *"Only me, go
+ahead and plan it. Retire pre-staging."*, strength: decided). The question
+whether pre-staging waited on staging went with it, and the stale-branch
+question moved up from C to B. A pre-staging behind staging used to be
+noted and not treated as a problem, since a Promote copied down before it
+promoted.
 
 **The page replaced an attached file the same day.** The first sweep under
 Promotion Reviews handed its 267 delete links over as a markdown file, and

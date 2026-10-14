@@ -27,8 +27,8 @@ approved_by: "Morgan F, 2026-10-11 -- one pinned page updated in place, its addr
 can be deleted, publish a page listing them and link it in one Boildown
 line.** The list covers every repository open in the session where the
 person is a code owner. A branch is on it only when it is already in
-`main`, so deleting it loses nothing; `main`, `staging`, `pre-staging` and
-the engine's own branches never are.
+`main`, so deleting it loses nothing; `main`, `staging` and the engine's
+own branches never are.
 
 **No branches, no page. In doubt, no page.** Not in any other reply either:
 it rides with the archive line, so it does not come back every message.
@@ -129,3 +129,8 @@ open than the last one published over the page and wiped the rows the
 wider session had listed: "Merge them, or only replace when the repo set
 is the same." Merging keeps more, so `--html` now merges the saved page
 and refuses to write without it.
+
+2026-10-14: pre-staging retired for everyone (Morgan: *"Only me, go ahead and plan it. Retire pre-staging."*, strength: decided). It had been
+on the never-listed tier branches beside `main` and `staging`; a leftover
+one is now Update Vendors' to offer for deletion, once its work is on
+staging.
