@@ -29,8 +29,8 @@ N**, and each stage has its own word and a synonym:
 |---|---|---|---|---|
 | 1 | **Consider** | Plan | Decide how much plan the work needs, and make that much. | [consider](consider.md) |
 | 2 | **Act** | Build | Build it on this session's feature branch, pushed so it survives. | [act](act.md) |
-| 3 | **Booked** | Shared Save | Move it from the feature branch to the landing branch (pre-staging). Also **Go update**, **Book it**. | [go-update](go-update.md) |
-| 4 | **Debut** | Test Readiness | Promote pre-staging into staging, full checks. | [debut](debut.md) |
+| 3 | **Booked** | Shared Save | Move it from the feature branch to the landing branch (staging in a repository moved onto it; pre-staging where it still has three tiers). Also **Go update**, **Book it**. | [go-update](go-update.md) |
+| 4 | **Debut** | Test Readiness | Promote pre-staging into staging, full checks; in a repository on staging, run the full tests there and move nothing ([ladder-in-a-repo-on-staging](ladder-in-a-repo-on-staging.md)). | [debut](debut.md) |
 | 5 | **Produce** | Make live | Promote staging into main -- production -- quick checks, GitHub's test after the merge. | [produce](produce.md) |
 
 The ladder is **optional for everyone**: anyone may use its words, nobody
