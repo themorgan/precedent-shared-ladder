@@ -38,7 +38,13 @@ tools/precedent_stale_branches.py --fetch --html
 <scratchpad>/branch-cleanup.html`. **With a saved page it first asks for
 that page as it stands, and writes nothing until it has it:** save it to a
 file (the Artifact tool's read of that address, with path `index.html`) and
-run the command again adding `--merge <that file>`. The page then keeps the
+run the command again adding `--merge <that file>`. **Read it immediately
+before building, every time, and merge that file: never a copy from
+earlier in the session, and never the page this session built last.**
+Another session may have republished it in between, and a merge against
+an older copy drops that session's rows and every tick saved since. A read
+without the path saves no file; the tool warns when the file it is handed
+is not a fresh read. The page then keeps the
 rows of every repository this session cannot see, under the date they were
 last checked, and replaces the rest; `--replace` is only for a saved page
 that is gone or unreadable. Then publish the file to that address (the
@@ -134,3 +140,14 @@ and refuses to write without it.
 on the never-listed tier branches beside `main` and `staging`; a leftover
 one is now Update Vendors' to offer for deletion, once its work is on
 staging.
+
+2026-10-15: a consuming repository's session closed by following only the
+reply gate's line, which said to merge "the page as it stands" without
+saying how to get it. It read the address without a path, which saved no
+file, then merged against its own copy from earlier in the session.
+Another session had republished the page in between, so that merge would
+have dropped that session's rows and the ticks saved since; the artifact
+service's conflict refusal is what caught it. The rule and the gate line
+now say to read the page with path `index.html` immediately before
+building, and the tool warns when the file it is handed is not a fresh
+read.
