@@ -29,6 +29,14 @@ a correction goes into the source or into the file's recipe, and the file is
 rebuilt. Anything a person writes stays out of it, and so do the recipes,
 which sit in the directory's own `doc-recipes/`.
 
+**Every file in `output/` can be built again exactly as it was.** A Word
+file built by the shared Word builder (practice `create-word-doc`) carries its own options and
+rebuilds with `--rebuild <old file> --out <new file>`. Anything else
+records its build command, with every flag, in its recipe
+(`doc-recipes/<name>.recipe.md`, practice `doc-recipe`), written when the
+file is first built. A guessed flag is a differently formatted document for
+an outside reader, and the old file seldom says which flags made it.
+
 **A document built from several directories goes under the directory of its
 main source**, the one it is named for or the hub the others hang off.
 
@@ -61,3 +69,9 @@ its own. He asked for it in this set, which follows him into every
 repository he works in. The same change moved the business concept's Word
 file, which sat loose in `business-modeling/`, into
 `business-modeling/output/` beside the web page built from the same notes.
+
+2026-10-15: a consuming repository rebuilding a proposal's Word file found
+its build flags recorded nowhere, and worked four of them out from the old
+file's footer text, header image and first-page header. The Word builder
+now records its own options, and this rule asks every other generated file
+to keep its command in its recipe.
