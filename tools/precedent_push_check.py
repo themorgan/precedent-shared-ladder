@@ -2117,8 +2117,17 @@ def _importable(mod):
 
 
 def _pip_install(mods):
-    r = subprocess.run([sys.executable, '-m', 'pip', 'install', '--quiet',
-                        *mods], capture_output=True, text=True)
+    # precedent_python.pip_install is the engine's one install call: it
+    # retries a PEP 668 refusal, which a cloud container's system Python
+    # gives a plain `pip install` (2026-10-15). Both files are engine files;
+    # the plain call stays only for a tree that lacks it.
+    try:
+        sys.path.insert(0, str(HERE))
+        import precedent_python
+        r = precedent_python.pip_install(sys.executable, mods)
+    except ImportError:
+        r = subprocess.run([sys.executable, '-m', 'pip', 'install', '--quiet',
+                            *mods], capture_output=True, text=True)
     tail = (r.stderr or r.stdout or '').strip().splitlines()
     return tail[-1] if tail else ''
 
@@ -2522,6 +2531,10 @@ GITHUB_ONLY_STEPS = {
     'python3 tools/harness_reach.py publish':
         'stores the ledger of what each check reaches that a green whole-suite '
         'run on GitHub recorded (2026-10-12)',
+    'python3 tools/precedent_stale_branches.py --delete-merged':
+        'deletes the branches already in main, from the branch cleanup '
+        "page's button, started only by a person (2026-10-16, "
+        'spec/BRANCH_CLEANUP_BUTTON_PLAN.md)',
 }
 
 

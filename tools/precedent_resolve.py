@@ -1486,6 +1486,38 @@ def mirrored_prefixes(repo):
     return tuple(sorted(prefixes))
 
 
+def synced_copies(repo):
+    """-> frozenset of repo-relative paths that a process/manifest*.json
+    records as a whole-file copy kept in step with upstream: an entry with
+    granularity "file" (the default) and status "synced" (the default).
+
+    mirrored_prefixes answers for whole vendored trees; this answers for the
+    single files a consumer keeps beside its own -- a template it rendered
+    once and tracks, like GETTING_STARTED.md. practice_audit.py holds each
+    to its recorded sha256, and reports any change as DRIFT until it is
+    exported upstream. So nothing that writes on its own may touch one: on
+    2026-10-15 the commit-time file-header fixer stamped a synced
+    GETTING_STARTED.md on an edit and again on a byte-for-byte restore, and
+    the audit refused the landing each time. A person's own edit is still
+    theirs to make and export; a tool's stamp is not.
+
+    Never raises; a repository with no manifest has no synced copies."""
+    repo_root = pathlib.Path(repo).resolve()
+    out = set()
+    for manifest in sorted((repo_root / 'process').glob('manifest*.json')):
+        try:
+            entries = json.loads(manifest.read_text(encoding='utf-8')).get('entries') or []
+        except (ValueError, OSError, AttributeError):
+            continue
+        for e in entries:
+            if not isinstance(e, dict) or not e.get('local_path'):
+                continue
+            if e.get('granularity', 'file') == 'file' \
+                    and e.get('status', 'synced') == 'synced':
+                out.add(pathlib.PurePosixPath(e['local_path']).as_posix())
+    return frozenset(out)
+
+
 def declared_record_paths(repo):
     """-> precedent.json's `record_paths` entries ({"path", "reason"}), as
     path strings; an entry ending in "/" covers a directory. A whole record
@@ -1809,7 +1841,7 @@ def resolve(sources, context=()):
     # set's own `go-merge`, deduplicated against the universal one, read IN
     # FORCE NOWHERE in every consumer -- the rule was live the whole time,
     # one hop further on.
-    dangling = []
+    dangling, keep = [], []
     for practice in retired:
         if bv.practice_status(practice['fm']) != bv.DEDUPLICATED_STATUS:
             continue
@@ -1834,7 +1866,30 @@ def resolve(sources, context=()):
                              why=(f"withdrawn from universal on {gone[0]}; in "
                                   f"force in `{gone[1]}` -- declare that set "
                                   f"to keep it"))
+            elif practice['level'] != 'universal' and practice['slug'] not in resolved:
+                # A SET'S copy only. A universal copy pointing at a set this
+                # repo does not declare is the person's call, asked by Update
+                # Vendors and answerable with not_in_force_here; keeping it
+                # would override that answer. A set's copy points the other
+                # way, at a source every repo takes, so its target is only late.
+                keep.append((practice, msg))
+                entry.update(kept_in_force=True,
+                             why=f"{msg} -- kept in force here from this copy until "
+                                 f"its target arrives (Update Vendors brings it)")
             dangling.append(entry)
+    # KEPT IN FORCE UNTIL ITS TARGET ARRIVES (2026-10-16). A set handed the
+    # rule on, and the copy it was handed to has not reached this repository
+    # yet -- a vendored catalogue older than the set. Dropped, the rule bound
+    # nowhere and the sync still said OK; in a consuming repository that was
+    # curly-quotes, until Update Vendors brought the universal copy. The
+    # handed-on copy still carries the whole rule, so it binds here, said so
+    # on every sync, until its target resolves and it stands down by itself.
+    # A set's copy only, never universal's (above). Applied only after every
+    # copy was judged against what resolved on its own: kept one at a time, a kept copy made the next one in a chain or a
+    # cycle look satisfied, and that one went unreported.
+    for practice, msg in keep:
+        retired.remove(practice)
+        resolved.setdefault(practice['slug'], dict(practice, kept_in_force=msg))
     return {'practices': resolved, 'shadowed': shadowed, 'blocked': blocked,
             'missing': missing, 'retired': retired, 'dangling': dangling}
 
@@ -2070,8 +2125,8 @@ def _report(res, sources, out=sys.stdout):
         print(f"  not in force: {r['slug']} ({r['source']}) is status: "
               f"{bv._json_str(r['fm'].get('status'))}", file=out)
     for d in res.get('dangling', ()):
-        print(f"  IN FORCE NOWHERE: {d['slug']} ({d['source']}) -- {d['why']}",
-              file=out)
+        print(f"  {'KEPT IN FORCE, ITS TARGET NOT HERE YET' if d.get('kept_in_force') else 'IN FORCE NOWHERE'}"
+              f": {d['slug']} ({d['source']}) -- {d['why']}", file=out)
     if res.get('dangling'):
         print(f"  {len(res['dangling'])} deduplication(s) unreachable from "
               f"here -- rerun with --strict to fail on this", file=out)
