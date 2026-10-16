@@ -9,7 +9,7 @@ occasion:    "a message says \"Booked\", \"Approved\", \"Book it\" or \"Promote 
 gates:       ["merge"]
 gates_why:   "Its whole subject is what happens at a merge."
 index_clause: "stage 3, Booked: land it on the landing branch; high-risk: PR and merge"
-checked_by:  null
+checked_by:  tools/checks/check_landing_takes_a_pr.py
 defines:     ["Booked", "Go update", "Approved", "Book", "Book it", "Shared Save"]
 command:     {"Booked": "Stage 3 (Promote 3): save the work, land it on your landing branch on GitHub (`precedent_branches.py --landing` names it: staging, or main in a repository with no staging) where it won't be lost, and tell you which branch it went to. On staging that is `precedent_branches.py --land BRANCH`, with no pull request; a high-risk change goes through a pull request into staging. Its older name, \"Go update\", still means this.", "Approved": "The same as **Booked**.", "Book it": "The same as **Booked** (also just **Book**).", "Shared Save": "The same as **Booked**."}
 status:      active
@@ -102,6 +102,20 @@ changes:**
     a CI workflow file, a repo's own branch-restriction rule). A bad direct
     push here does not just break one thing — it silently stops catching
     the next hundred.
+    **Checked at the push:**
+    [check_landing_takes_a_pr.py](../tools/checks/check_landing_takes_a_pr.py)
+    refuses a push straight to the landing branch -- `--land` included --
+    that changes a CI workflow, one of those four files, or `tools/checks/`,
+    and prints the pull-request route (2026-10-16: an Update Vendors that
+    brought a workflow and push-check changes was landed straight on
+    staging, the tool and this rule disagreeing). **An engine file
+    byte-identical to what Update Vendors vendored from BestPractice's
+    main is exempt** -- that code already passed BestPractice's own review
+    and checks, so an engine refresh lands directly -- and the check reads
+    the bytes against the engine manifest itself, never a session's word
+    for it (Morgan, 2026-10-16, strength: decided: "since they are all
+    checked that is fine"). **A workflow file never is:** it runs on this
+    repository's own Actions, and only a run there shows it works there.
   - **Changes a governance or authorization practice** — one whose job is
     to grant, gate, or record an approval (this file,
     [weak-yes.md](https://github.com/alex137/BestPractice/blob/staging/practices/weak-yes.md), [decision-strength.md](https://github.com/alex137/BestPractice/blob/staging/practices/decision-strength.md),
