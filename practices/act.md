@@ -8,7 +8,7 @@ applies_to_why: "A phrase in a MESSAGE (\"Act\", \"Promote 2\") -- stage 2 of th
 occasion:    "a person says \"Promote\", \"Promote N\" or a stage word (\"Consider\", \"Act\", \"Debut\", \"Produce\", \"Make live\"), or asks to plan, build or move work up a tier"
 gates:       []
 index_clause: "stage 2: build on the session's feature branch, pushed so it survives"
-checked_by:  null
+checked_by:  tools/checks/check_session_branch_name.py
 defines:     ["Act"]
 command:     {"Act": "Stage 2 (Promote 2): build the change, on this session's own feature branch, pushed to GitHub so a lost session does not lose it -- not yet shared.", "Build": "The same as **Act**."}
 status:      active
@@ -16,7 +16,7 @@ in_force_at: null
 supersedes:  []
 overrides:   null
 added:       "2026-10-02"
-approved_by: "Morgan F, 2026-10-02, withdrawn from the universal set BestPractice, which keeps no copy (there: Morgan, 2026-09-27 -- Act lives on the session's temporary (feature) branch and \"booked is all about moving it from there to pre-staging so ... it won't get lost\"). Amended 2026-10-06, Morgan, \"Please evaluate and act\" on a session's finding that this rule and Claude Code on the web's designated branch contradicted each other (strength: assented; the wording is the session's). Amended 2026-10-11, Morgan: the username in every branch name, right after the date, and the rule and its checks only for people on the ladder (strength: decided)"
+approved_by: "Morgan F, 2026-10-02, withdrawn from the universal set BestPractice, which keeps no copy (there: Morgan, 2026-09-27 -- Act lives on the session's temporary (feature) branch and \"booked is all about moving it from there to pre-staging so ... it won't get lost\"). Amended 2026-10-06, Morgan, \"Please evaluate and act\" on a session's finding that this rule and Claude Code on the web's designated branch contradicted each other (strength: assented; the wording is the session's). Amended 2026-10-11, Morgan: the username in every branch name, right after the date, and the rule and its checks only for people on the ladder (strength: decided). Amended 2026-10-16, Morgan: the harness's own name is refused, not let through -- \"Both, booked\" to the push refusal and this set's check (strength: decided)"
 strength:    decided
 ---
 ## Rule
@@ -62,14 +62,17 @@ word** (Morgan, 2026-10-11, strength: decided: "it's okay to move to
 sister branches like renaming without my permission (you need my
 permission only for the ladder upgrades like to staging or to main)"). **The push check refuses a session branch named
 by hand**, printing the rename command, so a hand-typed name never reaches
-GitHub; it lets the harness's own name through, so a session that kept it
-is never left with work it cannot push (Morgan, 2026-10-06, strength:
-decided: "how can we make sure that you always use the new format for
-temporary branches?"). **Let through is not unsaid:** the first commit on
-the harness's name hands the session a note with the command, once per
-branch, whatever word started the building (branch-name-commit-note.sh,
-2026-10-11), and every push to it hands the same note again
-(precedent_branch_name.harness_name_note).
+GitHub; **and since 2026-10-16 it refuses the harness's own name too**,
+when a push would create it on origin, with the same rename command
+(Morgan, 2026-10-15, strength: decided: "I keep on asking you to do this
+but again and again you are not doing it"). **Work on a harness-named
+branch is never Booked or Produced either:** this rule's check reads the
+checkout's branch every time the practice checks run, and a landing or a
+Produce runs them. `git branch -m` keeps every commit, so neither refusal
+loses anything. A branch origin already had before then still pushes,
+with a note (precedent_branch_name.harness_name_note), so nothing is
+stranded; the first commit on one still gets the note too
+(branch-name-commit-note.sh).
 
 **Act comes after [Consider](consider.md)**, even if the plan is one line.
 A request to build with no plan yet gets the one-line plan first, in the
@@ -142,6 +145,18 @@ the session had not loaded the rule. Morgan asked why, then said moving to
 any sister branch needs no permission, only a step up the ladder does
 (strength: decided). The sentence above records that, and both of the
 naming tool's notes now say it too.
+
+**The harness's name, refused**, 2026-10-16. On 2026-10-15 five sessions
+in one consumer worked and pushed under `claude/` names, the session that
+noticed among them: it got the note on every commit and every push, and
+still followed its opening instructions over it, because the push went
+through either way. Morgan, on hearing it was the fourth round since
+2026-10-06: "I am very unhappy because I keep on asking you to do this but
+again and again you are not doing it and the old branch names keep on
+being used." Asked whether a fix would actually enforce it, he chose both
+halves and "all in shared ladders, because this is just for people who use
+that shared set": the engine's push refusal, which already applies only on
+the ladder, and this rule's own check.
 
 ## Install
 The naming tool ships with the engine ([precedent_branch_name.py](../tools/precedent_branch_name.py) in
