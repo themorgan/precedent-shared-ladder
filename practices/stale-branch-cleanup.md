@@ -76,10 +76,27 @@ turn when there is one, so the session knows before it writes the close.
 **What the page is.** One section per repository, one row per branch: a
 link to GitHub's branch list filtered to that one branch, where the trash
 icon deletes it, and the branch's last commit date. A tick per row keeps
-the person's place, in their browser only. The page deletes nothing, and the
-session never does either: a remote branch is the person's to delete
+the person's place, in their browser only. The session never deletes a
+branch: a remote branch is the person's to delete
 ([never-delete-a-remote-branch](https://github.com/alex137/BestPractice/blob/staging/practices/never-delete-a-remote-branch.md),
 universal).
+
+**The delete-all button (2026-10-16).** Each repository's section opens
+with one more line: a link to that repository's
+`precedent-branch-cleanup.yml` workflow on GitHub, where the person clicks
+Run workflow and it deletes every branch already in `main`. Nothing ever
+starts it but that click (Morgan: "on both [private] and public, NEVER run
+the cleanup automatically", strength: decided). **In a public repository
+the button is always there.** **In a private one it shows only once
+`github_branch_cleanup_every_hours` (in the person's `identity.json`; 336
+for Morgan) has passed since that repository's last cleanup run**, one
+tracker per repository, apart from the main test's; otherwise the line
+says the date it comes back. A click hides that button at once and is
+saved into the page. Every row stays as it was, for counting, reading the
+names, and deleting one at a time instead. A repository whose `main` lacks
+the workflow says so; Update Vendors installs it. The page's builder,
+[precedent_stale_branches.py](https://github.com/alex137/BestPractice/blob/staging/tools/precedent_stale_branches.py),
+says how it decides.
 
 **Why one page.** A new page every session left a pile of snapshots, each
 showing branches already deleted. The pinned page is where the person looks,
