@@ -1,14 +1,14 @@
 ---
 slug:        stale-branch-cleanup
-title:       "The closing Boildown links the person's one pinned page of every branch they can delete"
+title:       "The closing Boildown links the person's one pinned page of every branch they can delete and every staging waiting to go live"
 tier:        on-demand
 severity:    default
 applies_to:  ["**"]
 applies_to_why: "A moment, not a place: the reply that closes a session. Routed by the `reply` gate."
 occasion:    "the reply that says the session can be archived"
 gates:       ["reply"]
-gates_why:   "The reply gate counts the stale branches at the start of every turn and prints the line only when there are any, so the closing reply is the one that can still carry the link."
-index_clause: "closing Boildown: refresh the pinned page of deletable branches, only if any"
+gates_why:   "The reply gate counts the stale branches, and the repositories whose staging waits for main, at the start of every turn and prints the line only when there are any, so the closing reply is the one that can still carry the link."
+index_clause: "closing Boildown: refresh the pinned branch and staging page, only if any"
 index_required: false
 checked_by:  null
 defines:     []
@@ -18,19 +18,24 @@ visible_to:  code-owners
 supersedes:  []
 overrides:   null
 added:       "2026-10-05"
-approved_by: "Morgan F, 2026-10-11 -- one pinned page updated in place, its address in his identity.json, instead of a new page every session: \"Let's do this\" (strength: decided). Earlier, Morgan F, 2026-10-05 -- \"in the Boildown, give the user an artifact with a list of all stale temp github repos that can be deleted, from all repos that are open in that session. Don't do that if there aren't any. If in doubt, do NOT include it\"; the closing reply only, and for code owners only (strength: decided)"
+approved_by: "Morgan F, 2026-10-16 -- the page also lists each repository whose staging waits to go into main, taken over from the retired chief-of-staff: \"Let's implement your three suggestion\" (strength: decided). Morgan F, 2026-10-11 -- one pinned page updated in place, its address in his identity.json, instead of a new page every session: \"Let's do this\" (strength: decided). Earlier, Morgan F, 2026-10-05 -- \"in the Boildown, give the user an artifact with a list of all stale temp github repos that can be deleted, from all repos that are open in that session. Don't do that if there aren't any. If in doubt, do NOT include it\"; the closing reply only, and for code owners only (strength: decided)"
 ---
 
 ## Rule
 
 **In the reply that says "You can archive this session", when any branch
-can be deleted, publish a page listing them and link it in one Boildown
-line.** The list covers every repository open in the session where the
-person is a code owner. A branch is on it only when it is already in
-`main`, so deleting it loses nothing; `main`, `staging` and the engine's
-own branches never are.
+can be deleted or any staging is waiting to go into main, publish a page
+listing them and link it in one Boildown line.** The list covers every
+repository open in the session where the person is a code owner. A branch
+is on it only when it is already in `main`, so deleting it loses nothing;
+`main`, `staging` and the engine's own branches never are.
 
-**No branches, no page. In doubt, no page.** Not in any other reply either:
+**Above the branches, the page lists each repository whose staging carries
+a change `main` lacks**: how many commits, the oldest one's date, and a link
+to GitHub's comparison. A repository where `main` is staging has no row. The
+tool builds this list too; nothing extra to run.
+
+**Nothing to delete and nothing waiting, no page. In doubt, no page.** Not in any other reply either:
 it rides with the archive line, so it does not come back every message.
 
 **It is one page, updated in place.** Build it with `python3
@@ -62,7 +67,8 @@ erases every other repository's rows and the page's saved ticks. Say in
 the Boildown line that the page was skipped and that Update Vendors here
 fixes it (2026-10-13: a to-do repository's older tool would have erased
 42 branches across seven repositories). Write the line as: *"Branches you can delete: Branch cleanup, N across M
-repositories"*, with the page's name linked to it. The reply gate prints the count at the start of a
+repositories"*, with the page's name linked to it, and, when anything is
+waiting, add *"; waiting to go live: <repository>, <repository>"*. The reply gate prints the count at the start of a
 turn when there is one, so the session knows before it writes the close.
 
 ## Detail
@@ -97,6 +103,14 @@ Promote fix branch or copy of staging (`DATE-promote-fix-ID`, `DATE-promote-to-m
 changed nothing. It reads the remote-tracking refs, so `--fetch` first
 makes the page match GitHub; the turn-start count skips the fetch to stay
 fast.
+
+**Waiting to go live, merged like the branches.** A repository this session
+checked gets its fresh row, or none once staging and `main` are level; one
+it could not see keeps its last row, dated and marked as possibly moved.
+So the page covers, over a few closes, every repository the person works
+in, and no single session has to read them all. A repository nobody opens
+is the gap: its row only ages. A staging that merged `main` back in after a
+Produce, and changes nothing `main` lacks, counts as level.
 
 **Who sees it.** This practice is `visible_to: code-owners`: branch
 management belongs to the people who run the repository, and a repository
@@ -151,3 +165,10 @@ service's conflict refusal is what caught it. The rule and the gate line
 now say to read the page with path `index.html` immediately before
 building, and the tool warns when the file it is handed is not a fresh
 read.
+
+2026-10-16: Morgan retired chief-of-staff, which he rarely used and whose
+name a new system of his will take. Its one check nothing else did --
+which repositories have staging waiting for main -- moved here, onto the
+page he already keeps pinned, so it comes at every close instead of on
+request. The old practice read every repository at once; this page gets
+there across sessions, by the same merge that keeps the branches.

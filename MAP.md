@@ -10,14 +10,13 @@ This repository's map of the practice catalogue in force here and the engine's o
 
 ## The practice catalogue
 
-`practices/` holds 24 practice files (1 resident, 23 on-demand). One file per practice.
+`practices/` holds 23 practice files (1 resident, 22 on-demand). One file per practice.
 
 | Practice | Tier | Occasion / scope |
 |---|---|---|
 | [act](practices/act.md) | on-demand | a person says "Promote", "Promote N" or a stage word ("Consider", "Act", "Debut", "Produce", "Make live"), or asks to plan, build or move work up a tier |
 | [brainstorm-holds-commits](practices/brainstorm-holds-commits.md) | resident | a conversation is exploratory, or a person calls it a brainstorm |
 | [checks-follow-the-tier](practices/checks-follow-the-tier.md) | on-demand | adding a check, or deciding which branch tier a check runs at |
-| [chief-of-staff](practices/chief-of-staff.md) | on-demand | a person says "Chief of Staff" |
 | [consider](practices/consider.md) | on-demand | a person says "Promote", "Promote N" or a stage word ("Consider", "Act", "Debut", "Produce", "Make live"), or asks to plan, build or move work up a tier |
 | [data-branch-names](practices/data-branch-names.md) | on-demand | making a branch that holds a repository's long-lived data rather than work |
 | [debut](practices/debut.md) | on-demand | a person says "Promote", "Promote N" or a stage word ("Consider", "Act", "Debut", "Produce", "Make live"), or asks to plan, build or move work up a tier |
@@ -41,10 +40,11 @@ This repository's map of the practice catalogue in force here and the engine's o
 
 ## Withdrawn practices
 
-9 practice file(s) here are **not in force** and are left out of every table above. **The files are kept on purpose** -- a withdrawn rule and the argument against it are worth re-reading, and `retired` is not a synonym for deleted (that is `decommission-deletes-files`, and it is about mechanisms, not rules). Read one in full with `python3 tools/precedent_show.py SLUG`.
+10 practice file(s) here are **not in force** and are left out of every table above. **The files are kept on purpose** -- a withdrawn rule and the argument against it are worth re-reading, and `retired` is not a synonym for deleted (that is `decommission-deletes-files`, and it is about mechanisms, not rules). Read one in full with `python3 tools/precedent_show.py SLUG`.
 
 | Practice | Status | Now in force at | Why it was withdrawn |
 |---|---|---|---|
+| [chief-of-staff](practices/chief-of-staff.md) | retired | — (nowhere) | **Retired 2026-10-16.** Morgan: *"we have a command 'chief of staff' that I don't use much -- but I'm going to create a whole separate 'chief of staff' system and processes that do something else ... so, I think we should rename or perhaps eliminate this old chief of staff"*, then, on the proposal to retire it and move its one unique check onto the branch-cleanup page: *"Let's implement your th... |
 | [go-merge](practices/go-merge.md) | deduplicated | [go-update](practices/go-update.md) | Renamed 2026-09-26 on Morgan's `Go update`. |
 | [ladder-in-a-repo-on-staging](practices/ladder-in-a-repo-on-staging.md) | retired | — (nowhere) | **Retired 2026-10-14: pre-staging retired for everyone** (Morgan: *"Only me, go ahead and plan it. |
 | [merge-authorization-keyword](practices/merge-authorization-keyword.md) | deduplicated | [go-update](practices/go-update.md) | **The 2026-09-07 retirement was reversed on 2026-09-08, and this is now a deduplication rather than a withdrawal.** `status: retired` said nobody wanted this rule anywhere. |
