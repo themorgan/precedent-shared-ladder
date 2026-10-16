@@ -10,7 +10,7 @@ gates:       []
 index_clause: "stage 2: build on the session's feature branch, pushed so it survives"
 checked_by:  tools/checks/check_session_branch_name.py
 ships:       ["tools/branch_name_guard.py", "tools/precedent_branch_rules.py"]
-hooks:       [{"event": "pre-push", "run": "tools/branch_name_guard.py", "args": ["--pre-push"]}]
+hooks:       [{"event": "pre-push", "run": "tools/branch_name_guard.py", "args": ["--pre-push"]}, {"event": "PreToolUse", "matcher": "Bash", "run": "tools/branch_name_guard.py", "args": ["--commit-note"]}]
 defines:     ["Act"]
 command:     {"Act": "Stage 2 (Promote 2): build the change, on this session's own feature branch, pushed to GitHub so a lost session does not lose it -- not yet shared.", "Build": "The same as **Act**."}
 status:      active

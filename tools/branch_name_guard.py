@@ -5,6 +5,7 @@ branch_name_guard.py -- act's enforcement, shipped by the ladder set.
 
     python3 tools/branch_name_guard.py --pre-push        (git's pre-push: refs on stdin)
     python3 tools/branch_name_guard.py --check NAME      (one name; exit 1 and why)
+    python3 tools/branch_name_guard.py --commit-note     (Claude Code PreToolUse Bash hook)
 
 THE RULE (act, Morgan, 2026-10-11, strength: decided): a session on the
 ladder works on a branch tools/precedent_branch_name.py named --
@@ -43,12 +44,20 @@ WHAT IS REFUSED, at pre-push:
   - a NEW branch with a date-led or `claude/`/`session/` name the naming
     tool did not make: a different username, no session part, or a session
     part that is not this session's.
+And before the first commit on a harness-named branch, once per branch, a
+note (never a refusal) says how to make the named branch, so the session
+moves before it has built anything under the wrong name: act declares
+--commit-note as a PreToolUse hook on Bash (moved here from the engine's
+branch-name-commit-note.sh, 2026-10-16).
+
 Branches not judged at all: the tier branches, `data-` branches, and any
 name that neither opens with a date nor sits under `claude/` or `session/`.
 """
+import json
 import os
 import pathlib
 import re
+import subprocess
 import sys
 
 HERE = pathlib.Path(__file__).resolve().parent
@@ -171,6 +180,67 @@ def pre_push_refusals(lines, tail=None, user=None):
     return out
 
 
+COMMIT_NOTE_MARKS = 'precedent-branch-name-noted'
+_GIT_COMMIT_RE = re.compile(
+    r'(?:^|[|;&(]|&&|\|\||\$\()\s*git\s+(?:-C\s+(\S+)\s+)?commit\b')
+_CD_RE = re.compile(r'^\s*cd\s+([^\s;&|]+)')
+
+
+def _git(repo, *args):
+    try:
+        r = subprocess.run(['git', '-C', str(repo), *args], capture_output=True,
+                           text=True, timeout=30)
+    except (OSError, subprocess.TimeoutExpired):
+        return ''
+    return r.stdout.strip() if r.returncode == 0 else ''
+
+
+def commit_note(payload):
+    """-> the note for a Bash call that commits on a harness-named branch,
+    or None. Said once per branch (a marker under the checkout's .git), and
+    only where a session ID says a cloud session is running."""
+    if not session_tail():
+        return None
+    try:
+        data = json.loads(payload or '{}')
+    except ValueError:
+        return None
+    cmd = str(((data.get('tool_input') or {}).get('command')) or '')
+    # Quoted text is blanked first, so a commit MESSAGE that mentions
+    # `git commit` is not read as one.
+    bare = re.sub(r"'[^']*'|\"(?:[^\"\\]|\\.)*\"", '""', cmd)
+    m = _GIT_COMMIT_RE.search(bare)
+    if not m:
+        return None
+    base = pathlib.Path(str(data.get('cwd') or os.environ.get('CLAUDE_PROJECT_DIR') or '.'))
+    target = m.group(1) or (_CD_RE.match(bare).group(1) if _CD_RE.match(bare) else '')
+    target = pathlib.Path(os.path.expanduser(target.strip('"\''))) if target else base
+    if not target.is_absolute():
+        target = base / target
+    top = _git(target, 'rev-parse', '--show-toplevel')
+    branch = _git(target, 'symbolic-ref', '--short', '-q', 'HEAD') if top else ''
+    if not is_harness_name(branch):
+        return None
+    git_dir = _git(target, 'rev-parse', '--absolute-git-dir')
+    if not git_dir:
+        return None
+    mark = pathlib.Path(git_dir) / COMMIT_NOTE_MARKS / branch.replace('/', '__')
+    if mark.exists():
+        return None
+    try:
+        mark.parent.mkdir(parents=True, exist_ok=True)
+        mark.write_text(branch + '\n', encoding='utf-8')
+    except OSError:
+        pass
+    return (f'This commit is going onto {branch}, the branch the harness '
+            f'named when this session opened, before the task was known. On '
+            f'the ladder a session works on its own named branch (act): '
+            f'git switch -c "$(python3 tools/precedent_branch_name.py <a few '
+            f'words>)" -- run it now, and every commit made so far comes '
+            f'with it. {SISTER_BRANCH_PERMISSION} This commit goes ahead; '
+            f'a push under this name is refused. Said once per branch.')
+
+
 def main(argv=None):
     argv = list(sys.argv[1:] if argv is None else argv)
     if not argv or argv[0] in ('-h', '--help'):
@@ -183,13 +253,19 @@ def main(argv=None):
         for why in refusals:
             print(f'push refused (act): {why}', file=sys.stderr)
         return 1 if refusals else 0
+    if argv[0] == '--commit-note':
+        note = commit_note(sys.stdin.read())
+        if note:
+            print(json.dumps({'hookSpecificOutput': {
+                'hookEventName': 'PreToolUse', 'additionalContext': note}}))
+        return 0
     if argv[0] == '--check' and len(argv) > 1:
         why = name_refusal(argv[1])
         if why:
             print(why)
             return 1
         return 0
-    print('usage: branch_name_guard.py --pre-push | --check NAME', file=sys.stderr)
+    print('usage: branch_name_guard.py --pre-push | --commit-note | --check NAME', file=sys.stderr)
     return 2
 
 
