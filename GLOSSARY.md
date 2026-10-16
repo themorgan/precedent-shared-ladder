@@ -16,7 +16,6 @@ Built from every practice's `defines:` frontmatter field -- the terms that pract
 | Book it | [go-update](practices/go-update.md) |
 | Booked | [go-update](practices/go-update.md) |
 | Brainstorm | [brainstorm-holds-commits](practices/brainstorm-holds-commits.md) |
-| Chief of Staff | [chief-of-staff](practices/chief-of-staff.md) |
 | Consider | [consider](practices/consider.md) |
 | Data branch | [data-branch-names](practices/data-branch-names.md) |
 | Debut | [debut](practices/debut.md) |
@@ -32,15 +31,12 @@ Built from every practice's `defines:` frontmatter field -- the terms that pract
 | production | [produce](practices/produce.md) |
 | Promote | [promote](practices/promote.md) |
 | Promote N | [promote](practices/promote.md) |
-| Promotion Reviews | [chief-of-staff](practices/chief-of-staff.md) |
 | Relayed authorization | [relayed-authorization](practices/relayed-authorization.md) |
 | Run tests | [debut](practices/debut.md) |
 | Shared Save | [go-update](practices/go-update.md) |
 | Spec it out | [write-it-up](practices/write-it-up.md) |
 | Test Readiness | [debut](practices/debut.md) |
-| the desk | [chief-of-staff](practices/chief-of-staff.md) |
 | the five stages | [promote](practices/promote.md) |
-| the sweeper | [chief-of-staff](practices/chief-of-staff.md) |
 | Tier branch | [tier-branch](practices/tier-branch.md) |
 | Upstream review | [upstream-review](practices/upstream-review.md) |
 | Upstream-seen | [upstream-review](practices/upstream-review.md) |

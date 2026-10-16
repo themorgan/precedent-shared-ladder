@@ -12,8 +12,8 @@ index_clause: "on request only; name the window read, link each session; Promoti
 checked_by:  null
 defines:     ["Chief of Staff", "the sweeper", "the desk", "Promotion Reviews"]
 command:     {"Chief of Staff": "Stop and route this: tell you what every open session is blocked on and what is colliding, with a clickable link to each, and end on Promotion Reviews: across every repo with Precedent installed, what waits on staging for main, and which of this week's branches are stale."}
-status:      active
-in_force_at: null
+status:      retired
+in_force_at: none
 supersedes:  []
 overrides:   null
 added:       "2026-10-02"
@@ -300,6 +300,23 @@ means the fleet sweep and does not say the phrase — the cost of guessing
 wrong here is a sweep nobody asked for, not a differently-worded reply.
 
 ## Story
+**Retired 2026-10-16.** Morgan: *"we have a command 'chief of staff' that I
+don't use much -- but I'm going to create a whole separate 'chief of staff'
+system and processes that do something else ... so, I think we should rename
+or perhaps eliminate this old chief of staff"*, then, on the proposal to
+retire it and move its one unique check onto the branch-cleanup page: *"Let's
+implement your three suggestion: retire chief of staff"* (strength: decided).
+Retiring rather than renaming frees the name for the new system, so the
+phrase never reaches this rule in the meantime. What it did goes elsewhere:
+the branch sweep was already the pinned cleanup page
+([stale-branch-cleanup](stale-branch-cleanup.md)), which every closing
+session refreshes for code owners; Promotion Review A, staging waiting for
+main, joined that page the same day; the blocked-and-colliding sessions half
+is left to the rules that already check other sessions before starting
+overlapping work. Promotion Review B, judging unlanded work on stale
+branches, is dropped: the ladder's rule against leaving work on a branch
+keeps that pile small.
+
 **Proposed by Morgan on 2026-09-13** and written up at
 [spec/CHIEF_OF_STAFF.md](https://github.com/alex137/BestPractice/blob/staging/spec/CHIEF_OF_STAFF.md)
 with the platform capability measured rather than assumed. He held

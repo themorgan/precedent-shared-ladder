@@ -33,7 +33,7 @@ approved_by: "Morgan, 2026-10-06 (strength: decided): \"rules should not be repe
 **The merge Produce makes is rehearsed**: `staging` into `main`.
 
 ## Detail
-The fleet version of the branch sweep, across every repo the person owns, is [chief-of-staff](chief-of-staff.md)'s; this check stays inside the repos it already reads.
+The fleet version of the branch sweep, across every repo the person works in, is the pinned page [stale-branch-cleanup](stale-branch-cleanup.md) builds; this check stays inside the repos it already reads.
 
 ## Why
 The check reads what people run, which is `main`; a fix pushed straight there skips every check the ladder puts between a change and production. And the tier branches are the ladder itself: a one-click delete link on one of them, after a Produce made it look merged, would take the pipeline down with a click.

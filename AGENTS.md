@@ -6,7 +6,7 @@ This repo IS `precedent-shared-ladder` -- a **shared** source, named for its sub
 
 <!-- Regenerate with: python3 tools/build_views.py -- do not hand-edit this block; `python3 tools/build_views.py --check` exits non-zero on drift. Source: practices/ -- edit the practice file, never this block. -->
 
-## Resident block (~114 of 250 token budget, 1 of 15 practices)
+## Resident block (~114 of 250 token budget, 1 of 14 practices)
 
 **brainstorm-holds-commits.** When a conversation is a **Brainstorm** -- the person says the word, or the
 thread is plainly exploratory ("I'm wondering", "what are my options", "do
@@ -21,8 +21,6 @@ is enthusiasm for the idea. **When in doubt, it is a brainstorm.**
 ```
 When a message says "Booked", "Approved", "Book it" or "Promote 3", or plainly authorizes a merge:
   go-update — stage 3, Booked: land it on the landing branch; high-risk: PR and merge
-When a person says "Chief of Staff":
-  chief-of-staff — on request only; name the window read, link each session; Promotion Reviews last
 When a person says "No ladders", or asks to see what somebody who does not use the ladder sees:
   no-ladders — a new session with PRECEDENT_NO_LADDERS=1; never this one; it pushes nothing
 When a person says "Promote", "Promote N" or a stage word ("Consider", "Act", "Debut", "Produce", "Make live"), or asks to plan, build or move work up a tier:
