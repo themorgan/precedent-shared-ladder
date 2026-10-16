@@ -41,15 +41,18 @@ it rides with the archive line, so it does not come back every message.
 **It is one page, updated in place.** Build it with `python3
 tools/precedent_stale_branches.py --fetch --html
 <scratchpad>/branch-cleanup.html`. **With a saved page it first asks for
-that page as it stands, and writes nothing until it has it:** save it to a
-file (the Artifact tool's read of that address, with path `index.html`) and
-run the command again adding `--merge <that file>`. **Read it immediately
-before building, every time, and merge that file: never a copy from
-earlier in the session, and never the page this session built last.**
-Another session may have republished it in between, and a merge against
-an older copy drops that session's rows and every tick saved since. A read
-without the path saves no file; the tool warns when the file it is handed
-is not a fresh read. The page then keeps the
+that page as it stands, and writes nothing until it has it:** read that
+address once with the Artifact tool, **without a path** -- the read a
+republish needs -- and run the command again adding `--merge <the file that
+read says the full HTML was saved to>`. Only a page small enough to come
+back inline needs a second read, with path `index.html`, for the file; a
+read with the path alone does not count for the republish. **Never open the
+file yourself: the tool reads it. Read the page immediately before
+building, every time, and merge that file: never a copy from earlier in the
+session, and never the page this session built last.** Another session may
+have republished it in between, and a merge against an older copy drops
+that session's rows and every tick saved since; the tool warns when the
+file it is handed is not a fresh read. The page then keeps the
 rows of every repository this session cannot see, under the date they were
 last checked, and replaces the rest; `--replace` is only for a saved page
 that is gone or unreadable. Then publish the file to that address (the
@@ -189,3 +192,10 @@ which repositories have staging waiting for main -- moved here, onto the
 page he already keeps pinned, so it comes at every close instead of on
 request. The old practice read every repository at once; this page gets
 there across sessions, by the same merge that keeps the branches.
+
+2026-10-16, the same evening: a consuming repository's close read the page
+twice, first with path `index.html` as this said, then without one, because
+the first read's own result says its copy does not count for a republish.
+The second read had saved the full page to a file anyway, and the session
+then opened that file and read it through, about 50KB nobody needed. One
+read without a path now serves both the merge and the publish.
