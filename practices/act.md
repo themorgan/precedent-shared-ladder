@@ -9,6 +9,8 @@ occasion:    "a person says \"Promote\", \"Promote N\" or a stage word (\"Consid
 gates:       []
 index_clause: "stage 2: build on the session's feature branch, pushed so it survives"
 checked_by:  tools/checks/check_session_branch_name.py
+ships:       ["tools/branch_name_guard.py", "tools/precedent_branch_rules.py"]
+hooks:       [{"event": "pre-push", "run": "tools/branch_name_guard.py", "args": ["--pre-push"]}]
 defines:     ["Act"]
 command:     {"Act": "Stage 2 (Promote 2): build the change, on this session's own feature branch, pushed to GitHub so a lost session does not lose it -- not yet shared.", "Build": "The same as **Act**."}
 status:      active
@@ -16,7 +18,7 @@ in_force_at: null
 supersedes:  []
 overrides:   null
 added:       "2026-10-02"
-approved_by: "Morgan F, 2026-10-02, withdrawn from the universal set BestPractice, which keeps no copy (there: Morgan, 2026-09-27 -- Act lives on the session's temporary (feature) branch and \"booked is all about moving it from there to pre-staging so ... it won't get lost\"). Amended 2026-10-06, Morgan, \"Please evaluate and act\" on a session's finding that this rule and Claude Code on the web's designated branch contradicted each other (strength: assented; the wording is the session's). Amended 2026-10-11, Morgan: the username in every branch name, right after the date, and the rule and its checks only for people on the ladder (strength: decided). Amended 2026-10-16, Morgan: the harness's own name is refused, not let through -- \"Both, booked\" to the push refusal and this set's check (strength: decided)"
+approved_by: "Morgan F, 2026-10-02, withdrawn from the universal set BestPractice, which keeps no copy (there: Morgan, 2026-09-27 -- Act lives on the session's temporary (feature) branch and \"booked is all about moving it from there to pre-staging so ... it won't get lost\"). Amended 2026-10-06, Morgan, \"Please evaluate and act\" on a session's finding that this rule and Claude Code on the web's designated branch contradicted each other (strength: assented; the wording is the session's). Amended 2026-10-11, Morgan: the username in every branch name, right after the date, and the rule and its checks only for people on the ladder (strength: decided). Amended 2026-10-16, Morgan: the harness's own name is refused, not let through -- \"Both, booked\" to the push refusal and this set's check (strength: decided). Amended 2026-10-16, Morgan: the enforcement lives here with the rule -- \"Rewrite it so it is entirely in ladders including the enforcement\" -- shipped as tools/branch_name_guard.py and run at every push by the engine's pre-push hook point, approved \"just for the branch related check\" (strength: decided)"
 strength:    decided
 ---
 ## Rule
@@ -60,19 +62,29 @@ without stopping to ask. **It covers any sister branch, a rename included;
 only a step up the ladder -- into staging or main -- needs the person's
 word** (Morgan, 2026-10-11, strength: decided: "it's okay to move to
 sister branches like renaming without my permission (you need my
-permission only for the ladder upgrades like to staging or to main)"). **The push check refuses a session branch named
-by hand**, printing the rename command, so a hand-typed name never reaches
-GitHub; **and since 2026-10-16 it refuses the harness's own name too**,
-when a push would create it on origin, with the same rename command
-(Morgan, 2026-10-15, strength: decided: "I keep on asking you to do this
-but again and again you are not doing it"). **Work on a harness-named
-branch is never Booked or Produced either:** this rule's check reads the
-checkout's branch every time the practice checks run, and a landing or a
-Produce runs them. `git branch -m` keeps every commit, so neither refusal
-loses anything. A branch origin already had before then still pushes,
-with a note (precedent_branch_name.harness_name_note), so nothing is
-stranded; the first commit on one still gets the note too
-(branch-name-commit-note.sh).
+permission only for the ladder upgrades like to staging or to main)"). **Every push is checked, by this set's own
+[tools/branch_name_guard.py](../tools/branch_name_guard.py)**, which act
+ships and declares as a git `pre-push` hook: it refuses a push to the
+harness's own name, new or not, and a new session branch named by hand,
+printing the rename command either way (Morgan, 2026-10-15, strength:
+decided: "I keep on asking you to do this but again and again you are not
+doing it"). It runs from the global pre-push the commit-identity hook
+installs, so it holds in a session rooted above its repositories, which
+loads no repository's settings; and the engine refuses the push outright
+while a practice source did not load, so a ladder set that failed to clone
+stops the push instead of switching this off (Morgan, 2026-10-16,
+strength: decided: "Enforcement should live in the same support repo where
+the practice is"). **Work on a harness-named branch is never Booked or
+Produced either:** this rule's check reads the checkout's branch every
+time the practice checks run, and a landing or a Produce runs them. `git
+branch -m` keeps every commit, so no refusal loses anything.
+
+**Outside the session, GitHub itself can refuse it.**
+[tools/precedent_branch_rules.py](../tools/precedent_branch_rules.py)
+reports whether each repository has a ruleset that stops anyone creating a
+`claude/**` or `session/**` branch, and applies one with `--apply` -- a
+change to the repository's settings, so only on the person's word for that
+repository.
 
 **Act comes after [Consider](consider.md)**, even if the plan is one line.
 A request to build with no plan yet gets the one-line plan first, in the
