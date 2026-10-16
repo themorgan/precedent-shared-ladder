@@ -116,9 +116,10 @@ has one onto staging.
   is now on: staging (you have finished step 3 of 5, Booked)."*
 - **Vocabulary** lists every word you can say, this set's included, each
   marked with the set it comes from.
-- **Chief of Staff** stops the work and reports instead: what every open
-  session is waiting on, what is colliding, and what waits to move up a
-  step in each repository.
+- **If you run the repository, the branch-cleanup page**, refreshed when a
+  session closes, lists the
+  branches you can delete and which repositories have staging waiting to go
+  into main.
 
 ## Everyone else
 
