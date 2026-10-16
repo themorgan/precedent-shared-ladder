@@ -88,8 +88,9 @@ tracker per repository, apart from the main test's; otherwise the line
 says the date it comes back. A click hides that button at once and is
 saved into the page. Every row stays as it was, for counting, reading the
 names, and deleting one at a time instead. A repository whose `main` lacks
-the workflow says so; Update Vendors installs it. The plan:
-[BRANCH_CLEANUP_BUTTON_PLAN.md](https://github.com/alex137/BestPractice/blob/staging/spec/BRANCH_CLEANUP_BUTTON_PLAN.md).
+the workflow says so; Update Vendors installs it. The page's builder,
+[precedent_stale_branches.py](https://github.com/alex137/BestPractice/blob/staging/tools/precedent_stale_branches.py),
+says how it decides.
 
 **Why one page.** A new page every session left a pile of snapshots, each
 showing branches already deleted. The pinned page is where the person looks,
