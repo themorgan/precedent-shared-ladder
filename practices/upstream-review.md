@@ -48,7 +48,7 @@ shown the review, the block, or a line saying it was skipped.
 ## Detail
 
 The tools print the review themselves, from
-`tools/precedent_upstream_review.py` in the vendored engine, and only where
+[tools/precedent_upstream_review.py](../tools/precedent_upstream_review.py) in the vendored engine, and only where
 both conditions hold -- the ladder in force for the person, and the person
 named as one of the repository's code owners:
 

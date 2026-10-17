@@ -134,7 +134,10 @@ nothing to do there: go straight to the next step.
 The commands do the whole move, and a session adds nothing to them:
 
 0. **The Promote lock**, so only one window moves a tier at a time. The
-   lock is the branch `precedent-promote-lock` on origin, which only ever
+   lock is the branch `data-promote-lock` on origin
+   (`precedent-promote-lock` in a repository that has not moved to the
+   ladder's data-branch names, [data-branch-names](data-branch-names.md)),
+   which only ever
    moves forward: one empty `[skip ci]` commit per claim or release, the
    newest one saying who holds it. **If another window holds it, a Promote
    does nothing** and says so -- *"another window is promoting right

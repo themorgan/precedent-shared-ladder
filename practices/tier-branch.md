@@ -28,8 +28,10 @@ strength:    decided
 into. Two more branches count as tier branches because they
 exist only to serve the ladder: `precedent-beta-v01`, staging's name before
 2026-09-25, kept so an install still pinned to it takes its updates; and
-`precedent-promote-lock`, which a Promote holds so two sessions never
-promote at once. `tier_branches()` and `LOCK_BRANCH` in
+Promote's lock, which a Promote holds so two sessions never promote at
+once: `data-promote-lock` on the ladder, `precedent-promote-lock` where a
+repository has not moved to the data-branch names
+([data-branch-names](data-branch-names.md)). `tier_branches()` and `LOCK_BRANCH` in
 [tools/precedent_branches.py](https://github.com/alex137/BestPractice/blob/staging/tools/precedent_branches.py)
 are the list.
 
