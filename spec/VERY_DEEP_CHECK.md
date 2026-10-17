@@ -31,8 +31,7 @@ prompt for a session rooted in the upstream repository, and what the person
 said about band-aids here until it lands. Filled in by the session during the
 run.
 
-**Band-aids here: not asked yet.** The person has not been asked whether to
-carry band-aids until these land; the session that finishes this run asks.
+**Band-aids here until these land:** asked of Morgan in the run's reply, 2026-10-17; his answer goes here. Upstream is a repository the same session lands in, so several items were fixed there in that run (BestPractice, branch 2026-10-17-themorgan-very-deep-check-fgx2q-568u9: the worktree scans, the warnings link, the record files' registration, the freshness verdicts); the rest are filed there. Its run account says which.
 
 ```text
 From: the very deep check session of 2026-10-17 (its helper for the ladder set) -- https://claude.ai/code/session_015pVTsH9zWGrgpmmwrFgX2q -- written by a session, not a person.
@@ -65,11 +64,11 @@ If you have a reply for the session that sent this, put it in its own fence bloc
 ## Warnings
 
 <!--vdc-embed:warnings: never hand-edit -- written by tools/very_deep_check.py's WARNINGS section; refresh with --refresh-warnings -->
-Measured 2026-10-17: **13 warning(s), 1 still open** (neither fixed nor excluded). For comparison, open when this run started: 25.
+Measured 2026-10-17: **18 warning(s), 6 still open** (neither fixed nor excluded). For comparison, open when this run started: 7.
 
 | Source | Kind | Warnings | Open | Excluded for good | Excluded until a date |
 |---|---|---|---|---|---|
-| doc_lint | unlinked file reference | 12 | 0 | 12 | 0 |
+| doc_lint | unlinked file reference | 17 | 5 | 12 | 0 |
 | precedent_session_check | undetermined | 1 | 1 | 0 | 0 |
 
 **Exclusions decided this run: 5.**
