@@ -82,9 +82,13 @@ branch -m` keeps every commit, so no refusal loses anything.
 **Outside the session, GitHub itself can refuse it.**
 [tools/precedent_branch_rules.py](../tools/precedent_branch_rules.py)
 reports whether each repository has a ruleset that stops anyone creating a
-`claude/**` or `session/**` branch, and applies one with `--apply` -- a
-change to the repository's settings, so only on the person's word for that
-repository.
+`claude/**` or `session/**` branch. **It is opt-in, per person:** anyone
+-- Morgan, Alex, anyone -- turns it on with `"github_branch_rules": true`
+in their own identity.json or user-level config, and nothing changes for
+someone who has not (Morgan, 2026-10-16, strength: decided). Opted in,
+`--apply` adds the ruleset to the named repositories their own GitHub
+account owns, and refuses anyone else's: a ruleset binds everyone who
+pushes there.
 
 **Act comes after [Consider](consider.md)**, even if the plan is one line.
 A request to build with no plan yet gets the one-line plan first, in the
