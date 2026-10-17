@@ -85,49 +85,52 @@ judges it, and a repair here would be overwritten by the next sync
 (2026-09-28, an Update Vendors refused over an acronym in a vendored
 practice).
 
-**What landing runs today.** The lint, the leak gate and the author
-checks -- the leak gate still scans the whole tree, since a secret
-anywhere is this landing's to stop. Added on 2026-09-27, and on the
-changed files only: the practice checks
-(`precedent_check.py --changed-files-only`), a compile of each changed
-Python file, a parse of each changed shell script (`bash -n`) and of each
-changed JSON file, the own test of each changed check
-(`tools/checks/check_x.py` runs `tools/checks/tests/test_x.sh`; a
-repo-local test and its materialized copy run once, as the materialized
-copy), and -- since 2026-09-28 -- a refusal of a new check that arrives
-without that test or without `SOURCE_ROOT`, naming the file and lines to
-add, and -- when
-a practice file changed -- a check that its generated views (`AGENTS.md`,
-`MAP.md`, `GLOSSARY.md`) were regenerated with it
-(`precedent_push_check.py --changed-files-check`). A push sends commits that
-already exist, so that last one refuses and names the command that
-regenerates; it never rewrites anything itself. Everything else waits for
-a full run.
+**What landing runs today** is the closed list in
+[tools/precedent_push_check.py](../tools/precedent_push_check.py)'s
+`BASIC_CHECKS_APPROVED`, each entry with the words that let it in: the
+lint, the leak gate (the whole tree, since a secret anywhere is this
+landing's to stop) and the commit checks (author, date, session trailer),
+the CI-workflow and generated-file checks, the views check, and the
+stranded mentions of a path the change removed. On a landing it adds one
+per-file pass on the changed files only
+(`precedent_push_check.py --changed-files-check`): a compile of each
+changed Python file, a parse of each changed shell script (`bash -n`) and
+JSON file, a refusal of a new check that arrives without its
+`tools/checks/tests/test_x.sh` or without `SOURCE_ROOT`, and -- when a
+practice file changed -- a refusal when its generated views (`AGENTS.md`,
+`MAP.md`, `GLOSSARY.md`) were not regenerated with it. A push sends
+commits that already exist, so these refuse and name the command; they
+never rewrite anything. **The practice checks
+(`precedent_check.py --changed-files-only`) and every test, a changed
+check's own `test_x.sh` included, ran here until 2026-10-16 and now wait
+for the Debut** (the Story); the pass names the tests it left for it.
 
-**What moves a check to landing:** it is fast (seconds, not minutes) and
-its finding can be pinned to a file. A check that cannot name a file, or
-needs the test suite, belongs to the full run. On 2026-09-29 seven
-test-suite checks that each judge one practice file moved on that rule
-into `precedent_check.py`'s `practice-file-shape`, and the routing
-reason's check moved with the reason into the practice file
-(`routing-reason`) -- so a broken practice file is refused at landing, not
-twenty minutes into a full run (Morgan, 2026-09-29, strength: decided; his
-words are in the Story).
+**What may move a check to landing:** it is fast (seconds, not minutes),
+its finding can be pinned to a file, **and the person asked for it there
+in their own words**, after being told its time and urged to leave it to
+the Debut ([quick-tier-is-closed](https://github.com/alex137/BestPractice/blob/staging/practices/quick-tier-is-closed.md)).
+A check that cannot name a file, or needs the test suite, belongs to the
+full run. On 2026-09-29 seven test-suite checks that each judge one
+practice file moved into [precedent_check.py](../tools/precedent_check.py)'s `practice-file-shape` on
+the first two conditions, and the routing reason's check moved with the
+reason into the practice file (`routing-reason`) (Morgan, 2026-09-29,
+strength: decided; his words are in the Story); since 2026-10-16 both run
+at the Debut with the other practice checks.
 
 **Landing never reads the full history.** The author, date and
 session-trailer checks read only commits not yet on any remote (the
 trailer check since 2026-09-29, where a repository declares the set that
 carries it), and a practice check given the
-push's range reads only that range: the harness-adapter ledger check walked
+push's range read only that range while practice checks ran there: the harness-adapter ledger check walked
 four folders' whole history there until 2026-09-29, and pinned its finding
 to a file the push had not changed, so it read everything and could never
 refuse. The whole history is the very deep check's to read (Morgan,
 2026-09-29; his words are in the Story).
 
-**Where it is built.** `tools/precedent_push_check.py` decides the tier from
+**Where it is built.** [tools/precedent_push_check.py](../tools/precedent_push_check.py) decides the tier from
 the branch a push writes (`precedent_branches.tier_for_push`) and adds the
-changed-files practice run for a landing on staging;
-`tools/precedent_merge_check.py` does the same for a pull request merged
+per-file pass for a landing on staging;
+[tools/precedent_merge_check.py](../tools/precedent_merge_check.py) does the same for a pull request merged
 through GitHub; `--land` and `--run-tests` in [tools/precedent_branches.py](../tools/precedent_branches.py)
 run the quick and the full checks on the tree they compose;
 [spec/BRANCH_TIERS_PLAN.md](https://github.com/alex137/BestPractice/blob/staging/spec/BRANCH_TIERS_PLAN.md)

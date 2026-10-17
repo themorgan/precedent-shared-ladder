@@ -28,7 +28,8 @@ the last one.
 **The other names for a stage count too.** "Go update", "Book it" and
 "Approved" are step 3; "Test Readiness" is step 4; "Make live" is step 5. A
 bare "Promote" names a move rather than one step, so it says which one:
-Promote (step 4 of 5) or Promote (step 5 of 5).
+Promote (step 3 of 5) or Promote (step 5 of 5), since a bare Promote never
+runs the Debut ([promote](promote.md)).
 
 **Only for the stage, not the everyday word.** "Act on it" and "consider
 this" are ordinary English and get nothing.

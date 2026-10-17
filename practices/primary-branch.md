@@ -27,7 +27,7 @@ repository happens to call it. Saying it does not itself trigger an action:
 [go-update](go-update.md) already resolves a bare instruction to this
 branch by default. This practice exists
 so the word has a definition a session -- and a person -- can look up,
-rather than one only ever spelled out inline inside those two.
+rather than one only ever spelled out inline inside that rule.
 
 **The repository declares it**: `base_branch` in its `precedent.json`, or
 a rule of its own that names it. In most repositories that is `main`.

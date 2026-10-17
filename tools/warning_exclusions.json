@@ -1,0 +1,50 @@
+{
+  "_comment": "Warnings the very deep check's WARNINGS section has decided to stop showing, each with its reason (practice: very-deep-check; tool: tools/warning_review.py). One entry excludes one group: `source`, `kind`, optional `path` (a glob) and optional `match` (a substring of the warning text). `term` is permanent, or temporary with a `revisit` date. `decided` is the date; `by` is `agent` when the session judged it alone. This list is this set's own.",
+  "exclusions": [
+    {
+      "source": "doc_lint",
+      "kind": "unlinked file reference",
+      "path": "practices/checks-follow-the-tier.md",
+      "term": "permanent",
+      "decided": "2026-10-17",
+      "by": "agent",
+      "why": "AGENTS.md, MAP.md and GLOSSARY.md name the generated views of whichever repository a landing runs in, not this set's own files; a link would point every reader at this set's copies"
+    },
+    {
+      "source": "doc_lint",
+      "kind": "unlinked file reference",
+      "path": "practices/generated-docs-in-output.md",
+      "term": "permanent",
+      "decided": "2026-10-17",
+      "by": "agent",
+      "why": "an example path in a consumer's content, not a file in this set"
+    },
+    {
+      "source": "doc_lint",
+      "kind": "unlinked file reference",
+      "path": "practices/go-merge.md",
+      "term": "permanent",
+      "decided": "2026-10-17",
+      "by": "agent",
+      "why": "a deduplicated stub naming its own old filename as history"
+    },
+    {
+      "source": "doc_lint",
+      "kind": "unlinked file reference",
+      "path": "practices/go-update.md",
+      "term": "permanent",
+      "decided": "2026-10-17",
+      "by": "agent",
+      "why": "go-update.md and go-merge.md named as filenames in the Detail's high-risk example and in the Story of the rename; history and self-reference, not a pointer a reader follows"
+    },
+    {
+      "source": "doc_lint",
+      "kind": "unlinked file reference",
+      "path": "practices/merge-authorization-keyword.md",
+      "term": "permanent",
+      "decided": "2026-10-17",
+      "by": "agent",
+      "why": "a deduplicated practice whose GLOSSARY.md and AGENTS.md mentions are its own history of where the rule once lived"
+    }
+  ]
+}

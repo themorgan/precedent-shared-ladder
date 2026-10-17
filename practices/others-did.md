@@ -45,7 +45,7 @@ else's.
 
 ## Detail
 
-**What runs it.** `tools/precedent_others_did.py` ships with the engine,
+**What runs it.** [tools/precedent_others_did.py](../tools/precedent_others_did.py) ships with the engine,
 so every repository with Precedent installed has it. It runs at session
 start for anyone with this set, and does nothing for anyone without it.
 It reads `main` and the staging branch, takes every commit
