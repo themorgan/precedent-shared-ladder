@@ -68,7 +68,11 @@ the meaning is a judgment call Claude asks before anything moves.
 
 **Nothing is shared without your word.** Steps 1 and 2 happen when you ask
 for the work; steps 3 and 5 each wait for you to say so, and step 4 only
-happens if you ask for it. An approval
+happens if you ask for it. The one exception is work you hand to a new
+session with Prompt Please: unless your note above the prompt says
+otherwise, that session takes small, low-risk work all the way to `main`
+and stops at step 2 on anything bigger
+([prompt-please-on-the-ladder](practices/prompt-please-on-the-ladder.md)). An approval
 passed along by another session counts only if your own individual set
 says you accept those.
 
