@@ -39,6 +39,19 @@ land() { printf '%s %s refs/heads/%s %s\n' "$1" "$S" "$2" "$S" \
 [ "$(land "$S" staging 2026-10-16-alex-some-work-ab1cd-x9y8z)" = 0 ] || { echo "FAIL: --land of a tool-made name, another person's, was refused"; fail=1; }
 [ "$(land refs/heads/claude/peaceful-ritchie-3u31td 2026-10-16-octo-some-work-ab1cd-x9y8z)" = 0 ] || { echo "FAIL: a rename on push, to a work branch, was refused"; fail=1; }
 [ "$(PRECEDENT_NO_LADDERS=1 land "$S" staging claude/peaceful-ritchie-3u31td)" = 0 ] || { echo "FAIL: a landing was judged off the ladder"; fail=1; }
+# Said at session start (2026-10-17): a checkout on a harness name, or one
+# a level below where the session is rooted, gets the note; a tool-made name
+# and a session with no ID get none.
+start() { CLAUDE_PROJECT_DIR="$1" CLAUDE_CODE_REMOTE_SESSION_ID="${2-session_0abcde}" python3 "$GUARD" --session-start 2>/dev/null; }
+git -C "$tmp" branch -q -m claude/peaceful-ritchie-3u31td
+start "$tmp" | grep -q 'follow this one' || { echo "FAIL: no session-start note on a harness-named branch"; fail=1; }
+up="$(mktemp -d)"; ln -s "$tmp" "$up/repo"
+start "$up" | grep -q 'claude/peaceful-ritchie-3u31td' || { echo "FAIL: no note for a checkout below the session root"; fail=1; }
+rm -rf "$up"
+[ -z "$(start "$tmp" '')" ] || { echo "FAIL: a note with no cloud session"; fail=1; }
+[ -z "$(PRECEDENT_NO_LADDERS=1 start "$tmp")" ] || { echo "FAIL: a session-start note off the ladder"; fail=1; }
+git -C "$tmp" branch -q -m 2026-10-16-octo-some-work-ab1cd-x9y8z
+[ -z "$(start "$tmp")" ] || { echo "FAIL: a session-start note on a tool-made name"; fail=1; }
 git -C "$tmp" checkout -q --detach
 [ "$(run)" = 2 ] || { echo "FAIL: a detached HEAD was not reported as SKIPPED"; fail=1; }
 [ "$fail" = 0 ] && echo "PASS: check_session_branch_name"

@@ -10,7 +10,7 @@ gates:       []
 index_clause: "stage 2: build on the session's feature branch, pushed so it survives"
 checked_by:  tools/checks/check_session_branch_name.py
 ships:       ["tools/branch_name_guard.py", "tools/precedent_branch_rules.py"]
-hooks:       [{"event": "pre-push", "run": "tools/branch_name_guard.py", "args": ["--pre-push"]}, {"event": "PreToolUse", "matcher": "Bash", "run": "tools/branch_name_guard.py", "args": ["--commit-note"]}]
+hooks:       [{"event": "pre-push", "run": "tools/branch_name_guard.py", "args": ["--pre-push"]}, {"event": "PreToolUse", "matcher": "Bash", "run": "tools/branch_name_guard.py", "args": ["--commit-note"]}, {"event": "SessionStart", "run": "tools/branch_name_guard.py", "args": ["--session-start"]}]
 defines:     ["Act"]
 command:     {"Act": "Stage 2 (Promote 2): build the change, on this session's own feature branch, pushed to GitHub so a lost session does not lose it -- not yet shared.", "Build": "The same as **Act**."}
 status:      active
@@ -62,7 +62,11 @@ without stopping to ask. **It covers any sister branch, a rename included;
 only a step up the ladder -- into staging or main -- needs the person's
 word** (Morgan, 2026-10-11, strength: decided: "it's okay to move to
 sister branches like renaming without my permission (you need my
-permission only for the ladder upgrades like to staging or to main)"). **Every push is checked, by this set's own
+permission only for the ladder upgrades like to staging or to main)").
+**The session hears this when it opens, not at its first commit:** the
+same guard, declared as a SessionStart hook, says it alongside the opening
+instructions whenever a checkout sits on a harness name, so the two never
+have to be weighed mid-task (2026-10-17). **Every push is checked, by this set's own
 [tools/branch_name_guard.py](../tools/branch_name_guard.py)**, which act
 ships and declares as a git `pre-push` hook: it refuses a push to the
 harness's own name, new or not, and a new session branch named by hand,
@@ -191,6 +195,18 @@ the guard judges what a push to staging or main comes from, and `--land`
 names that branch to the push's hooks and pushes from the person's own
 checkout (an engine change, since the branch is gone by the time git's
 hook runs).
+
+**2026-10-17: said at session start.** An Update Vendors session in a
+consuming repo opened on a `claude/` branch with instructions never to
+push to another; the pre-commit note then said a push under that name
+would be refused. It switched, as this rule intends, but only after
+stopping to weigh one instruction against the other, and reported the
+two as contradicting each other. The permission was already in this
+rule; it reached the session too late. The guard now says it at
+SessionStart. Chosen by the session under Morgan's "attach any repos you
+need, act, booked": a note rather than renaming the branch at start,
+since at start the work is unknown and this rule names a branch for what
+it holds; a rename later costs nothing.
 
 ## Install
 The naming tool ships with the engine ([precedent_branch_name.py](../tools/precedent_branch_name.py) in
