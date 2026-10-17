@@ -68,7 +68,11 @@ the meaning is a judgment call Claude asks before anything moves.
 
 **Nothing is shared without your word.** Steps 1 and 2 happen when you ask
 for the work; steps 3 and 5 each wait for you to say so, and step 4 only
-happens if you ask for it. An approval
+happens if you ask for it. The one exception is work you hand to a new
+session with Prompt Please: unless your note above the prompt says
+otherwise, that session takes small, low-risk work all the way to `main`
+and stops at step 2 on anything bigger
+([prompt-please-on-the-ladder](practices/prompt-please-on-the-ladder.md)). An approval
 passed along by another session counts only if your own individual set
 says you accept those.
 
@@ -204,10 +208,11 @@ force for whoever brings it.
 | [our_language.json](our_language.json) | The ladder's own words, merged into Vocabulary for the people who bring it. |
 | [approvers.json](approvers.json) | Who may approve a change here. |
 | [leak-blocklist.txt](leak-blocklist.txt) | Terms that must never reach a public repository. |
-| [tools/](tools/) | The vendored engine. Never edit it by hand; refresh it with "Update Vendors". |
+| [tools/](tools/) | The vendored engine, which is never edited by hand and is refreshed with "Update Vendors". These are this set's own, edited here: the push guard [branch_name_guard.py](tools/branch_name_guard.py), the GitHub ruleset tool [precedent_branch_rules.py](tools/precedent_branch_rules.py), the checks under [tools/checks/](tools/checks/), and the registries `generated_files.json` and `session_load_budgets.json`. `python3 tools/upstream_fix.py --no-branch PATH` says which a file is. |
 
-Before pushing, run `python3 tools/precedent_check.py` and read
-**0 violated**; a large skipped count is normal in a practice set.
+Before pushing, run `python3 tools/precedent_check.py --full-sweep` and read
+**0 violated**; a large skipped count is normal in a practice set. The
+bare command checks only a rotating slice, and nothing else runs it here.
 
 **Approval.** A change is proposed and an approver from
 [approvers.json](approvers.json) agrees to it; when the proposer is the

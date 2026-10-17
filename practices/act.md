@@ -75,9 +75,14 @@ while a practice source did not load, so a ladder set that failed to clone
 stops the push instead of switching this off (Morgan, 2026-10-16,
 strength: decided: "Enforcement should live in the same support repo where
 the practice is"). **Work on a harness-named branch is never Booked or
-Produced either:** this rule's check reads the checkout's branch every
-time the practice checks run, and a landing or a Produce runs them. `git
-branch -m` keeps every commit, so no refusal loses anything.
+Produced either:** the same guard judges a push to `staging` or `main` by
+the branch it comes from -- the one `--land` was asked to land, which the
+landing names to the push, or the local branch of a plain `git push` --
+and refuses a harness name or one typed by hand there, pushed before or
+not (2026-10-17). A Produce moves only what is already on staging, through
+a copy branch the naming tool names. This rule's practice check reads the
+checkout's branch in the full check besides. `git branch -m` keeps every
+commit, so no refusal loses anything.
 
 **Outside the session, GitHub itself can refuse it.**
 [tools/precedent_branch_rules.py](../tools/precedent_branch_rules.py)
@@ -173,6 +178,19 @@ being used." Asked whether a fix would actually enforce it, he chose both
 halves and "all in shared ladders, because this is just for people who use
 that shared set": the engine's push refusal, which already applies only on
 the ladder, and this rule's own check.
+
+**2026-10-17: the landing it never saw.** The very deep check of that day
+found the second half above was false: a landing runs the quick tier,
+which runs no practice check, and the guard read only the branch a push
+goes to, so a bare `--land` put an unpushed `claude/` branch on staging
+with nothing refusing it, and a plain push of one to staging went through.
+Morgan: *"Fix the other issues you found including the checks that never
+run. Tell me what you decide. I will be offline so don't wait for me.
+Approved, act, and Booked."* Chosen by the session under that delegation:
+the guard judges what a push to staging or main comes from, and `--land`
+names that branch to the push's hooks and pushes from the person's own
+checkout (an engine change, since the branch is gone by the time git's
+hook runs).
 
 ## Install
 The naming tool ships with the engine ([precedent_branch_name.py](../tools/precedent_branch_name.py) in

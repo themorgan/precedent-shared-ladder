@@ -6,10 +6,12 @@
 A session on the ladder works on its own named branch, never on the one the
 cloud harness named when the session opened (`claude/<words>-<six>`), and
 never on one typed by hand. tools/branch_name_guard.py, which this set
-ships and runs at every push, refuses pushing either; this check covers the
-rest: the checkout's current branch is read every time the practice checks
-run -- at a landing, a Produce, a deep check -- so such work can never be
-Booked or Produced until it is renamed. `git branch -m` keeps every commit,
+ships and runs at every push, refuses pushing either, and refuses a push to
+staging or main from either -- the branch `--land` names to it, or the local
+branch pushed -- so such work is never Booked or Produced (2026-10-17: until
+then this check was what said so, and a landing runs the quick tier, which
+runs no practice check). This check reads the checkout's current branch in
+the full check besides: a Debut, a deep check. `git branch -m` keeps every commit,
 so the fix loses nothing. A name the naming tool made in another session
 passes here: only its shape is judged, not whose session it was.
 

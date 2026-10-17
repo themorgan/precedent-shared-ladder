@@ -28,6 +28,17 @@ push() { printf 'refs/heads/x %s refs/heads/%s %s\n' "$S" "$1" "$2" \
 [ "$(push 2026-10-16-some-work $Z)" = 1 ] || { echo "FAIL: pre-push let a new hand-made name through"; fail=1; }
 [ "$(push staging $S)" = 0 ] || { echo "FAIL: pre-push judged a tier branch"; fail=1; }
 [ "$(PRECEDENT_NO_LADDERS=1 push claude/peaceful-ritchie-3u31td $Z)" = 0 ] || { echo "FAIL: pre-push judged off the ladder"; fail=1; }
+# What is landed, not only where (2026-10-17): a push to staging or main is
+# judged by the branch it comes from -- the local ref, or the branch --land
+# names in PRECEDENT_LANDING_SOURCE -- so harness-named work is never Booked.
+land() { printf '%s %s refs/heads/%s %s\n' "$1" "$S" "$2" "$S" \
+  | PRECEDENT_LANDING_SOURCE="${3:-}" CLAUDE_CODE_REMOTE_SESSION_ID=session_0abcde PRECEDENT_GITHUB_USER=octo python3 "$GUARD" --pre-push >/dev/null 2>&1; echo $?; }
+[ "$(land refs/heads/claude/peaceful-ritchie-3u31td staging)" = 1 ] || { echo "FAIL: a push of a harness-named branch to staging was let through"; fail=1; }
+[ "$(land "$S" staging claude/peaceful-ritchie-3u31td)" = 1 ] || { echo "FAIL: --land of a harness-named branch was let through"; fail=1; }
+[ "$(land "$S" main 2026-10-16-some-work)" = 1 ] || { echo "FAIL: a landing of a hand-made name was let through"; fail=1; }
+[ "$(land "$S" staging 2026-10-16-alex-some-work-ab1cd-x9y8z)" = 0 ] || { echo "FAIL: --land of a tool-made name, another person's, was refused"; fail=1; }
+[ "$(land refs/heads/claude/peaceful-ritchie-3u31td 2026-10-16-octo-some-work-ab1cd-x9y8z)" = 0 ] || { echo "FAIL: a rename on push, to a work branch, was refused"; fail=1; }
+[ "$(PRECEDENT_NO_LADDERS=1 land "$S" staging claude/peaceful-ritchie-3u31td)" = 0 ] || { echo "FAIL: a landing was judged off the ladder"; fail=1; }
 git -C "$tmp" checkout -q --detach
 [ "$(run)" = 2 ] || { echo "FAIL: a detached HEAD was not reported as SKIPPED"; fail=1; }
 [ "$fail" = 0 ] && echo "PASS: check_session_branch_name"

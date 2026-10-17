@@ -4,13 +4,15 @@ title:       "The first reply of the day opens with what other people landed sin
 tier:        on-demand
 severity:    default
 applies_to:  ["**"]
-applies_to_why: "A moment, not a place: the first prompt of a person's day. The session-start hook finds the news and the reply gate hands it over, so no file path reaches it."
+applies_to_why: "A moment, not a place: the first prompt of a person's day. This set's own hooks find the news and hand it over, so no file path reaches it."
 occasion:    "the first session of a day, after 07:00 in the person's own timezone, when someone else has landed work since the person's own last commit there"
 gates:       ["reply"]
-gates_why:   "The reply gate prints the pending report at the top of the first prompt, once, and deletes it; later prompts that day carry nothing."
+gates_why:   "The reply gate carries this rule, so the session knows how to open its reply when the report arrives; the report itself comes from this set's own UserPromptSubmit hook, once, and later prompts that day carry nothing."
 index_clause: "first reply of the day opens with what others landed since your last commit"
 index_required: false
 checked_by:  null
+ships:       ["tools/ladder/others_did.py"]
+hooks:       [{"event": "SessionStart", "run": "tools/ladder/others_did.py"}, {"event": "UserPromptSubmit", "run": "tools/ladder/others_did.py", "args": ["--remind"]}]
 defines:     []
 status:      active
 in_force_at: null
@@ -22,7 +24,7 @@ strength:    decided
 ---
 ## Rule
 
-**When the reply gate hands over a block headed "WHAT OTHERS DID", the
+**When the first prompt of the day carries a block headed "WHAT OTHERS DID", the
 reply opens with it, before answering the question.** **The three or four
 most important things in it, never the whole list**: three or four bullets
 in What's New style, each opening with its key phrase in bold, saying who
@@ -45,14 +47,17 @@ else's.
 
 ## Detail
 
-**What runs it.** `tools/precedent_others_did.py` ships with the engine,
-so every repository with Precedent installed has it. It runs at session
-start for anyone with this set, and does nothing for anyone without it.
-It reads `main` and the staging branch, takes every commit
-that landed there after the person's own last commit and is not theirs, and
-leaves the block for the reply gate. A commit counts by when it landed, not
-by its own date, so a colleague's older work merged later is still told. Merge commits are left out; the work they merged is
-counted on its own.
+**What runs it.** [tools/ladder/others_did.py](../tools/ladder/others_did.py), which this
+set ships and wires with two hooks, so it reaches exactly the people who
+bring the set. At session start it reads `main` and the staging branch,
+takes every commit that landed there after the person's own last commit
+and is not theirs, and leaves the block; the first prompt's hook hands it
+over, and runs the day's check itself when the start-up one did not.
+A commit counts by when it landed, not by its own date, so a colleague's
+older work merged later is still told. Merge commits are left out; the
+work they merged is counted on its own. Who made each commit is the
+engine's to say (`tools/precedent_commit_owners.py`), since Update Vendors
+asks the same question.
 
 **When.** At most once a day in a container: nothing before 07:00 in the
 person's timezone (`others_did_hour` in their identity.json changes the

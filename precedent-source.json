@@ -7,6 +7,114 @@
     "ladder"
   ],
   "_provides_comment": "The capability this set gives the person who brings it (spec/LADDER_OPT_IN_PLAN.md in BestPractice). The engine says the ladder is in force for a person only when a set providing it is loaded, and PRECEDENT_NO_LADDERS=1 drops it.",
+  "owned_words": {
+    "patterns": [
+      {
+        "kind": "a step label",
+        "regex": "\\bstep [1-5N] of 5\\b",
+        "matches": [
+          "step 3 of 5",
+          "step N of 5"
+        ],
+        "never_matches": [
+          "step 3 of 6",
+          "the third step"
+        ]
+      },
+      {
+        "kind": "a numbered Promote",
+        "regex": "\\bPromote [1-5N]\\b",
+        "matches": [
+          "Promote 2"
+        ],
+        "never_matches": [
+          "promote 2"
+        ]
+      },
+      {
+        "kind": "a stage beside its step",
+        "regex": "\\b(?:Consider|Act|Booked|Debut|Produce)\\s*\\(step\\b",
+        "matches": [
+          "Booked (step 3 of 5)",
+          "Act (step 2"
+        ],
+        "never_matches": [
+          "act (sic)"
+        ]
+      },
+      {
+        "kind": "a ladder command, quoted or bold",
+        "regex": "(?:\\*\\*|[\"“])(?:Booked|Book it|Go update|Brainstorm|Plan it|Write it up|Debut|Make live|Promote(?: \\d)?)(?:\\*\\*|[\"”])",
+        "matches": [
+          "\"Booked\"",
+          "**Debut**",
+          "\"Promote 2\""
+        ],
+        "never_matches": [
+          "Booked"
+        ]
+      },
+      {
+        "kind": "a branch tier",
+        "regex": "\\bpre-staging\\b",
+        "matches": [
+          "pre-staging"
+        ],
+        "never_matches": [
+          "prestaging"
+        ]
+      },
+      {
+        "kind": "a ladder command",
+        "regex": "\\b(?:Booked|Debut|Promote[sd]?|Promotion|Go update|Book it|Shared Save|Make live)\\b",
+        "matches": [
+          "Booked",
+          "Promoted",
+          "Go update",
+          "Make live"
+        ],
+        "never_matches": [
+          "booked",
+          "promote",
+          "debuted"
+        ]
+      }
+    ],
+    "output_patterns": [
+      {
+        "kind": "a branch tier",
+        "regex": "(?<![/\\w-])staging\\b(?![/\\w-]*\\.md)",
+        "matches": [
+          "land it on staging"
+        ],
+        "never_matches": [
+          "https://github.com/o/r/tree/staging",
+          "docs/staging/x.md"
+        ]
+      }
+    ],
+    "practice_links": [
+      "act",
+      "brainstorm-holds-commits",
+      "checks-follow-the-tier",
+      "chief-of-staff",
+      "consider",
+      "debut",
+      "go-merge",
+      "go-update",
+      "merge-authorization-keyword",
+      "plan-it",
+      "primary-branch",
+      "produce",
+      "promote",
+      "push-directly",
+      "relayed-authorization",
+      "stage-word-carries-its-step",
+      "tier-branch",
+      "write-it-up"
+    ]
+  },
+  "_owned_words_comment": "This set's own words: the engine's set-words-stay-in-their-set check holds every other set, template and person-facing document to them, and engine tests hold printed output to them off the ladder (BestPractice spec/ENFORCEMENT_LIVES_WITH_ITS_PRACTICE_PLAN.md part 3, 2026-10-17; moved from the engine's tools/ladder_words.py unchanged). STRICT words only: Consider, Act and Produce are ordinary English and never match alone; a stage counts only beside its step label, a command only quoted, bold or capitalised as a command. Each pattern's matches and never_matches are run by that check, so they are this set's tests of its own words.",
   "occasion_share_tokens": 550,
   "_occasion_share_comment": "This set's allowance in the occasion index of every person who brings it. Carved out of the universal set's on 2026-10-02 (BestPractice spec/LADDER_OPT_IN_PLAN.md D15, Morgan, strength: decided): universal went from 2,800 to 2,250 as these rules left it, so a person who brings this set loads no more than before. Measured about 450 that day.",
   "code": [],

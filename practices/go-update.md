@@ -10,6 +10,8 @@ gates:       ["merge"]
 gates_why:   "Its whole subject is what happens at a merge."
 index_clause: "stage 3, Booked: land it on the landing branch; high-risk: PR and merge"
 checked_by:  tools/checks/check_landing_takes_a_pr.py
+ships:       ["tools/landing_pr_guard.py"]
+hooks:       [{"event": "pre-push", "run": "tools/landing_pr_guard.py", "args": ["--pre-push"]}]
 defines:     ["Booked", "Go update", "Approved", "Book", "Book it", "Shared Save"]
 command:     {"Booked": "Stage 3 (Promote 3): save the work, land it on your landing branch on GitHub (`precedent_branches.py --landing` names it: staging, or main in a repository with no staging) where it won't be lost, and tell you which branch it went to. On staging that is `precedent_branches.py --land BRANCH`, with no pull request; a high-risk change goes through a pull request into staging. Its older name, \"Go update\", still means this.", "Approved": "The same as **Booked**.", "Book it": "The same as **Booked** (also just **Book**).", "Shared Save": "The same as **Booked**."}
 status:      active
@@ -102,19 +104,27 @@ changes:**
     a CI workflow file, a repo's own branch-restriction rule). A bad direct
     push here does not just break one thing — it silently stops catching
     the next hundred.
-    **Checked at the push:**
-    [check_landing_takes_a_pr.py](../tools/checks/check_landing_takes_a_pr.py)
-    refuses a push straight to the landing branch -- `--land` included --
-    that changes a CI workflow, one of those four files, or `tools/checks/`,
+    **Checked at the push, by a git `pre-push` hook:** this practice ships
+    [tools/landing_pr_guard.py](../tools/landing_pr_guard.py) and declares
+    it as one, so every push to the landing branch meets it -- `--land`'s
+    included -- and it refuses one that changes a CI workflow, one of those
+    four files, or a check under `tools/checks/` or `local/tools/checks/`,
     and prints the pull-request route (2026-10-16: an Update Vendors that
     brought a workflow and push-check changes was landed straight on
-    staging, the tool and this rule disagreeing). **An engine file
+    staging, the tool and this rule disagreeing; 2026-10-17: the practice
+    check meant to stop it ran only in the full tier, which a landing never
+    runs). [check_landing_takes_a_pr.py](../tools/checks/check_landing_takes_a_pr.py)
+    asks the same function in the full check. **An engine file
     byte-identical to what Update Vendors vendored from BestPractice's
     main is exempt** -- that code already passed BestPractice's own review
-    and checks, so an engine refresh lands directly -- and the check reads
-    the bytes against the engine manifest itself, never a session's word
-    for it (Morgan, 2026-10-16, strength: decided: "since they are all
-    checked that is fine"). **A workflow file never is:** it runs on this
+    and checks, so an engine refresh lands directly -- and the guard reads
+    the bytes of the pushed commit against the engine manifest itself,
+    never a session's word for it (Morgan, 2026-10-16, strength: decided:
+    "since they are all checked that is fine"). **So is a check the sync
+    materialized from a practice source**, byte-identical to what
+    `MANIFEST.json` recorded writing: it passed its own source's checks,
+    and in a consumer `tools/checks/` is that catalogue, so counting it
+    refused every sync. **A workflow file never is:** it runs on this
     repository's own Actions, and only a run there shows it works there.
   - **Changes a governance or authorization practice** — one whose job is
     to grant, gate, or record an approval (this file,
@@ -147,9 +157,8 @@ changes:**
 the repository's own rules say routine work lands on, and the full chain
 merges into that same branch -- in both cases a real branch on `origin`,
 and never a repository's *configured default* branch picked just because
-it is configured that way. That branch is the person's primary branch
-([primary-branch](primary-branch.md)), and
-`python3 tools/precedent_branches.py --landing` names it: the person's own
+it is configured that way. That branch is the person's landing branch,
+and `python3 tools/precedent_branches.py --landing` names it: the person's own
 `landing_branch` in their identity.json first, then the repository's in
 its `precedent.json`, then `staging` (Morgan, 2026-09-27, strength:
 decided: *"have the individual repo take precedence over the others (if it
@@ -611,8 +620,7 @@ any other, getting its full check at the next Promote.
 pre-staging -> staging -> main should be mandatory for me, but not
 necessarily anyone else"* (strength: decided). A new install or an Update
 Vendors then wrote `pre-staging` as a repository's `landing_branch` where
-it was missing -- `staging` for a person who had retired pre-staging
-(`retire_pre_staging` in their identity.json, from 2026-10-11). Landing on
+it was missing. Landing on
 pre-staging meant `--sync-pre-staging` first, to create it from staging or
 copy down what had reached staging or main by another route, then merging
 `origin/pre-staging` into the work before pushing.
@@ -630,6 +638,17 @@ Booked was already `--land` (ladder-in-a-repo-on-staging, now retired).
 Now it is `--land` everywhere: Booked lands on staging, with no pull
 request by default, and a high-risk change goes through a pull request
 into staging.
+
+**2026-10-17: the check that never ran.** The very deep check of that
+day found the line above refused nothing: a landing runs the quick tier,
+the quick tier runs no practice check, and the check's own test passed
+only because it set the push check's variable itself. Morgan: *"Fix the
+other issues you found including the checks that never run. Tell me what
+you decide. I will be offline so don't wait for me. Approved, act, and
+Booked."* Chosen by the session under that delegation: the check became a
+`pre-push` hook this practice ships, the way act ships its branch guard,
+and a check the sync materialized stopped counting, since in a consumer
+every sync rewrites `tools/checks/`.
 
 ## Install
 No mechanical check, and not for lack of trying: this governs how a chat
@@ -656,5 +675,9 @@ governance practice" are close to mechanical**: a fixed list of paths
 [tools/leak_gate.py](https://github.com/alex137/BestPractice/blob/staging/tools/leak_gate.py),
 [tools/verify_harness.py](https://github.com/alex137/BestPractice/blob/staging/tools/verify_harness.py),
 `.github/workflows/*`, the governance practices named in the Rule above)
-and a check could flag a direct push landing on one of them with no open
-pull request. Recorded rather than left silent; not built here.
+and a check can flag a direct push landing on one of them. Built for the
+first, 2026-10-16 to 2026-10-17: the pre-push guard in the Rule, shipped as
+[tools/landing_pr_guard.py](../tools/landing_pr_guard.py) and wired by the
+sync like any practice's `hooks:` entry. It took under a tenth of a second
+a push in a scratch consumer on 2026-10-17, as did act's branch guard. The
+governance practices are still judgment.

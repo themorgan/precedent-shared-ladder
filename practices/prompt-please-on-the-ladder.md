@@ -1,6 +1,6 @@
 ---
 slug:        prompt-please-on-the-ladder
-title:       "Adds to prompt-please, with the ladder: a handed-off prompt says nothing about landing; the receiving session lands it by risk"
+title:       "Adds to prompt-please, with the ladder, and replaces its \"Where the work stops\": a handed-off prompt says nothing about landing; the receiving session lands it by risk"
 tier:        on-demand
 severity:    default
 applies_to:  ["**"]
@@ -21,7 +21,7 @@ added:       "2026-10-06"
 approved_by: "Morgan, 2026-10-06 (strength: decided): \"rules should not be repeated, but supporting repos can have additions for them\" -- this holds what the ladder set's full copy of prompt-please changed, split out the same day. Its parts were decided earlier: a prompt without Booked ends at Act, 2026-10-01; the copy into this set, 2026-10-02."
 ---
 ## Rule
-**Adds to universal's [prompt-please](https://github.com/alex137/BestPractice/blob/staging/practices/prompt-please.md), for people who bring the ladder.** Everything there holds; this says where the handed-off work stops in the ladder's words.
+**Adds to universal's [prompt-please](https://github.com/alex137/BestPractice/blob/staging/practices/prompt-please.md), for people who bring the ladder, and replaces one part of it: its "Where the work stops" bullet, and the default text it quotes further down ("Build it on your feature branch, push it there, and stop").** For a person on the ladder, where the handed-off work stops is said here instead. Everything else there holds.
 
 **The prompt says nothing about how far the work goes.** No "stop at Act",
 no "land it", and no tier branch named as somewhere to land, merge or open a
@@ -55,6 +55,18 @@ to reach main ("I told you twice"). Morgan: *"I'd say nothing in the prompt
 about that ... on low risk or small stuff, go right through to main but on
 big or complex or high risk stuff you should not yet do it but give me
 feedback."*
+
+**2026-10-17: a replacement said as one.** The very deep check of that
+day found this file saying "Everything there holds" while letting the
+receiving session take small work to `main`, which universal's "Where the
+work stops" forbids without the person's word. Morgan: *"Fix the other
+issues you found including the checks that never run. Tell me what you
+decide. I will be offline so don't wait for me. Approved, act, and
+Booked."* Chosen by the session under that delegation: the Rule now names
+the one part of universal's rule it replaces. `overrides:` would replace the
+whole rule and bring back the full copy split out on 2026-10-06, so the file
+stays an addition, and Precedent's format now says an addition may replace
+one named part of its base in the open.
 
 **2026-10-06: split out of a full copy.** From 2026-10-02 the ladder set carried its own full copy of prompt-please, overriding universal's, to say this in the ladder's words. Every change to the rule had to be made twice; the 2026-10-06 change to its opening line was. Morgan: *"rules should not be repeated, but supporting repos can have additions for them."* This file holds only the addition; the set's copy of prompt-please is deduplicated.
 
