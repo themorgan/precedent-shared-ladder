@@ -15,10 +15,24 @@ that would create `claude/<anything>` or `session/<anything>`, whatever
 loaded and whatever the session was told. A session that hits it renames
 its branch (`git branch -m`, every commit kept) and pushes that.
 
-APPLYING CHANGES A REPOSITORY'S SETTINGS, so it happens only with --apply
-and only for the repositories named on the command line -- never all of
-them at once -- and only on the person's word for each. Reporting reads
-and changes nothing.
+OPT-IN, PER PERSON (Morgan, 2026-10-16, strength: decided: "this convention
+should be something that is explicitly opted in to ... I can opt in, but
+Alex (by default) won't be opted in so nothing would change for him" --
+"it isn't just for my accounts but anyone else including Alex who may opt
+in"). Anyone opts in by writing
+
+    "github_branch_rules": true
+
+in their own identity.json (their individual set's), or in their user-level
+config (~/.config/precedent/config.json). Nobody who has not opted in is
+touched: --apply refuses, and the report only says how to opt in.
+
+ONLY ON THE PERSON'S OWN REPOSITORIES. Once opted in, --apply adds the
+ruleset to the repositories named on the command line that the person's
+own GitHub account owns (identity.json's "github"), and refuses any other:
+a ruleset binds everyone who pushes there, so it is the owner's call. It
+never applies to all of them at once, and reporting reads and changes
+nothing.
 
 How it reaches GitHub: the `gh` command where it works, else the REST API
 with $GH_TOKEN or $GITHUB_TOKEN. Rulesets on a private repository need a
@@ -31,12 +45,14 @@ Exit 0 when every repository named has the ruleset (or it was applied);
 """
 import json
 import os
+import pathlib
 import re
 import subprocess
 import sys
 import urllib.error
 import urllib.request
 
+OPT_IN_KEY = 'github_branch_rules'
 RULESET_NAME = 'No harness-named branches (act)'
 PATTERNS = ['refs/heads/claude/**', 'refs/heads/session/**']
 RULESET = {
@@ -46,6 +62,46 @@ RULESET = {
     'conditions': {'ref_name': {'include': PATTERNS, 'exclude': []}},
     'rules': [{'type': 'creation'}],
 }
+
+
+
+def _tools():
+    here = pathlib.Path(__file__).resolve().parent
+    if str(here) not in sys.path:
+        sys.path.insert(0, str(here))
+
+
+def opted_in():
+    """-> (True, where) when this person has opted in, else (False, why)."""
+    _tools()
+    places = []
+    try:
+        import precedent_branch_name as pbn
+        f = pbn.identity_file('.')
+        if f:
+            places.append(f)
+    except Exception:                                        # noqa: BLE001
+        pass
+    places.append(pathlib.Path(os.environ.get('PRECEDENT_USER_CONFIG',
+                                              '~/.config/precedent/config.json')).expanduser())
+    for f in places:
+        try:
+            data = json.loads(pathlib.Path(f).read_text(encoding='utf-8'))
+        except (OSError, ValueError):
+            continue
+        if isinstance(data, dict) and data.get(OPT_IN_KEY) is True:
+            return True, str(f)
+    return False, (f'not opted in: write "{OPT_IN_KEY}": true in your '
+                   f'identity.json or ~/.config/precedent/config.json to opt in')
+
+
+def person_login():
+    _tools()
+    try:
+        import precedent_branch_name as pbn
+        return (pbn.github_user('.') or '').lower()
+    except Exception:                                        # noqa: BLE001
+        return (os.environ.get('PRECEDENT_GITHUB_USER') or '').lower()
 
 
 class CannotReach(Exception):
@@ -163,10 +219,26 @@ def main(argv=None):
     if not repos:
         print('no repository named, and this checkout has no GitHub origin', file=sys.stderr)
         return 2
+    on, where = opted_in()
+    login = person_login()
+    if do_apply and not on:
+        print(f'--apply refused: {where}.', file=sys.stderr)
+        return 2
+    if do_apply and not login:
+        print('--apply refused: no GitHub username is declared ("github" in '
+              'identity.json), so whose repositories these are is not known.',
+              file=sys.stderr)
+        return 2
     worst = 0
     for repo in repos:
         state, detail = status(repo)
         if state == 'missing' and do_apply:
+            if repo.split('/')[0].lower() != login:
+                print(f'{repo}: --apply refused -- it is not owned by {login}, '
+                      f'and a ruleset binds everyone who pushes there, so it is '
+                      f'its owner\'s call', file=sys.stderr)
+                worst = max(worst, 1)
+                continue
             ok, detail = apply(repo)
             state = 'applied' if ok else 'missing'
         line = {
@@ -178,10 +250,15 @@ def main(argv=None):
         }[state]
         print(f'{repo}: {line}' + (f' ({detail})' if detail else ''))
         if state == 'missing':
-            print(f'  {manual_steps(repo)}, or run: python3 tools/precedent_branch_rules.py --apply {repo}')
+            if on and repo.split('/')[0].lower() == login:
+                print(f'  {manual_steps(repo)}, or run: python3 tools/precedent_branch_rules.py --apply {repo}')
+            elif not on:
+                print(f'  ({where}; nothing is changed until you do)')
             worst = max(worst, 1)
         elif state in ('unknown', 'unavailable'):
             worst = max(worst, 2 if state == 'unknown' else 1)
+    if not on:
+        worst = min(worst, 0) if worst == 1 else worst
     return worst
 
 
