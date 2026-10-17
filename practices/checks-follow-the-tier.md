@@ -27,7 +27,11 @@ approved_by: "Morgan F, 2026-10-02, withdrawn from the universal set BestPractic
   change.** A landing is judged on the files it creates or changes, and on
   the generated files a changed practice feeds -- **nothing more**, in
   seconds. A problem in a file the change did not touch is named and left
-  for a full run, never held against this landing.
+  for a full run, never held against this landing. **No test runs here**,
+  nor the practice checks: both are Debut's and Produce's. The checks that
+  do run are a closed list, and adding one takes the person's own words
+  and its time, after being urged to leave it to the Debut
+  ([quick-tier-is-closed](https://github.com/alex137/BestPractice/blob/staging/practices/quick-tier-is-closed.md)).
 - **Debut (`--run-tests`): thorough, and it moves nothing.** The full
   suite, on every file, on staging, when the person asks for it.
 - **Into `main` (Produce): what [produce](produce.md) says.** The quick
@@ -169,6 +173,14 @@ tiers this practice named -- `pre-staging` fast and about the change,
 the fast, change-only checks moved with Booked onto staging (`--land`, which
 had run them there since 2026-10-09), the full suite became Debut's, on
 request, and `main` takes what Produce says.
+
+**2026-10-16: no test before a push.** A landing took 218 seconds of
+quick checks: the harness tests a change reaches, added at landing on
+2026-10-11, and the practice checks on the changed files. Morgan: *"all
+the testing EXCEPT THE BARE ESSENTIAL AND LEAK GATES SHOULD GO INTO DEBUT,
+AND THE GITHUB TEST AFTER THE NEXT PRODUCE"*, and *"LET'S BAN ALL NEW TESTS
+BEFOREHAND EXCEPT WHEN EXPLICITLY DIRECTLY VERBALLY AUTHORIZED"* (strength:
+decided). Both moved to the Debut, and the engine closed the list.
 
 ## Install
 Nothing to install. A repository that vendors the engine gets the tiered
