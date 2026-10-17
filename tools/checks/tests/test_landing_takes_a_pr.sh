@@ -27,5 +27,30 @@ g add -A; g commit -qm manifest
 echo 'on: push' > "$tmp/.github/workflows/x.yml"; g add -A; g commit -qm wf
 [ "$(run staging)" = 1 ] || { echo "FAIL: a new workflow landing on staging was not refused"; fail=1; }
 [ "$(PRECEDENT_NO_LADDERS=1 run staging)" = 2 ] || { echo "FAIL: judged off the ladder"; fail=1; }
+# A check the sync materialized, byte for byte what MANIFEST.json recorded,
+# is exempt; a hand-edited one is not, and neither is a repo's own check
+# (2026-10-17: in a consumer tools/checks/ is the materialized catalogue, so
+# counting all of it refused every sync).
+g rm -q -r .github; g commit -qm "no workflow"; base="$(g rev-parse HEAD)"
+mkdir -p "$tmp/tools/checks" "$tmp/local/tools/checks"
+echo 'print(1)' > "$tmp/tools/checks/check_x.py"
+s16="$(sha256sum "$tmp/tools/checks/check_x.py" | cut -c1-16)"
+printf '{"checks": [{"path": "tools/checks/check_x.py", "sha256_16": "%s", "source": "some-set"}]}\n' "$s16" > "$tmp/MANIFEST.json"
+g add -A; g commit -qm sync; synced="$(g rev-parse HEAD)"
+[ "$(run staging)" = 0 ] || { echo "FAIL: a materialized check matching MANIFEST.json was refused"; fail=1; }
+echo 'print(2)' > "$tmp/tools/checks/check_x.py"; g commit -qam "hand edit"; edited="$(g rev-parse HEAD)"
+[ "$(run staging)" = 1 ] || { echo "FAIL: a hand-edited materialized check was not refused"; fail=1; }
+g reset -q --hard "$synced"; echo 'x' > "$tmp/local/tools/checks/check_own.py"; g add -A; g commit -qm own; own="$(g rev-parse HEAD)"
+[ "$(run staging)" = 1 ] || { echo "FAIL: a repo's own check landing on staging was not refused"; fail=1; }
+# The same judgment at git's pre-push, which is where a landing meets it:
+# the shipped guard reads the pushed commit, not the working tree.
+GUARD="$HERE/../../landing_pr_guard.py"
+hook() { printf 'refs/heads/w %s refs/heads/%s %s\n' "$1" "$2" "$base" \
+  | (cd "$tmp" && PRECEDENT_USER_CONFIG="$tmp/none.json" PRECEDENT_ASSUME_LADDER=1 python3 "$GUARD" --pre-push >/dev/null 2>&1); echo $?; }
+[ "$(hook "$synced" staging)" = 0 ] || { echo "FAIL: pre-push refused a sync's materialized check"; fail=1; }
+[ "$(hook "$edited" staging)" = 1 ] || { echo "FAIL: pre-push let a hand-edited check onto staging"; fail=1; }
+[ "$(hook "$own" staging)" = 1 ] || { echo "FAIL: pre-push let a repo's own check onto staging"; fail=1; }
+[ "$(hook "$own" 2026-10-16-x-y-abcde-fghij)" = 0 ] || { echo "FAIL: pre-push judged a push to a work branch"; fail=1; }
+[ "$(PRECEDENT_NO_LADDERS=1 hook "$own" staging)" = 0 ] || { echo "FAIL: pre-push judged off the ladder"; fail=1; }
 [ "$fail" = 0 ] && echo "PASS: check_landing_takes_a_pr"
 exit "$fail"

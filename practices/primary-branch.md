@@ -1,6 +1,6 @@
 ---
 slug:        primary-branch
-title:       "\"Primary branch\" names trunk -- the one shared branch regular work pushes to"
+title:       "\"Primary branch\" names trunk -- base_branch in precedent.json, usually main"
 tier:        on-demand
 severity:    default
 applies_to:  ["**"]
@@ -8,7 +8,7 @@ applies_to_why: "A word, not an action -- no file path reaches it. Since 2026-09
 occasion:    null
 gates:       ["merge"]
 gates_why:   "A merge is where the branch work targets is decided."
-index_clause: "trunk: the branch regular work pushes to and PRs target"
+index_clause: "trunk: base_branch in precedent.json, usually main; not the landing branch"
 checked_by:  null
 defines:     ["Primary branch"]
 command:     null
@@ -21,30 +21,26 @@ approved_by: "Morgan F, 2026-10-02, withdrawn from the universal set BestPractic
 strength:    decided
 ---
 ## Rule
-**"Primary branch" is this repo's own word for trunk** -- the one shared
-branch regular work pushes to and pull requests target, whatever any one
-repository happens to call it. Saying it does not itself trigger an action:
-[go-update](go-update.md) already resolves a bare instruction to this
-branch by default. This practice exists
-so the word has a definition a session -- and a person -- can look up,
-rather than one only ever spelled out inline inside that rule.
+**"Primary branch" is this repo's own word for trunk** -- the branch the
+repository's work is measured against and finished work ends up on,
+whatever any one repository happens to call it. Saying it does not itself
+trigger an action. This practice exists so the word has a definition a
+session -- and a person -- can look up, rather than one only ever spelled
+out inline inside another rule.
 
-**The repository declares it**: `base_branch` in its `precedent.json`, or
-a rule of its own that names it. In most repositories that is `main`.
-Absent a declaration, it is whichever branch the repository's own routine
-work is actually developed and committed against -- never a configured
-default chosen just because it is configured that way.
+**The repository declares it, as `base_branch` in its `precedent.json`.**
+In most repositories that is `main`. Absent a declaration, it is whichever
+branch the repository's own routine work is actually developed and
+committed against -- never a configured default chosen just because it is
+configured that way.
 
-**Under the branch tiers it is the branch this person's Booked (`Go update`) lands
-on** ([spec/BRANCH_TIERS_PLAN.md](https://github.com/alex137/BestPractice/blob/staging/spec/BRANCH_TIERS_PLAN.md)):
-`python3 tools/precedent_branches.py --landing` names it: the person's own
-`landing_branch` (identity.json) if set, else the repository's
-(precedent.json), else `staging` (Morgan, 2026-09-27, strength: decided). On
-the ladder that is `staging`, and `main` is then what it is promoted into,
-never where routine work is pushed.
-Morgan, 2026-09-25: *"we now have a concept called \"primary branch\" -
-that should probably be updated in reference to this"* (strength:
-decided).
+**It is not the landing branch.** Where Booked (`Go update`) lands is the
+landing branch, which `python3 tools/precedent_branches.py --landing` names
+([go-update](go-update.md)). Off the ladder the two are the same branch. On
+the ladder the landing branch is `staging`, and the primary branch, `main`,
+is what a Produce promotes it into. Morgan, 2026-09-25: *"we now have a
+concept called \"primary branch\" - that should probably be updated in
+reference to this"* (strength: decided).
 
 **A branch rule belongs to the repository that made it.** A repository that
 stages its work on a branch other than `main` says so in its own files, and
@@ -76,6 +72,16 @@ mapping I'd have to re-derive each time.
 new repositories were written with `pre-staging` as their landing branch,
 the tiers were three names -- `pre-staging`, `staging` and `main` -- and
 staging and main were both what the primary branch was promoted into.
+
+**2026-10-17: one meaning.** The very deep check of that day found this
+Rule defining the word twice: `base_branch`, and also the branch Booked
+lands on, which on the ladder are `main` and `staging`. Morgan: *"Fix the
+other issues you found including the checks that never run. Tell me what
+you decide. I will be offline so don't wait for me. Approved, act, and
+Booked."* Chosen by the session under that delegation: `base_branch`, the
+meaning Precedent's engine gives the words (its CI-cadence report calls
+`base_branch` the primary branch), and the branch Booked lands on is called
+the landing branch, as go-update and the engine already call it.
 
 ## Install
 No check on the answer, same reason [vocabulary](https://github.com/alex137/BestPractice/blob/staging/practices/vocabulary.md) gives --
