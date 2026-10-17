@@ -50,6 +50,10 @@ moves before it has built anything under the wrong name: act declares
 --commit-note as a PreToolUse hook on Bash (moved here from the engine's
 branch-name-commit-note.sh, 2026-10-16).
 
+  - a push to staging or main (or this repository's landing branch) from
+    a branch either rule above would refuse: the branch `--land` names in
+    PRECEDENT_LANDING_SOURCE, or the local branch pushed (2026-10-17), so
+    such work is never Booked or Produced, pushed under its name or not.
 Branches not judged at all: the tier branches, `data-` branches, and any
 name that neither opens with a date nor sits under `claude/` or `session/`.
 """
@@ -156,18 +160,77 @@ def name_refusal(name, tail=None, user=None):
             + RENAME.format(name=name) + '.')
 
 
-def pre_push_refusals(lines, tail=None, user=None):
+# WHAT IS LANDED, NOT ONLY WHERE (2026-10-17). A push to staging or main is
+# a landing or a Produce, and git's pre-push names only where it goes: a
+# bare `precedent_branches.py --land` lands the checked-out branch by
+# pushing a commit, so an unpushed harness-named branch reached staging with
+# this guard passing (very deep check, 2026-10-17). So a push to one of
+# those branches is also judged by what it comes from: the branch --land
+# names in this variable, and the local branch of a plain `git push`
+# (`HEAD` read as the branch checked out). Only its shape is judged, as the
+# practice check does: whose session made it is not this push's question.
+# Morgan, 2026-10-17: "Fix the other issues you found including the checks
+# that never run".
+LANDING_SOURCE_ENV = 'PRECEDENT_LANDING_SOURCE'
+
+
+def landing_destinations(repo='.'):
+    """-> the branches a push to which lands or produces work: staging and
+    main, and whatever the engine names as this repository's landing,
+    staging and base branches."""
+    names = {'main', 'staging'}
+    sys.path.insert(0, str(HERE))
+    try:
+        import precedent_branches as pb
+        for f in ('landing_branch', 'staging_branch', 'base_branch'):
+            try:
+                v = getattr(pb, f)(str(repo))
+                names.add(v[0] if isinstance(v, tuple) else v)
+            except Exception:                                # noqa: BLE001
+                pass
+    except Exception:                                        # noqa: BLE001
+        pass
+    finally:
+        sys.path.pop(0)
+    return {n for n in names if isinstance(n, str) and n}
+
+
+def _source_name(ref, head=None):
+    ref = (ref or '').strip()
+    if ref == 'HEAD':
+        ref = head if head is not None else _git('.', 'symbolic-ref', '--short', '-q', 'HEAD')
+    for prefix in ('refs/heads/', 'refs/remotes/origin/', 'origin/'):
+        if ref.startswith(prefix):
+            ref = ref[len(prefix):]
+            break
+    return ref
+
+
+def landing_refusal(source, dest):
+    """-> why work on `source` may not land on `dest`, or None."""
+    why = name_refusal(source, tail='', user='')
+    if not why:
+        return None
+    return (f'this push puts {source} on {dest}, and work on a branch the '
+            f'naming tool did not make is never Booked or Produced (act). {why}')
+
+
+def pre_push_refusals(lines, tail=None, user=None, dests=None, head=None,
+                      source=None):
     """-> [why] for git's pre-push stdin lines
     (`<local ref> <local sha> <remote ref> <remote sha>`). A harness name is
     refused on any push; any other judged name only when the push creates
     the branch, since one made by an earlier session carries that session's
-    part, not this one's."""
+    part, not this one's. A push to a landing destination is also judged by
+    the branch it comes from (LANDING_SOURCE_ENV, then the local ref).
+    `dests`, `head` and `source` default to the repository, the checked-out
+    branch and the environment."""
     out = []
     for line in lines:
         parts = line.split()
         if len(parts) != 4:
             continue
-        _lref, lsha, rref, rsha = parts
+        lref, lsha, rref, rsha = parts
         if lsha == ZERO or not rref.startswith('refs/heads/'):
             continue
         name = rref[len('refs/heads/'):]
@@ -175,6 +238,16 @@ def pre_push_refusals(lines, tail=None, user=None):
             out.append(name_refusal(name, tail='', user=''))
         elif rsha == ZERO:
             why = name_refusal(name, tail=tail, user=user)
+            if why:
+                out.append(why)
+        if dests is None:
+            dests = landing_destinations()
+        if name not in dests:
+            continue
+        given = os.environ.get(LANDING_SOURCE_ENV, '') if source is None else source
+        for src in dict.fromkeys(s for s in (_source_name(given), _source_name(lref, head))
+                                 if s and s != name and s not in dests):
+            why = landing_refusal(src, name)
             if why:
                 out.append(why)
     return out
