@@ -4,15 +4,16 @@
 # practice: act
 
 A session on the ladder works on its own named branch, never on the one the
-cloud harness named when the session opened (`claude/<words>-<six>`). The
-engine's push check refuses a push that would CREATE such a branch on
-origin; this check covers the rest: the checkout's current branch is read
-every time the practice checks run -- at a landing, a Produce, a deep check
--- so work on a harness-named branch can never be Booked or Produced until
-it is renamed. `git branch -m` keeps every commit, so the fix loses nothing.
+cloud harness named when the session opened (`claude/<words>-<six>`), and
+never on one typed by hand. tools/branch_name_guard.py, which this set
+ships and runs at every push, refuses pushing either; this check covers the
+rest: the checkout's current branch is read every time the practice checks
+run -- at a landing, a Produce, a deep check -- so such work can never be
+Booked or Produced until it is renamed. `git branch -m` keeps every commit,
+so the fix loses nothing. A name the naming tool made in another session
+passes here: only its shape is judged, not whose session it was.
 
-Off the ladder (PRECEDENT_NO_LADDERS=1, or the engine's own
-conventions_in_force saying so) nothing is judged.
+Off the ladder (PRECEDENT_NO_LADDERS=1) nothing is judged.
 
 Exit 0 and print nothing when clean. Exit 1 and print the practice's own
 Rule text plus the finding on a violation. Exit 2, with a reason, when the
@@ -32,27 +33,22 @@ SOURCE_ROOT = pathlib.Path(__file__).resolve().parent.parent.parent
 ROOT = pathlib.Path(os.environ.get("PRECEDENT_CHECK_ROOT") or SOURCE_ROOT)
 PRACTICE_FILE = SOURCE_ROOT / "practices" / "act.md"
 
-# The engine's own pattern, used when its naming tool is not importable.
-HARNESS_NAME_RE = re.compile(
-    r"(?:claude|session)/(?!\d{4}-\d{2}-\d{2}-)[a-z0-9]+(?:-[a-z0-9]+)+-[a-z0-9]{6}")
-
-
 class CannotRun(Exception):
     pass
 
 
-def naming_tool():
-    tools = ROOT / "tools"
-    if not (tools / "precedent_branch_name.py").is_file():
-        return None
-    sys.path.insert(0, str(tools))
-    try:
-        import precedent_branch_name
-        return precedent_branch_name
-    except Exception:                                        # noqa: BLE001
-        return None
-    finally:
-        sys.path.pop(0)
+def guard():
+    """This set's branch_name_guard: beside this check's tools/ when run in
+    place, else the copy shipped into the audited repository."""
+    for tools in (SOURCE_ROOT / "tools", ROOT / "tools"):
+        if (tools / "branch_name_guard.py").is_file():
+            sys.path.insert(0, str(tools))
+            try:
+                import branch_name_guard
+                return branch_name_guard
+            finally:
+                sys.path.pop(0)
+    raise CannotRun("tools/branch_name_guard.py is not here")
 
 
 def current_branch():
@@ -75,22 +71,13 @@ def rule_text():
 def finding():
     if os.environ.get("PRECEDENT_NO_LADDERS") == "1":
         return None
-    tool = naming_tool()
-    if tool is not None and not getattr(tool, "conventions_in_force",
-                                        lambda r: True)(str(ROOT)):
-        return None
+    g = guard()
     name = current_branch()
-    judge = getattr(tool, "is_harness_name", None) if tool else None
-    harness = judge(name) if judge else bool(HARNESS_NAME_RE.fullmatch(name))
-    if not harness:
+    why = g.name_refusal(name, tail="", user="")
+    if why is None:
         return None
-    return (f"This checkout is on {name}, the name the harness gave the "
-            f"session when it opened. Work on it is never Booked or "
-            f"Produced: rename it first -- every commit comes with it -- "
-            f"git branch -m {name} "
-            f"\"$(python3 tools/precedent_branch_name.py <a few words>)\" "
-            f"-- then push and land that name. Moving to a sister branch "
-            f"needs nobody's permission (Morgan, 2026-10-11).")
+    return (f"This checkout is on {name}. Work on it is never Booked or "
+            f"Produced until it is renamed: {why}")
 
 
 def main():

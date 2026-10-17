@@ -97,7 +97,14 @@ tracker per repository, apart from the main test's; otherwise the line
 says the date it comes back. A click hides that button at once and is
 saved into the page. Every row stays as it was, for counting, reading the
 names, and deleting one at a time instead. A repository whose `main` lacks
-the workflow says so; Update Vendors installs it. The page's builder,
+the workflow says so; Update Vendors installs it. **One more button, above
+the repositories, starts the workflow in every public repository at once**
+(2026-10-16): one click, through the person's own GitHub connector, so the
+page is published with the capabilities the builder prints, which add that
+one GitHub tool to the page's own saves. A private repository, or one whose
+visibility is unknown, is never in it. **Any of these clicks checks off
+every row of the repositories it covers** (Morgan: "it should check the box
+and cross it off if it doesn't already", strength: decided). The page's builder,
 [precedent_stale_branches.py](https://github.com/alex137/BestPractice/blob/staging/tools/precedent_stale_branches.py),
 says how it decides.
 

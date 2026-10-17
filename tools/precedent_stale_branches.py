@@ -9,6 +9,9 @@ deleting it loses nothing.
     python3 tools/precedent_stale_branches.py --html OUT.html --merge SAVED.html
     python3 tools/precedent_stale_branches.py --html OUT.html --replace
     python3 tools/precedent_stale_branches.py --page-url      # the person's saved page
+    python3 tools/precedent_stale_branches.py --waiting       # staging that main lacks
+    python3 tools/precedent_stale_branches.py --delete-merged [--keep NAME]
+            [--skip-heads FILE]   # ONLY inside precedent-branch-cleanup.yml
 
 A branch is STALE when its tip is already in `origin/main`, or when it carries
 no change `main` lacks (a Promote's fix branch or copy of staging whose merge commits
@@ -100,14 +103,62 @@ the engine here is older than the page and Update Vendors fixes it. A page
 with no `format` predates the field and counts as format 0, accepted.
 Reported by a consuming repository, 2026-10-13, after a vendored engine
 older than the page's merged it.
+
+WAITING TO GO LIVE (2026-10-16). The page also lists, above the branches,
+each repository whose staging tier carries a change main lacks: how many
+commits, the date of the oldest, and a link to GitHub's comparison of the
+two. Same repositories, same code-owner filter, and merged across sessions
+the same way: a repository this run checked gets its fresh row, or none
+when it is level, and one it did not check keeps its last row under the
+date it was checked. A repository with no staging tier, where main is
+staging, has no row. This is what the retired chief-of-staff practice's
+Promotion Reviews did on request; Morgan, 2026-10-16, retiring it: "Let's
+implement your three suggestion" (strength: decided), the suggestion being
+to put the staging check on this page so it comes without being asked and
+covers, across sessions, every repository the person works in. A page
+carrying a waiting list is format 2, so an engine from before this refuses
+to merge it rather than drop the list.
+
+THE DELETE-ALL BUTTON (2026-10-16, spec/BRANCH_CLEANUP_BUTTON_PLAN.md).
+Each repository's section opens with a link to its
+`.github/workflows/precedent-branch-cleanup.yml` page on GitHub, where the
+person clicks Run workflow: that workflow deletes every branch this tool
+would list, through `--delete-merged`, which refuses to run anywhere but
+inside it. A session never starts it (practice:
+never-delete-a-remote-branch). The rows stay exactly as they were. Morgan:
+"it should ALSO keep the list as it is now, because I want to both see all
+the branches ... and also because I may not use the new button because I
+am careful on github minutes" (strength: decided).
+
+WHEN THE BUTTON SHOWS. Always in a public repository. In a private one only
+once `github_branch_cleanup_every_hours` (precedent_branches.
+branch_cleanup_cadence; 336 for Morgan) has passed since THAT repository's
+last cleanup run -- one tracker per repository, apart from the main test's.
+The tracker is GitHub's own run history, read for each repository this run
+can ask; a click on the page also writes its date into the page (`clicked`)
+and hides that button at once, and the page's script shows it again when
+the hours are up. For a repository this run checked, GitHub's history
+replaces the page's click record; for one it did not, or could not ask,
+the newer of the two is kept. Any doubt -- visibility unknown, no number
+set -- shows the button: showing it costs nothing, only a click does. A
+repository whose `main` lacks the workflow gets a line saying so, never a
+dead link. A page carrying this is format 3.
 """
 import datetime
 import html
 import json
+import os
 import pathlib
 import re
 import subprocess
 import sys
+# finished typography on every HTML page (finish_html.py; practice: curly-quotes)
+sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))
+try:
+    from finish_html import finish as finish_html
+except ImportError:     # a copy of this file without the engine beside it
+    def finish_html(page):
+        return page
 import urllib.parse
 
 # The file name the closing Boildown is told to write the page to, inside
@@ -120,7 +171,7 @@ PAGE_FILENAME = 'branch-cleanup.html'
 # The version of the page's JSON block (`format` in branch-data). Raise it
 # whenever the block gains a field an older engine would drop or misread:
 # an older engine handed a newer page refuses to merge it (page_format).
-PAGE_FORMAT = 1
+PAGE_FORMAT = 3
 
 _ENGINE_DIR = pathlib.Path(__file__).resolve().parent
 sys.path.insert(0, str(_ENGINE_DIR))
@@ -315,9 +366,314 @@ def collect(fetch=False, seen=None):
     return groups, notes
 
 
+def waiting_in(repo):
+    """-> (staging, commits, oldest_date) when `repo`'s staging tier carries
+    a change origin/main lacks; None when the two are level, when main is
+    staging here, or when either is missing. Reads the remote-tracking refs
+    as they stand: fetch first for a current answer."""
+    try:
+        import precedent_branches as pb
+        staging = pb.staging_branch(repo)
+    except Exception:                                        # noqa: BLE001
+        staging = 'staging'
+    if not staging or staging == 'main':
+        return None
+    lo, hi = 'origin/main', f'origin/{staging}'
+    for ref in (lo, hi):
+        if _git(repo, 'rev-parse', '--verify', '--quiet', ref).returncode:
+            return None
+    # Nothing to move when staging changes no file main lacks: a staging
+    # that only merged main back in after a Produce is level, not waiting.
+    if _git(repo, 'diff', '--quiet', f'{lo}...{hi}').returncode == 0:
+        return None
+    dates = _git(repo, 'log', '--no-merges', '--format=%cs',
+                 f'{lo}..{hi}').stdout.split()
+    if not dates:
+        dates = _git(repo, 'log', '--format=%cs', f'{lo}..{hi}').stdout.split()
+    if not dates:
+        return None
+    return staging, len(dates), min(dates)
+
+
+def collect_waiting(fetch=False, seen=None):
+    """-> [(owner, name, staging, commits, oldest)] for every repository
+    open here, where the person is a code owner, whose staging waits to go
+    into main. `seen`, a list, gets (owner, name) of every repository read,
+    the level ones included: what a merge replaces."""
+    try:
+        import precedent_audience as pa
+    except ImportError:
+        pa = None
+    out = []
+    for repo, (owner, name) in _repos():
+        if pa is not None and not pa.is_code_owner(repo)[0]:
+            continue
+        if fetch:
+            _git(repo, 'fetch', '-q', '--prune', 'origin')
+        if _git(repo, 'rev-parse', '--verify', '--quiet', 'origin/main').returncode:
+            continue
+        if seen is not None:
+            seen.append((owner, name))
+        row = waiting_in(repo)
+        if row:
+            out.append((owner, name, *row))
+    return out
+
+
+def compare_link(owner, name, staging):
+    return (f'https://github.com/{owner}/{name}/compare/main...'
+            + urllib.parse.quote(staging, safe=''))
+
+
 def link(owner, name, branch):
     return (f'https://github.com/{owner}/{name}/branches/all?query='
             + urllib.parse.quote(branch, safe=''))
+
+
+# THE DELETE-ALL BUTTON (module docstring, "THE DELETE-ALL BUTTON").
+CLEANUP_WORKFLOW = 'precedent-branch-cleanup.yml'
+CLEANUP_PATH = '.github/workflows/' + CLEANUP_WORKFLOW
+# A run in one of these states has been started and may still delete: it
+# counts as a run, so a second click is not invited while it works.
+_RUN_STARTED = {'queued', 'in_progress', 'waiting', 'requested', 'pending'}
+
+
+def workflow_link(owner, name):
+    return f'https://github.com/{owner}/{name}/actions/workflows/{CLEANUP_WORKFLOW}'
+
+
+def cleanup_installed(repo):
+    """True when `repo`'s origin/main carries the cleanup workflow: GitHub
+    offers Run workflow only for a file on the default branch."""
+    return _git(repo, 'cat-file', '-e', f'origin/main:{CLEANUP_PATH}').returncode == 0
+
+
+def _declared_visibility(repo):
+    try:
+        v = json.loads((pathlib.Path(repo) / 'precedent.json')
+                       .read_text(encoding='utf-8')).get('visibility')
+    except (OSError, ValueError, AttributeError):
+        return None
+    return {'private': True, 'public': False}.get(v)
+
+
+def _is_source(repo):
+    """True for a practice set: it carries no GitHub workflow at all
+    (practice: source-sets-run-no-ci), so it never gets the button."""
+    for f in (pathlib.Path(repo) / 'tools' / 'ENGINE_MANIFEST.json',
+              pathlib.Path(repo) / 'precedent.json'):
+        try:
+            if json.loads(f.read_text(encoding='utf-8')).get('kind') == 'source':
+                return True
+        except (OSError, ValueError, AttributeError):
+            continue
+    return False
+
+
+def _github():
+    try:
+        import github_budget
+        return github_budget
+    except Exception:                                        # noqa: BLE001
+        return None
+
+
+def last_cleanup_run(slug, gh):
+    """-> the ISO time of `slug`'s newest cleanup run that succeeded or is
+    still going, '' when it has none, None when GitHub could not be asked.
+    A failed run deleted nothing that counts, so it does not count."""
+    if gh is None:
+        return None
+    data, err = gh.call(f'repos/{slug}/actions/workflows/{CLEANUP_WORKFLOW}'
+                        f'/runs?per_page=20', cache=False)
+    if err or not isinstance(data, dict):
+        return '' if err and '404' in str(err) else None
+    for run in data.get('workflow_runs') or []:
+        if run.get('conclusion') == 'success' or run.get('status') in _RUN_STARTED:
+            return run.get('created_at') or ''
+    return ''
+
+
+def cleanup_state(repo, owner, name, gh=None, hours=None, now=None):
+    """-> the page's record of one repository's button: installed, private
+    (True, False, or None when unknown), hours, last (ISO, '' for never,
+    None when GitHub could not be asked) and checked."""
+    now = now or datetime.datetime.now(datetime.timezone.utc)
+    if hours is None:
+        try:
+            import precedent_branches as pb
+            hours = pb.branch_cleanup_cadence(repo)[0]
+        except Exception:                                    # noqa: BLE001
+            hours = 0.0
+    private = None
+    if gh is not None:
+        data, err = gh.call(f'repos/{owner}/{name}')
+        if not err and isinstance(data, dict) and isinstance(data.get('private'), bool):
+            private = data['private']
+    if private is None:
+        private = _declared_visibility(repo)
+    installed = cleanup_installed(repo)
+    last = last_cleanup_run(f'{owner}/{name}', gh) if installed and private else ''
+    return {'owner': owner, 'repo': name, 'installed': installed, 'private': private,
+            'source': _is_source(repo),
+            'hours': float(hours or 0), 'last': last, 'checked': now.isoformat()}
+
+
+def _when(iso):
+    if not iso:
+        return None
+    try:
+        t = datetime.datetime.fromisoformat(str(iso).replace('Z', '+00:00'))
+    except ValueError:
+        return None
+    return t if t.tzinfo else t.replace(tzinfo=datetime.timezone.utc)
+
+
+def cleanup_due(state, now=None):
+    """-> (shown, back_on): whether the repository's button shows now, and,
+    when it does not, the aware datetime it comes back. Not installed: never
+    shown, no date. Anything in doubt: shown."""
+    now = now or datetime.datetime.now(datetime.timezone.utc)
+    if not state or not state.get('installed'):
+        return False, None
+    hours = state.get('hours') or 0
+    last = _when(state.get('last'))
+    if state.get('private') is not True or not hours or last is None:
+        return True, None
+    back = last + datetime.timedelta(hours=hours)
+    return (True, None) if now >= back else (False, back)
+
+
+def merge_cleanup(fresh, previous, clicked):
+    """-> {(owner, name) key: state} for the page: a fresh state for each
+    repository this run looked at, the saved one for every other, and the
+    page's own click dates folded in. For a repository this run asked about,
+    GitHub's history wins over a click -- a click that never reached Run
+    workflow started nothing; when GitHub could not be asked (last None)
+    the newer of the saved last run and the click is kept. A saved record
+    is kept for every repository without a fresh one, checked or not: one
+    with nothing to delete today still ran when it ran."""
+    out = {}
+    fresh_keys = {_key(st['owner'], st['repo']) for st in fresh}
+    prev = {_key(r['owner'], r['repo']): r for r in previous
+            if isinstance(r, dict) and r.get('owner') and r.get('repo')}
+
+    def newest(*isos):
+        ts = [(t, i) for i in isos if (t := _when(i)) is not None]
+        return max(ts)[1] if ts else ''
+
+    for k, r in prev.items():
+        if k not in fresh_keys:
+            out[k] = dict(r, last=newest(r.get('last'), clicked.get(f'{r["owner"]}/{r["repo"]}')))
+    for st in fresh:
+        k = _key(st['owner'], st['repo'])
+        st = dict(st)
+        if st.get('last') is None:
+            old = prev.get(k) or {}
+            st['last'] = newest(old.get('last'), clicked.get(f'{st["owner"]}/{st["repo"]}'))
+        out[k] = st
+    return out
+
+
+def read_cleanup(text):
+    """-> (records, clicked) a saved page carries: its `cleanup` list and
+    the click dates its script saved; ([], {}) for a page from before."""
+    m = _DATA.search(text)
+    if not m:
+        return [], {}
+    try:
+        data = json.loads(m.group(1))
+    except ValueError:
+        return [], {}
+    recs = data.get('cleanup') if isinstance(data, dict) else None
+    clicked = data.get('clicked') if isinstance(data, dict) else None
+    return ([r for r in recs if isinstance(r, dict)] if isinstance(recs, list) else [],
+            {str(k): str(v) for k, v in clicked.items()} if isinstance(clicked, dict) else {})
+
+
+def _day(when, tz=''):
+    zone = datetime.timezone.utc
+    if tz:
+        try:
+            from zoneinfo import ZoneInfo
+            zone = ZoneInfo(tz)
+        except Exception:                                    # noqa: BLE001
+            pass
+    local = when.astimezone(zone)
+    return f'{local.day} {local:%b}'
+
+
+def _cleanup_line(owner, name, n, state, now=None, tz=''):
+    """-> the section's opening line: the delete-all link, the date it comes
+    back, or why there is none. '' when there is no record at all."""
+    if not state:
+        return ''
+    if not state.get('installed') and state.get('source'):
+        return ('<p class="cleanup">No delete-all button here: a practice set carries '
+                'no GitHub workflow. Delete its branches one at a time below.</p>')
+    if not state.get('installed'):
+        return ('<p class="cleanup">No delete-all button here: this repository\'s '
+                '<code>main</code> does not have the cleanup workflow yet. Update '
+                'Vendors installs it.</p>')
+    shown, back = cleanup_due(state, now)
+    attrs = (f' data-repo="{html.escape(owner + "/" + name)}"'
+             f' data-private="{"1" if state.get("private") is True else "0"}"'
+             f' data-hours="{state.get("hours") or 0:g}"'
+             f' data-last="{html.escape(state.get("last") or "")}"')
+    back_text = f'Delete-all button back on {_day(back, tz)}.' if back else ''
+    return (f'<p class="cleanup"{attrs}>'
+            f'<a class="del-all" href="{workflow_link(owner, name)}" target="_blank" '
+            f'rel="noopener"{"" if shown else " hidden"}>Delete every merged branch '
+            f'({n} listed)</a>'
+            f'<span class="how"{"" if shown else " hidden"}>Opens GitHub: click Run '
+            f'workflow, then confirm. It deletes only branches already in '
+            f'<code>main</code>, never <code>main</code> or <code>staging</code>.</span>'
+            f'<span class="back"{"" if back else " hidden"}>{html.escape(back_text)}</span>'
+            f'</p>')
+
+
+def delete_merged(repo, keep=(), skip_heads=(), env=None, push=None, say=print):
+    """Delete every branch stale_in lists for `repo`, less the never-deleted
+    ones, `keep` and `skip_heads`. -> exit status. Runs ONLY inside the
+    precedent-branch-cleanup workflow, started by hand (practice:
+    never-delete-a-remote-branch): anywhere else it refuses and deletes
+    nothing."""
+    env = os.environ if env is None else env
+    if env.get('GITHUB_ACTIONS') != 'true' or env.get('GITHUB_EVENT_NAME') != 'workflow_dispatch':
+        say('--delete-merged runs only inside the precedent-branch-cleanup workflow, '
+            'started by a person from GitHub. Nothing deleted (practice: '
+            'never-delete-a-remote-branch).')
+        return 2
+    rows = stale_in(repo)
+    if rows is None:
+        say('No origin/main to compare against. Nothing deleted.')
+        return 1
+    push = push or (lambda b: _git(repo, 'push', '-q', 'origin', '--delete', b))
+    keep, heads = set(keep), set(skip_heads)
+    deleted, skipped, failed = [], [], []
+    for b, _d in rows:
+        if b in NEVER or b.startswith(DATA_PREFIX) or b in keep:
+            skipped.append((b, 'never deleted by the button'))
+        elif b in heads:
+            skipped.append((b, 'an open pull request comes from it'))
+        else:
+            r = push(b)
+            (deleted.append(b) if r.returncode == 0
+             else failed.append((b, (r.stderr or r.stdout or '').strip()[:200])))
+    lines = [f'Deleted {len(deleted)} branch(es) already in main.']
+    lines += [f'- deleted `{b}`' for b in deleted]
+    lines += [f'- skipped `{b}`: {why}' for b, why in skipped]
+    lines += [f'- FAILED `{b}`: {why}' for b, why in failed]
+    for line in lines:
+        say(line)
+    summary = env.get('GITHUB_STEP_SUMMARY')
+    if summary:
+        try:
+            with open(summary, 'a', encoding='utf-8') as f:
+                f.write('\n'.join(lines) + '\n')
+        except OSError:
+            pass
+    return 1 if failed else 0
 
 
 def _person():
@@ -490,7 +846,69 @@ def carried_over(previous, seen, done=None):
     return out
 
 
-def _section(owner, name, rows, note=''):
+def read_waiting(text):
+    """-> [{'owner', 'repo', 'checked', 'staging', 'commits', 'oldest'}]
+    from a page's JSON block; [] for a page from before the list existed."""
+    m = _DATA.search(text)
+    if not m:
+        return []
+    try:
+        rows = json.loads(m.group(1)).get('waiting') or []
+    except (ValueError, AttributeError):
+        return []
+    return [r for r in rows if isinstance(r, dict) and r.get('owner') and r.get('repo')]
+
+
+def carried_waiting(previous, seen):
+    """-> [(owner, name, staging, commits, oldest, checked)]: the saved
+    page's waiting rows for repositories this run did not check."""
+    checked_now = {_key(o, n) for o, n in seen}
+    return [(r['owner'], r['repo'], r.get('staging') or 'staging',
+             int(r.get('commits') or 0), r.get('oldest') or '', r.get('checked') or '')
+            for r in previous if _key(r['owner'], r['repo']) not in checked_now]
+
+
+def is_page(text):
+    """True when `text` is a page this tool built: its JSON block reads, or,
+    before the block, it carries the build stamp."""
+    m = _DATA.search(text)
+    if m:
+        try:
+            return isinstance(json.loads(m.group(1)), dict)
+        except ValueError:
+            return False
+    return bool(_STAMP.search(text) and _SECTION.search(text))
+
+
+def _waiting_section(waiting, carried, tz):
+    if not waiting and not carried:
+        return ''
+    lis = []
+    for owner, name, staging, n, oldest, *rest in [(*w, '') for w in waiting] + list(carried):
+        checked = rest[0] if rest else ''
+        note = ''
+        if checked:
+            try:
+                note = (' <span class="carried">As of the last check, '
+                        + html.escape(built_line(datetime.datetime.fromisoformat(checked),
+                                                 tz)[len('Refreshed '):])
+                        + '; it may have moved since.</span>')
+            except (TypeError, ValueError):
+                note = ' <span class="carried">As of an earlier check.</span>'
+        lis.append(
+            f'<li><div class="wait"><a href="{compare_link(owner, name, staging)}" '
+            f'target="_blank" rel="noopener">{html.escape(name)}</a>'
+            f'<span>{n} commit{"" if n == 1 else "s"} on <code>{html.escape(staging)}</code> '
+            f'that <code>main</code> lacks, oldest from {html.escape(oldest)}.{note}</span>'
+            f'</div></li>')
+    return ('<section class="waiting"><h2>Waiting to go live '
+            f'<span class="count">{len(lis)}</span></h2>'
+            '<p class="carried">Say Produce in a session rooted in that repository '
+            'to move it into main. Each link opens GitHub\'s comparison of the two.</p>'
+            f'<ul>{"".join(lis)}</ul></section>')
+
+
+def _section(owner, name, rows, note='', cleanup=''):
     lis = '\n'.join(
         f'<li><label class="row"><input type="checkbox" '
         f'id="{html.escape(name + "/" + b)}" data-k="{html.escape(name + "/" + b)}">'
@@ -501,16 +919,30 @@ def _section(owner, name, rows, note=''):
             f'<span class="count">{len(rows)}</span></h2>'
             f'<p class="owner">github.com/{html.escape(owner)}/{html.escape(name)}</p>'
             + (f'<p class="carried">{html.escape(note)}</p>' if note else '')
+            + cleanup
             + f'<ul>{lis}</ul></section>')
 
 
-def render_html(groups, now=None, tz='', carried=()):
+def render_html(groups, now=None, tz='', carried=(), waiting=(), carried_wait=(),
+                cleanup=None):
     """`carried`: [(owner, name, rows, checked)] kept from the saved page for
     repositories this run did not check (carried_over), shown after the
-    fresh ones under the date they were last checked."""
+    fresh ones under the date they were last checked. `waiting`:
+    [(owner, name, staging, commits, oldest)] from collect_waiting, and
+    `carried_wait` the saved page's rows this run did not check
+    (carried_waiting), listed first, above the branches. `cleanup`:
+    {(owner, name) key: state} from merge_cleanup, each section's delete-all
+    line; None or a missing key leaves that section without one."""
     now = now or datetime.datetime.now(datetime.timezone.utc)
     total = sum(len(r) for *_x, r in groups) + sum(len(c[2]) for c in carried)
-    secs = [_section(owner, name, rows) for owner, name, rows in groups]
+    secs = [_waiting_section(waiting, carried_wait, tz)]
+    cleanup = cleanup or {}
+
+    def line(o, n, rows):
+        return _cleanup_line(o, n, len(rows), cleanup.get(_key(o, n)), now, tz)
+
+    secs += [_section(owner, name, rows, cleanup=line(owner, name, rows))
+             for owner, name, rows in groups]
     for owner, name, rows, checked in carried:
         try:
             when = ', ' + built_line(datetime.datetime.fromisoformat(checked),
@@ -520,12 +952,17 @@ def render_html(groups, now=None, tz='', carried=()):
         secs.append(_section(owner, name, rows,
                              f'Not open in the session that refreshed this page: '
                              f'as listed when last checked{when}. A branch here '
-                             f'may already be gone.'))
+                             f'may already be gone.', cleanup=line(owner, name, rows)))
     data = {'format': PAGE_FORMAT, 'built': now.isoformat(), 'done': {}, 'repos': [
         {'owner': o, 'repo': n, 'checked': now.isoformat(),
          'branches': [[b, d] for b, d in rows]} for o, n, rows in groups] + [
         {'owner': o, 'repo': n, 'checked': c, 'branches': [[b, d] for b, d in rows]}
-        for o, n, rows, c in carried]}
+        for o, n, rows, c in carried], 'waiting': [
+        {'owner': o, 'repo': n, 'checked': now.isoformat(), 'staging': st,
+         'commits': k, 'oldest': d} for o, n, st, k, d in waiting] + [
+        {'owner': o, 'repo': n, 'checked': c, 'staging': st, 'commits': k, 'oldest': d}
+        for o, n, st, k, d, c in carried_wait],
+        'cleanup': list(cleanup.values()), 'clicked': {}}
     # The list the next merge reads (read_page); '<' escaped so no branch
     # name can close the script element.
     secs.append('<script type="application/json" id="branch-data">'
@@ -553,11 +990,17 @@ h1 { font-size:1.6rem; font-weight:600; margin:0; text-wrap:balance; }
 .bar .progress { font-variant-numeric:tabular-nums; font-weight:500; }
 .bar button { font:inherit; font-size:.85rem; background:none; border:1px solid var(--line); color:var(--muted); border-radius:4px; padding:3px 10px; cursor:pointer; }
 .bar button:focus-visible, a:focus-visible, input:focus-visible { outline:2px solid var(--accent); outline-offset:2px; }
-.repo h2 { font-size:1.05rem; font-weight:600; margin:0; display:flex; gap:8px; align-items:baseline; }
+.repo h2, .waiting h2 { font-size:1.05rem; font-weight:600; margin:0; display:flex; gap:8px; align-items:baseline; }
 .count, .owner { font-family:var(--mono); color:var(--muted); }
 .count { font-size:.8rem; font-weight:400; }
 .owner { font-size:.78rem; margin:2px 0 10px; }
 .carried { font-size:.85rem; color:var(--muted); margin:-4px 0 10px; max-width:62ch; }
+.waiting .carried { margin:2px 0 10px; }
+.wait { display:grid; gap:2px; padding:8px 12px; }
+.wait a { font-weight:600; color:var(--accent); text-decoration:none; }
+.wait a:hover { text-decoration:underline; }
+.wait span { color:var(--muted); font-size:.88rem; }
+.wait .carried { display:block; margin:2px 0 0; font-size:.8rem; }
 ul { list-style:none; margin:0; padding:0; background:var(--surface); border:1px solid var(--line); border-radius:6px; }
 li + li { border-top:1px solid var(--line); }
 .row { display:grid; grid-template-columns:auto minmax(0,1fr) auto; gap:10px; align-items:center; padding:8px 12px; cursor:pointer; }
@@ -566,14 +1009,18 @@ li + li { border-top:1px solid var(--line); }
 .row a:hover { text-decoration:underline; }
 .date { font-family:var(--mono); font-size:.75rem; color:var(--muted); font-variant-numeric:tabular-nums; }
 .row:has(input:checked) a { color:var(--done); text-decoration:line-through; }
+.cleanup { display:grid; gap:2px; margin:0 0 10px; font-size:.88rem; color:var(--muted); max-width:62ch; }
+.cleanup a { font-weight:600; color:var(--accent); text-decoration:none; justify-self:start; }
+.cleanup a:hover { text-decoration:underline; }
+.cleanup [hidden] { display:none; }
 </style>
 <main>
 <header>
 <h1>Branch cleanup</h1>
 <p class="built">{{BUILT}}</p>
-<p class="lede">{{TOTAL}} branches, all already in <code>main</code> (a retired <code>pre-staging</code>: already in <code>staging</code>), so deleting any of them loses nothing. Each link opens GitHub's branch list filtered to that one branch; delete it with the trash icon there. Never listed: <code>main</code>, <code>staging</code>, <code>pre-staging</code> while it is in use, and the engine's own branches. Ticking a branch, or opening its link, saves the tick into this page, so the next refresh leaves it off a repository it cannot check.</p>
+<p class="lede">{{TOTAL}} branches, all already in <code>main</code> (a retired <code>pre-staging</code>: already in <code>staging</code>), so deleting any of them loses nothing. Each link opens GitHub's branch list filtered to that one branch; delete it with the trash icon there. Never listed: <code>main</code>, <code>staging</code>, <code>pre-staging</code> while it is in use, and the engine's own branches. Checking a branch off, or opening its link, saves the checkmark into this page, so the next refresh leaves it off a repository it cannot check.</p>
 </header>
-<div class="bar"><span class="progress" id="progress">0 of {{TOTAL}} done</span><button type="button" id="clear">Clear ticks</button></div>
+<div class="bar"><span class="progress" id="progress">0 of {{TOTAL}} done</span><button type="button" id="clear">Clear checkmarks</button></div>
 {{SECTIONS}}
 </main>
 <script>
@@ -589,8 +1036,14 @@ li + li { border-top:1px solid var(--line); }
   try { for(var i=localStorage.length-1;i>=0;i--){ var k=localStorage.key(i); if(k&&k.indexOf('branch-cleanup-done')===0&&k!==KEY) localStorage.removeItem(k); } } catch(e) {}
   try { done=JSON.parse(localStorage.getItem(KEY)||'{}')||{}; } catch(e) { done={}; }
   Object.keys(saved).forEach(function(k){ done[k]=saved[k]; });
+  // A delete-all click, by repository: written into the page like a tick,
+  // so the next build keeps it for a repository it cannot ask GitHub about.
+  var CKEY='branch-cleanup-clicked:{{BUILD}}', clicked={};
+  try { for(var j=localStorage.length-1;j>=0;j--){ var c=localStorage.key(j); if(c&&c.indexOf('branch-cleanup-clicked')===0&&c!==CKEY) localStorage.removeItem(c); } } catch(e) {}
+  try { clicked=JSON.parse(localStorage.getItem(CKEY)||'{}')||{}; } catch(e) { clicked={}; }
+  Object.keys(data.clicked||{}).forEach(function(k){ clicked[k]=data.clicked[k]; });
   function document_with(d){
-    var copy=JSON.parse(JSON.stringify(data)); copy.done=d;
+    var copy=JSON.parse(JSON.stringify(data)); copy.done=d; copy.clicked=clicked;
     var json=JSON.stringify(copy).replace(/</g,'\\\\u003c');
     return HEAD+BODY.replace(DATA_RE,function(_m,a,b){ return a+json+b; })+'</body></html>';
   }
@@ -601,7 +1054,7 @@ li + li { border-top:1px solid var(--line); }
     page.publish(document_with(done)).catch(function(){});
   }
   function save(){
-    try { localStorage.setItem(KEY, JSON.stringify(done)); } catch(e) {}
+    try { localStorage.setItem(KEY, JSON.stringify(done)); localStorage.setItem(CKEY, JSON.stringify(clicked)); } catch(e) {}
     dirty=true;
     if(timer) clearTimeout(timer);
     timer=setTimeout(publish, 5000);
@@ -610,6 +1063,24 @@ li + li { border-top:1px solid var(--line); }
   function render(){ var n=boxes.filter(function(b){return b.checked;}).length; document.getElementById('progress').textContent=n+' of '+boxes.length+' done'; }
   boxes.forEach(function(b){ b.checked=!!done[b.dataset.k]; b.addEventListener('change',function(){ mark(b, b.checked); }); });
   document.querySelectorAll('.row a').forEach(function(a){ a.addEventListener('click',function(){ var b=a.parentNode.querySelector('input'); if(!b.checked){ b.checked=true; mark(b, true); } }); });
+  // A private repository's button comes back once its hours have passed
+  // since the newer of its last run and a click here; a public one, or one
+  // with no number, always shows (spec/BRANCH_CLEANUP_BUTTON_PLAN.md).
+  function cleanup(p){
+    var a=p.querySelector('.del-all'); if(!a) return;
+    var how=p.querySelector('.how'), back=p.querySelector('.back');
+    var hours=parseFloat(p.dataset.hours)||0, last=0;
+    [p.dataset.last, clicked[p.dataset.repo]].forEach(function(t){ var v=t?Date.parse(t):NaN; if(!isNaN(v)&&v>last) last=v; });
+    var due=last+hours*3600000, shown=p.dataset.private!=='1'||!hours||!last||Date.now()>=due;
+    a.hidden=!shown; how.hidden=!shown; back.hidden=shown;
+    if(!shown) back.textContent='Delete-all button back on '+new Date(due).toLocaleDateString(undefined,{day:'numeric',month:'short'})+'.';
+  }
+  var lines=[].slice.call(document.querySelectorAll('.cleanup[data-repo]'));
+  lines.forEach(function(p){
+    cleanup(p);
+    var a=p.querySelector('.del-all');
+    if(a) a.addEventListener('click',function(){ clicked[p.dataset.repo]=new Date().toISOString(); save(); cleanup(p); });
+  });
   document.getElementById('clear').addEventListener('click',function(){ done={}; boxes.forEach(function(b){b.checked=false;}); save(); render(); });
   // Opening a branch's link leaves this page for GitHub: save then.
   document.addEventListener('visibilitychange',function(){ if(document.visibilityState==='hidden') publish(); });
@@ -620,7 +1091,22 @@ li + li { border-top:1px solid var(--line); }
 '''
 
 
+def _arg_values(argv, flag):
+    return [argv[i + 1] for i, a in enumerate(argv[:-1]) if a == flag]
+
+
 def main(argv):
+    if '--delete-merged' in argv:
+        heads = []
+        for f in _arg_values(argv, '--skip-heads'):
+            try:
+                heads += [l.strip() for l in pathlib.Path(f).read_text(
+                    encoding='utf-8').splitlines() if l.strip()]
+            except OSError as e:
+                print(f'Cannot read {f}: {e}. Nothing deleted.')
+                return 1
+        return delete_merged(pathlib.Path.cwd(), keep=_arg_values(argv, '--keep'),
+                             skip_heads=heads)
     if '--page-url' in argv:
         url = saved_page()
         print(url or 'none saved: add "branch_cleanup_page" to your identity.json')
@@ -631,11 +1117,21 @@ def main(argv):
     if '--count' in argv:
         print(total)
         return 0
+    # After collect, whose --fetch already brought every ref up to date.
+    wait_seen = []
+    waiting = collect_waiting(seen=wait_seen)
+    if '--waiting' in argv:
+        for owner, name, staging, n, oldest in waiting:
+            print(f'{name}: {n} commit(s) on {staging} that main lacks, oldest '
+                  f'from {oldest}  {compare_link(owner, name, staging)}')
+        print(f'{len(waiting)} repositor(ies) waiting to go live.')
+        return 0
     if '--html' in argv:
         out = pathlib.Path(argv[argv.index('--html') + 1])
         person = _person()
         url = saved_page(person)
-        carried, ticked = [], 0
+        carried, ticked, carried_wait = [], 0, []
+        prev_cleanup, clicked = [], {}
         if '--merge' in argv:
             prev = pathlib.Path(argv[argv.index('--merge') + 1])
             try:
@@ -653,7 +1149,7 @@ def main(argv):
                       f'Vendors in this repository brings the engine up to '
                       f'date; then run this again.')
                 return 2
-            if not previous and '--replace' not in argv:
+            if not is_page(prev_text) and '--replace' not in argv:
                 print(f'{prev} holds no branch list this tool can read, so '
                       f'merging it would keep nothing. Nothing written: pass '
                       f'the page the saved address holds, or --replace if '
@@ -663,8 +1159,10 @@ def main(argv):
                 print(f'WARNING: {why}. Merge a read of the saved page made '
                       f'immediately before this build (the Artifact tool\'s '
                       f'read of its url with path index.html), or rows and '
-                      f'ticks saved since are lost.')
+                      f'checkmarks saved since are lost.')
             carried = carried_over(previous, seen, done)
+            prev_cleanup, clicked = read_cleanup(prev_text)
+            carried_wait = carried_waiting(read_waiting(prev_text), wait_seen)
             ticked = (sum(len(r.get('branches') or []) for r in previous
                           if (r['owner'], r['repo']) in
                           {(o, n) for o, n, *_x in carried_over(previous, seen)})
@@ -678,8 +1176,21 @@ def main(argv):
                   f'--merge <that file>. Only if it is gone or unreadable, '
                   f'add --replace instead.')
             return 2
-        out.write_text(render_html(groups, tz=person.get('timezone') or '',
-                                   carried=carried), encoding='utf-8')
+        # Each listed repository's delete-all button: asked of GitHub here,
+        # where that is reachable, and kept from the saved page otherwise.
+        gh = _github()
+        try:
+            paths = {_key(*slug): repo for repo, slug in _repos()}
+        except Exception:                                    # noqa: BLE001
+            paths = {}
+        fresh = [cleanup_state(paths[_key(o, n)], o, n, gh=gh)
+                 for o, n, _rows in groups if _key(o, n) in paths]
+        cleanup = merge_cleanup(fresh, prev_cleanup, clicked)
+        out.write_text(finish_html(render_html(groups, tz=person.get('timezone') or '',
+                                               carried=carried, waiting=waiting,
+                                               carried_wait=carried_wait,
+                                               cleanup=cleanup)),
+                       encoding='utf-8')
         # Noted for the publish gate, which passes a page an engine
         # generator wrote, unedited, within the hour (artifact_publish_gate.py,
         # "ENGINE-REGISTERED GENERATORS"). Without it the page the
@@ -696,20 +1207,27 @@ def main(argv):
               + (f', and {kept} kept from the saved page for '
                  f'{len(carried)} repositor(ies) this session did not check'
                  if carried else '')
-              + (f'; {ticked} left off because the person ticked them on the '
-                 f'page' if ticked else '')
+              + (f'; {ticked} left off because the person checked them off on '
+                 f'the page' if ticked else '')
+              + (f'; {len(waiting) + len(carried_wait)} repositor(ies) waiting '
+                 f'to go live' + (f' ({len(carried_wait)} kept from the saved '
+                                  f'page)' if carried_wait else '')
+                 if waiting or carried_wait else '')
               + ('' if noted else ' (not noted for the publish gate, which '
                  'will refuse it: artifact_publish_gate.py did not load)'))
         print(f'Publish it to the saved page, in place: {url}, with '
               f'capabilities {{"artifact": {{}}}} so the page can save its own '
-              f'ticks' if url else
+              f'checkmarks' if url else
               'No saved page yet: publish it as a new page with capabilities '
-              '{"artifact": {}}, so it can save its own ticks, then save its '
+              '{"artifact": {}}, so it can save its own checkmarks, then save its '
               'address as "branch_cleanup_page" in the identity.json of your '
               'individual practice source, so the next close updates it.')
         return 0
     if '--json' in argv:
-        print(json.dumps({'total': total, 'notes': notes, 'repos': [
+        print(json.dumps({'total': total, 'notes': notes, 'waiting': [
+            {'owner': o, 'repo': n, 'staging': st, 'commits': k, 'oldest': d,
+             'link': compare_link(o, n, st)} for o, n, st, k, d in waiting],
+            'repos': [
             {'owner': o, 'repo': n, 'branches': [
                 {'branch': b, 'date': d, 'link': link(o, n, b)} for b, d in rows]}
             for o, n, rows in groups]}, indent=2))
@@ -721,6 +1239,9 @@ def main(argv):
     for n in notes:
         print(f'note: {n}')
     print(f'{total} stale branch(es) across {len(groups)} repositor(ies).')
+    for owner, name, staging, n, oldest in waiting:
+        print(f'waiting to go live: {name}, {n} commit(s) on {staging} that '
+              f'main lacks, oldest from {oldest}')
     return 0
 
 
