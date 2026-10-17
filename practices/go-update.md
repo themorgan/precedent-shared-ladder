@@ -611,8 +611,7 @@ any other, getting its full check at the next Promote.
 pre-staging -> staging -> main should be mandatory for me, but not
 necessarily anyone else"* (strength: decided). A new install or an Update
 Vendors then wrote `pre-staging` as a repository's `landing_branch` where
-it was missing -- `staging` for a person who had retired pre-staging
-(`retire_pre_staging` in their identity.json, from 2026-10-11). Landing on
+it was missing. Landing on
 pre-staging meant `--sync-pre-staging` first, to create it from staging or
 copy down what had reached staging or main by another route, then merging
 `origin/pre-staging` into the work before pushing.
