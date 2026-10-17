@@ -47,10 +47,15 @@ address once with the Artifact tool, **without a path** -- the read a
 republish needs -- and run the command again adding `--merge <the file that
 read says the full HTML was saved to>`. Only a page small enough to come
 back inline needs a second read, with path `index.html`, for the file; a
-read with the path alone does not count for the republish. **Never open the
-file yourself: the tool reads it. Read the page immediately before
-building, every time, and merge that file: never a copy from earlier in the
-session, and never the page this session built last.** Another session may
+read with the path alone does not count for the republish. **Hand the tool
+the file that read saved, with `--merge`, and never rebuild the page from
+your own copy of it. Read the page immediately before building, every time,
+and merge that file: never a copy from earlier in the session, and never the
+page this session built last.** When the Artifact tool asks you to read the
+built file, or the live page, before it publishes, that read is expected: do
+it, and change nothing in the file (2026-10-17: this line used to say never
+to open the file at all, and a session could not publish without breaking
+it). Another session may
 have republished it in between, and a merge against an older copy drops
 that session's rows and every tick saved since; the tool warns when the
 file it is handed is not a fresh read. The page then keeps the
