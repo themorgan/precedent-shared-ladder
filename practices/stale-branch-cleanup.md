@@ -7,10 +7,11 @@ applies_to:  ["**"]
 applies_to_why: "A moment, not a place: the reply that closes a session. Routed by the `reply` gate."
 occasion:    "the reply that says the session can be archived"
 gates:       ["reply"]
-gates_why:   "The reply gate counts the stale branches, and the repositories whose staging waits for main, at the start of every turn and prints the line only when there are any, so the closing reply is the one that can still carry the link."
+gates_why:   "This set's tools/ladder/branch_page_note.py counts the stale branches, and the repositories whose staging waits for main, at the start of every turn; the reply gate prints what it says (this set's reply_check.json, note_from_tool) only when there are any, so the closing reply is the one that can still carry the link."
 index_clause: "closing Boildown: refresh the pinned branch and staging page, only if any"
 index_required: false
 checked_by:  null
+ships:       ["tools/ladder/branch_page_note.py"]
 defines:     []
 status:      active
 in_force_at: null
