@@ -11,6 +11,7 @@ gates_why:   "Each of these ends in a merge into a branch tier -- Update Vendors
 index_clause: "after an update or a stage lands, hand fixable warnings upstream"
 index_required: false
 checked_by:  null
+ships:       ["tools/ladder/upstream_review.py"]
 defines:     ["Upstream review", "Upstream-seen"]
 status:      active
 in_force_at: null
@@ -48,7 +49,8 @@ shown the review, the block, or a line saying it was skipped.
 ## Detail
 
 The tools print the review themselves, from
-[tools/precedent_upstream_review.py](../tools/precedent_upstream_review.py) in the vendored engine, and only where
+[tools/ladder/upstream_review.py](../tools/ladder/upstream_review.py), which this set ships and names as
+its `step_review` in precedent-source.json, and only where
 both conditions hold -- the ladder in force for the person, and the person
 named as one of the repository's code owners:
 
@@ -56,8 +58,8 @@ named as one of the repository's code owners:
   the end of the update's commit message.
 - **Booked** prints it after the quick checks pass, and writes the lines into
   the commit it lands on staging.
-- **Debut** prints it after the full check, and writes the lines into its
-  merge commit.
+- **Debut** prints none of its own since pre-staging retired (2026-10-17):
+  it moves nothing, and Produce reviews the same batch.
 - **Produce** prints it last and records nothing: main moves by a pull
   request.
 
@@ -67,7 +69,7 @@ the commits themselves: a stage reads the `Upstream-seen: <fingerprint>
 fingerprint ignores what changes from run to run -- numbers, commit hashes,
 temporary paths -- so the same warning at Booked and again at Produce is one
 item. For something no tool printed, `python3
-tools/precedent_upstream_review.py --stage booked --note "what you met"`
+tools/ladder/upstream_review.py --stage booked --note "what you met"`
 adds it.
 
 ## Why

@@ -6,6 +6,7 @@ branch_name_guard.py -- act's enforcement, shipped by the ladder set.
     python3 tools/branch_name_guard.py --pre-push        (git's pre-push: refs on stdin)
     python3 tools/branch_name_guard.py --check NAME      (one name; exit 1 and why)
     python3 tools/branch_name_guard.py --commit-note     (Claude Code PreToolUse Bash hook)
+    python3 tools/branch_name_guard.py --session-start   (Claude Code SessionStart hook)
 
 THE RULE (act, Morgan, 2026-10-11, strength: decided): a session on the
 ladder works on a branch tools/precedent_branch_name.py named --
@@ -80,9 +81,11 @@ _JUDGED_RE = re.compile(r'(?:claude/|session/|\d{4}-\d{2}-\d{2}-)')
 # need my permission only for the ladder upgrades like to staging or to
 # main)").
 SISTER_BRANCH_PERMISSION = (
-    'This is the permission your opening instructions ask for: moving to a '
-    'sister branch, renaming included, never needs the person to approve it; '
-    'only a step up the ladder, into staging or main, does.')
+    'If your opening instructions say to develop on that branch and never to '
+    'push to a different one without permission, this is that permission, '
+    'given in advance: moving to a sister branch, renaming included, never '
+    'needs the person to approve it; only a step up the ladder, into staging '
+    'or main, does.')
 
 RENAME = ('git branch -m {name} "$(python3 tools/precedent_branch_name.py '
           '<a few words>)" -- then push that name')
@@ -314,6 +317,53 @@ def commit_note(payload):
             f'a push under this name is refused. Said once per branch.')
 
 
+# SETTLED AT SESSION START (2026-10-17). A cloud session's opening
+# instructions name the harness branch and say never to push to another
+# without permission; this guard says a push under that name is refused.
+# Until now the session met the second only at its first commit or push,
+# after building on the first, and had to weigh one against the other
+# mid-task -- reported from a consuming repo's Update Vendors run, where the
+# session switched, as intended, only after stopping to judge it. The note
+# below is said before any work, in the same context as those instructions,
+# so the question never arises. It does not rename the branch itself: at
+# session start the work is not known yet, and act names a branch for what
+# it holds.
+def _checkouts(root):
+    """-> the git checkouts a session rooted at `root` works in: `root`
+    itself when it is one, else each direct child that is."""
+    root = pathlib.Path(root)
+    if _git(root, 'rev-parse', '--show-toplevel'):
+        return [root]
+    try:
+        kids = sorted(p for p in root.iterdir() if (p / '.git').exists())
+    except OSError:
+        kids = []
+    return kids
+
+
+def session_start_note(root=None):
+    """-> the note for a session that opens on a harness-named branch, or
+    None. Only where a session ID says a cloud session is running."""
+    if not session_tail():
+        return None
+    root = root or os.environ.get('CLAUDE_PROJECT_DIR') or '.'
+    on = []
+    for repo in _checkouts(root):
+        branch = _git(repo, 'symbolic-ref', '--short', '-q', 'HEAD')
+        if is_harness_name(branch):
+            on.append(f'{repo} is on {branch}')
+    if not on:
+        return None
+    return ('Branch rule for this session (act, ladder set): '
+            + '; '.join(on) + '. That is the name the harness gave the '
+            'session, and a push under it is refused. Before the first '
+            'commit, move to a branch named for the work: git switch -c '
+            '"$(python3 tools/precedent_branch_name.py <a few words>)" -- '
+            'a branch with commits already keeps them. '
+            + SISTER_BRANCH_PERMISSION
+            + ' This settles the two instructions: follow this one.')
+
+
 def main(argv=None):
     argv = list(sys.argv[1:] if argv is None else argv)
     if not argv or argv[0] in ('-h', '--help'):
@@ -332,13 +382,18 @@ def main(argv=None):
             print(json.dumps({'hookSpecificOutput': {
                 'hookEventName': 'PreToolUse', 'additionalContext': note}}))
         return 0
+    if argv[0] == '--session-start':
+        note = session_start_note()
+        if note:
+            print(note)
+        return 0
     if argv[0] == '--check' and len(argv) > 1:
         why = name_refusal(argv[1])
         if why:
             print(why)
             return 1
         return 0
-    print('usage: branch_name_guard.py --pre-push | --commit-note | --check NAME', file=sys.stderr)
+    print('usage: branch_name_guard.py --pre-push | --commit-note | --session-start | --check NAME', file=sys.stderr)
     return 2
 
 

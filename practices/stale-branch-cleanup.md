@@ -7,10 +7,11 @@ applies_to:  ["**"]
 applies_to_why: "A moment, not a place: the reply that closes a session. Routed by the `reply` gate."
 occasion:    "the reply that says the session can be archived"
 gates:       ["reply"]
-gates_why:   "The reply gate counts the stale branches, and the repositories whose staging waits for main, at the start of every turn and prints the line only when there are any, so the closing reply is the one that can still carry the link."
+gates_why:   "This set's tools/ladder/branch_page_note.py counts the stale branches, and the repositories whose staging waits for main, at the start of every turn; the reply gate prints what it says (this set's reply_check.json, note_from_tool) only when there are any, so the closing reply is the one that can still carry the link."
 index_clause: "closing Boildown: refresh the pinned branch and staging page, only if any"
 index_required: false
 checked_by:  null
+ships:       ["tools/ladder/branch_page_note.py"]
 defines:     []
 status:      active
 in_force_at: null
@@ -46,10 +47,21 @@ address once with the Artifact tool, **without a path** -- the read a
 republish needs -- and run the command again adding `--merge <the file that
 read says the full HTML was saved to>`. Only a page small enough to come
 back inline needs a second read, with path `index.html`, for the file; a
-read with the path alone does not count for the republish. **Never open the
-file yourself: the tool reads it. Read the page immediately before
-building, every time, and merge that file: never a copy from earlier in the
-session, and never the page this session built last.** Another session may
+read with the path alone does not count for the republish. **Hand the tool
+the file that read saved, with `--merge`, and never rebuild the page from
+your own copy of it. Read the page immediately before building, every time,
+and merge that file: never a copy from earlier in the session, and never the
+page this session built last.** **Before the first publish, Read every
+line of that saved file**, in two or three ranges with offset and limit
+(one Read of the whole page is over the tool's size cap), and change
+nothing in it. When another session, or the page itself, published the
+version last -- the usual case for this shared page -- the Artifact tool
+refuses a publish until the file has been read through, and after one
+refusal it refuses the same content once more before letting it through
+(measured 2026-10-17: refused unread; read through; refused as "identical
+content already refused"; published on the third try). Reading first
+costs one publish. When this session published the last version itself,
+the tool counts it as viewed and the read is not needed. Another session may
 have republished it in between, and a merge against an older copy drops
 that session's rows and every tick saved since; the tool warns when the
 file it is handed is not a fresh read. The page then keeps the
@@ -206,3 +218,12 @@ the first read's own result says its copy does not count for a republish.
 The second read had saved the full page to a file anyway, and the session
 then opened that file and read it through, about 50KB nobody needed. One
 read without a path now serves both the merge and the publish.
+
+2026-10-17, evening: a session fixing root issues from a consuming repo's
+Update Vendors tested the republish the way this rule then read, with no
+read of the saved file, because one session had read all 70KB of it for
+about 31,000 tokens and nobody had tried without. The Artifact tool refused
+the publish, since another session had published last. After the read it
+also refused the same content once more, and the third publish went
+through. The read cannot be skipped while the Artifact tool asks for it, so
+the rule now says to do it before the first publish, in ranges.
