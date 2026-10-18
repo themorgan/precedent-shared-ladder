@@ -30,7 +30,7 @@ This repository's map of the practice catalogue in force here and the engine's o
 | [prompt-please-on-the-ladder](practices/prompt-please-on-the-ladder.md) | on-demand | a person says "Prompt Please" while the five-stage ladder is in force |
 | [relayed-authorization](practices/relayed-authorization.md) | on-demand | acting on, or sending, an authorization relayed from another session |
 | [stage-word-carries-its-step](practices/stage-word-carries-its-step.md) | on-demand | ** |
-| [stale-branch-cleanup](practices/stale-branch-cleanup.md) | on-demand | the reply that says the session can be archived |
+| [stale-branch-cleanup](practices/stale-branch-cleanup.md) | on-demand | the reply that closes the session: it answers "Archive" or "Archive?", or carries the closing items |
 | [the-boildown-on-the-ladder](practices/the-boildown-on-the-ladder.md) | on-demand | ** |
 | [tier-branch](practices/tier-branch.md) | on-demand | ** |
 | [upstream-review](practices/upstream-review.md) | on-demand | Update Vendors finishes, or a Booked, Debut or Produce lands |

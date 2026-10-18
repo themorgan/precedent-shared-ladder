@@ -5,7 +5,7 @@ tier:        on-demand
 severity:    default
 applies_to:  ["**"]
 applies_to_why: "A moment, not a place: the reply that closes a session. Routed by the `reply` gate."
-occasion:    "the reply that says the session can be archived"
+occasion:    "the reply that closes the session: it answers \"Archive\" or \"Archive?\", or carries the closing items"
 gates:       ["reply"]
 gates_why:   "This set's tools/ladder/branch_page_note.py counts the stale branches, and the repositories whose staging waits for main, at the start of every turn; the reply gate prints what it says (this set's reply_check.json, note_from_tool) only when there are any, so the closing reply is the one that can still carry the link."
 index_clause: "closing Boildown: refresh the pinned branch and staging page, only if any"
@@ -24,8 +24,7 @@ approved_by: "Morgan F, 2026-10-16 -- the page also lists each repository whose 
 
 ## Rule
 
-**In the reply that says "You can archive this session", when any branch
-can be deleted or any staging is waiting to go into main, publish a page
+**In the reply that closes the session, when any branch can be deleted or any staging is waiting to go into main, publish a page
 listing them and link it in one Boildown line.** The list covers every
 repository open in the session where the person is a code owner. A branch
 is on it only when it is already in `main`, so deleting it loses nothing;
@@ -36,8 +35,14 @@ a change `main` lacks**: how many commits, the oldest one's date, and a link
 to GitHub's comparison. A repository where `main` is staging has no row. The
 tool builds this list too; nothing extra to run.
 
-**Nothing to delete and nothing waiting, no page. In doubt, no page.** Not in any other reply either:
-it rides with the archive line, so it does not come back every message.
+**The closing reply** answers "Archive" or "Archive?", or is the one that
+carries the closing items after the archive conditions (BestPractice's
+the-boildown). Not the archive sentence itself: since 2026-10-18 that
+sentence can end any reply with nothing running and nothing off its
+landing branch, and a page rebuilt at each of those would come back every
+message.
+
+**Nothing to delete and nothing waiting, no page. In doubt, no page.** Not in any other reply either.
 
 **It is one page, updated in place.** Build it with `python3
 tools/precedent_stale_branches.py --fetch --html
