@@ -56,8 +56,8 @@ own work has actually been developed and committed against, never a
 repository's configured default branch chosen just because it is
 configured that way. Under the branch tiers that is where this person's
 Booked (`Go update`) lands, which `python3 tools/precedent_branches.py --landing`
-names -- `pre-staging` for a person whose `landing_branch` says so (the
-tiered route is opt-in since 2026-09-26); for everyone else, where the repository declares a branch -- `base_branch` in its
+names -- `staging` for a person on the ladder (opt-in since
+2026-09-26); for everyone else, where the repository declares a branch -- `base_branch` in its
 `precedent.json`, or a rule of its own -- the declaration decides it
 ([primary-branch](primary-branch.md)); absent one, it is whichever branch
 the change in front of you is already on.
@@ -76,8 +76,8 @@ next change that does not carry this phrase.
 
 Same verification as [go-update](go-update.md): the light check still runs
 before the commit and the push check still runs before the push, at the
-tier the target branch gets -- basic for pre-staging, full for staging and
-main -- so this phrase skips the PR wrapper and the classification, never
+tier the target branch gets -- the quick checks, for staging and main
+alike -- so this phrase skips the PR wrapper and the classification, never
 the checks. **And
 the same landing**: the target is that branch on `origin`, confirmed by a
 fetch before the reply reports it
