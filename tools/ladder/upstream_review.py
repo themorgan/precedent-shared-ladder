@@ -1,8 +1,11 @@
 #!/usr/bin/env python3
-"""Upstream review: what a ladder step ran into, less what an earlier stage reviewed.
+"""Upstream review: what a ladder step ran into, less what an earlier stage reviewed; this set's step_review, which BestPractice's engine calls at Update Vendors and at the ladder's own steps
 
-Practice `upstream-review`, in the ladder set (precedent-shared-ladder),
-for code owners only. When Update Vendors, a migration or an upgrade
+Practice `upstream-review`, this set's, for code owners only. Shipped as
+tools/ladder/upstream_review.py and named `step_review` in this set's
+precedent-source.json, which is how the engine finds it (it moved out of
+BestPractice's engine on 2026-10-17, BestPractice
+spec/ENFORCEMENT_LIVES_WITH_ITS_PRACTICE_PLAN.md part 3). When Update Vendors, a migration or an upgrade
 finishes, and at Booked, Debut and Produce, the session reviews every
 warning, error, note, exemption, kept local edit and workaround the step met
 -- fixed or not -- and hands the ones that can be fixed upstream to another
@@ -28,7 +31,7 @@ stage writes one line per item it reviewed into the commit it lands:
     Upstream-seen: <fingerprint> <the line, shortened>
 
 and the next stage reads those lines back from exactly the batch it moves --
-Debut from pre-staging's commits staging lacks, Produce from staging's
+Debut and Produce from staging's
 commits main lacks. So "only what is new since the last stage" is the batch
 itself, and nothing grows beyond git history, which is kept anyway. Booked
 writes the lines into the commit it lands on staging, Debut into its merge
@@ -39,14 +42,15 @@ A fingerprint is the line with what changes from run to run taken out --
 digits, commit hashes, temporary paths -- so the same warning printed at
 Booked and again at Debut is one item.
 
-  python3 tools/precedent_upstream_review.py --stage booked [--from FILE|-]
+  python3 tools/ladder/upstream_review.py --stage booked [--from FILE|-]
           [--note TEXT ...] [--range A..B]
-  python3 tools/precedent_upstream_review.py --self-check
+  python3 tools/ladder/upstream_review.py --self-check
 
 --from reads a run's output (a check, an update); --note adds something the
 session met that no tool printed. The range defaults to the batch the stage
 moves: origin/<landing>..HEAD for booked and update, origin/<staging>..
-origin/pre-staging for debut, origin/main..origin/<staging> for produce.
+origin/main..origin/<staging> for debut and produce (pre-staging is
+retired, Morgan, 2026-10-17).
 Exit 0 always -- a review is a report, never a gate. Off the ladder, or for
 someone who is not a code owner, it prints one line saying why and nothing
 else.
@@ -62,7 +66,8 @@ STAGES = ('update', 'booked', 'debut', 'produce')
 STAGE_NAMES = {'update': 'Update Vendors', 'booked': 'Booked, step 3 of 5',
                'debut': 'Debut, step 4 of 5', 'produce': 'Produce, step 5 of 5'}
 PRACTICE = "the ladder set's upstream-review practice"
-_HERE = Path(__file__).resolve().parent
+# Shipped to tools/ladder/; the engine it asks is in tools/ beside it.
+_HERE = Path(__file__).resolve().parent.parent
 MAX_TEXT = 110
 
 # What a warning looks like in this project's tools and in the Python and git
@@ -193,9 +198,7 @@ def default_range(root, stage):
             landing = pb.landing_branch(Path(root))[0]
         except Exception:                                      # noqa: BLE001
             pass
-    if stage == 'debut':
-        return f'origin/{staging}..origin/pre-staging'
-    if stage == 'produce':
+    if stage in ('debut', 'produce'):
         return f'origin/main..origin/{staging}'
     return f'origin/{landing or staging}..HEAD'
 
@@ -278,9 +281,9 @@ def self_check():
         if len(new) != 1:
             bad.append('an unreadable range hid an item instead of showing it')
     if bad:
-        print('precedent_upstream_review self-check FAILED: ' + '; '.join(bad))
+        print('upstream_review self-check FAILED: ' + '; '.join(bad))
         return 1
-    print('precedent_upstream_review self-check: ok')
+    print('upstream_review self-check: ok')
     return 0
 
 
@@ -305,7 +308,7 @@ def main(argv):
             stage = None
             break
     if stage not in STAGES:
-        print('usage: precedent_upstream_review.py --stage update|booked|debut|produce '
+        print('usage: upstream_review.py --stage update|booked|debut|produce '
               '[--from FILE|-] [--note TEXT ...] [--range A..B]', file=sys.stderr)
         return 2
     text = ''
