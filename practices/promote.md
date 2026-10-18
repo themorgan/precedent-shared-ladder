@@ -33,6 +33,16 @@ N**, and each stage has its own word and a synonym:
 | 4 | **Debut** | Test Readiness | Optional: run the full local tests on `staging`, and move nothing: `--run-tests`. Also **Run tests**. | [debut](debut.md) |
 | 5 | **Produce** | Make live | Promote staging into main -- production -- quick checks, GitHub's test after the merge. | [produce](produce.md) |
 
+**An approved Booked or Produce covers its own follow-through.** When the
+work it moved needs a fix to go green -- a check it trips, a test that
+fails after it, a fix in another repository that work depends on -- that
+fix is landed and produced as far as the approved move went, in every
+repository it needs, without asking again; the reply says what was done.
+**New work still waits for the person's own word**, and so does a move
+that would carry somebody else's unapproved work along with it (Morgan,
+2026-10-18, strength: decided, after one Produce took three approvals: the
+third was for a fix to make the approved one pass).
+
 **Two branch tiers: `staging`, then `main`.** Work goes from its feature
 branch onto staging (Booked), and from staging into main (Produce). The
 ladder is **optional for everyone**: anyone may use its words, nobody has
