@@ -41,7 +41,15 @@ gets. A Produce is the named go-ahead that merging into `main` needs.
    a test first.
 3. **The tests run after the merge**, and the Produce says which:
    - **GitHub's test, when it is due.** Wait on it with
-     `--wait-main-test COPY`. A red `main` is fixed in the same sitting.
+     `--wait-main-test COPY`. A red `main` is fixed in the same sitting,
+     **straight into `main`**: a branch named by
+     `python3 tools/precedent_branch_name.py fix main WORDS`, cut from
+     `main`'s tip, and a pull request from it into `main` -- the one pull
+     request into `main` that does not come from staging (Morgan,
+     2026-10-11, strength: assented; `red_main_fix` in
+     [tools/precedent_branches.py](https://github.com/alex137/BestPractice/blob/staging/tools/precedent_branches.py)).
+     Then land the same branch on staging, which refuses a landing that
+     lacks it until it does.
    - **When GitHub's test is not due, the full local suite runs on `main`
      after the merge instead**, in the background:
      `--run-tests main`. Do not end the turn while an owed run has not
