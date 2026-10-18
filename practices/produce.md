@@ -121,6 +121,16 @@ reply check that holds a turn until an owed full run on `main` has
 started had pointed at ladder-in-a-repo-on-staging, the rule for
 repositories already on staging; with that rule retired, it points here.
 
+**2026-10-17: five small failures reached main, and the tests stay where
+they are.** A Produce in BestPractice (#1193) carried three new tools that
+did not answer `--help` and two harness tests reading text that had moved.
+The quick checks do not run those tests, so GitHub's test after the merge
+caught them and main was fixed the same night. Moving the `--help` test
+into the quick checks or into Produce was proposed. Morgan: *"These feel
+like minor errors so I'm happy to catch them at debut or after main"*
+(strength: decided). What changed instead is the route above: a red
+`main` is fixed straight into it.
+
 ## Install
 Nothing new: the promotion tool and its checks are
 [promote](promote.md)'s. The refusal of `--full` without `--because` is in
