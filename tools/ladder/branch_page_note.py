@@ -44,8 +44,9 @@ def note():
     # across 4" here met 16 on the page. The page's number is the one to give.
     what = (("some branches can be deleted" + (" and " if w else "") if n else "")
             + ("a repository's staging is waiting to go into main" if w else ""))
-    return (f"For the CLOSING Boildown only (the reply that says \"You can "
-            f"archive this session\"): {what} (the page counts them, after a "
+    return (f"For the CLOSING reply only (it answers \"Archive\" or "
+            f"\"Archive?\", or carries the closing items -- not every reply "
+            f"that says \"You can archive this session\"): {what} (the page counts them, after a "
             f"fetch). Build the page with `python3 tools/"
             f"precedent_stale_branches.py --fetch --html "
             f"<scratchpad>/{sb.PAGE_FILENAME}` -- with a saved page it asks for "
