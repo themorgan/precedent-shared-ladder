@@ -52,5 +52,14 @@ hook() { printf 'refs/heads/w %s refs/heads/%s %s\n' "$1" "$2" "$base" \
 [ "$(hook "$own" staging)" = 1 ] || { echo "FAIL: pre-push let a repo's own check onto staging"; fail=1; }
 [ "$(hook "$own" 2026-10-16-x-y-abcde-fghij)" = 0 ] || { echo "FAIL: pre-push judged a push to a work branch"; fail=1; }
 [ "$(PRECEDENT_NO_LADDERS=1 hook "$own" staging)" = 0 ] || { echo "FAIL: pre-push judged off the ladder"; fail=1; }
+# What the refusal says comes after the pull request (2026-10-18): never a
+# bare "once its checks pass", since a repo may run no check on one. With
+# the engine's pull_request_route_note it says what that reads from the
+# workflows; without it, not to wait when none is listed.
+said() { printf 'refs/heads/w %s refs/heads/staging %s\n' "$own" "$base" \
+  | (cd "$tmp" && PRECEDENT_USER_CONFIG="$tmp/none.json" PRECEDENT_ASSUME_LADDER=1 python3 "$GUARD" --pre-push 2>&1 >/dev/null); }
+said | grep -q 'straight away if the pull' || { echo "FAIL: without the engine, the refusal promised checks that may never start"; fail=1; }
+printf 'def pull_request_route_note(root, base):\n    return "ROUTE NOTE FOR " + base\n' > "$tmp/tools/precedent_branches.py"
+said | grep -q 'ROUTE NOTE FOR staging' || { echo "FAIL: the refusal did not use the engine's pull_request_route_note"; fail=1; }
 [ "$fail" = 0 ] && echo "PASS: check_landing_takes_a_pr"
 exit "$fail"
