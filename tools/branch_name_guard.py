@@ -341,25 +341,47 @@ def _checkouts(root):
     return kids
 
 
+# NAMED IN THE INSTRUCTIONS, NOT YET CHECKED OUT (2026-10-18). The note
+# above fired only on a checkout already sitting on a harness name. A ladder
+# session whose instructions named `claude/...` opened on main, made that
+# branch itself after start, and met the rule only when its first push was
+# refused. Neither the instructions nor the session's outcome branches can
+# be read from inside the container -- no variable, file or git setting
+# carries them -- so every cloud session not already on a tool-made branch
+# hears the rule at start, before it creates any branch.
 def session_start_note(root=None):
-    """-> the note for a session that opens on a harness-named branch, or
-    None. Only where a session ID says a cloud session is running."""
+    """-> the note for a cloud session at start, or None: on a
+    harness-named checkout, that one; on any checkout not already on a
+    branch the naming tool made, the rule said ahead of the first branch.
+    Only where a session ID says a cloud session is running."""
     if not session_tail():
         return None
     root = root or os.environ.get('CLAUDE_PROJECT_DIR') or '.'
-    on = []
+    on, unnamed = [], False
     for repo in _checkouts(root):
         branch = _git(repo, 'symbolic-ref', '--short', '-q', 'HEAD')
         if is_harness_name(branch):
             on.append(f'{repo} is on {branch}')
-    if not on:
+        elif not (_TOOL_NAME_RE.fullmatch(branch)
+                  and not name_refusal(branch, tail='', user='')):
+            unnamed = True
+    if on:
+        return ('Branch rule for this session (act, ladder set): '
+                + '; '.join(on) + '. That is the name the harness gave the '
+                'session, and a push under it is refused. Before the first '
+                'commit, move to a branch named for the work: git switch -c '
+                '"$(python3 tools/precedent_branch_name.py <a few words>)" -- '
+                'a branch with commits already keeps them. '
+                + SISTER_BRANCH_PERMISSION
+                + ' This settles the two instructions: follow this one.')
+    if not unnamed:
         return None
-    return ('Branch rule for this session (act, ladder set): '
-            + '; '.join(on) + '. That is the name the harness gave the '
-            'session, and a push under it is refused. Before the first '
-            'commit, move to a branch named for the work: git switch -c '
-            '"$(python3 tools/precedent_branch_name.py <a few words>)" -- '
-            'a branch with commits already keeps them. '
+    return ('Branch rule for this session (act, ladder set): before the first '
+            'commit, make the branch with git switch -c "$(python3 '
+            'tools/precedent_branch_name.py <a few words>)". If your opening '
+            'instructions name a branch under claude/ or session/, that is '
+            'the name the harness gave the session, and a push under it is '
+            'refused: do not create it. '
             + SISTER_BRANCH_PERMISSION
             + ' This settles the two instructions: follow this one.')
 
