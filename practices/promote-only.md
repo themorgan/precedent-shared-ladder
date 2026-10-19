@@ -124,7 +124,7 @@ approved letting a fix for a red `main` go straight there
 (`strength: assented`). That became the red-main exception.
 
 2026-10-13. Adding items to my personal to-do list went through `staging`
-and a Produce like code. Me: *"since the "Add" is just PURE CONTENT, it
+and a Produce like code. Me: *"since the "Add" is just _pure content_, it
 shouldn't need to go through staging ... I just want to update lists
 quickly and easily"* (`strength: decided`). That became the content
 exception, read from `content_paths`.
