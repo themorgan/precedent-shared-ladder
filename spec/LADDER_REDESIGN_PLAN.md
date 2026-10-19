@@ -1,3 +1,15 @@
+---
+title:         Ladder redesign plan
+kind:          proposal
+status:        executed
+opened:        2026-10-09
+closed:        2026-10-14
+superseded_by: null
+supersedes:    []
+audience:      contributor
+summary:       "Executed: the ladder without pre-staging, retired for everyone on 2026-10-14. Feature branch, then staging, then main; kept as the plan's record."
+---
+
 # Ladder redesign plan
 
 **Status, 2026-10-14: pre-staging is retired for everyone.** Morgan
