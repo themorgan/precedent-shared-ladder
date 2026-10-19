@@ -6,7 +6,7 @@ This repo IS `precedent-shared-ladder` -- a **shared** source, named for its sub
 
 <!-- Regenerate with: python3 tools/build_views.py -- do not hand-edit this block; `python3 tools/build_views.py --check` exits non-zero on drift. Source: practices/ -- edit the practice file, never this block. -->
 
-## Resident block (~114 of 250 token budget, 1 of 14 practices)
+## Resident block (~154 of 250 token budget, 2 of 27 practices)
 
 **brainstorm-holds-commits.** When a conversation is a **Brainstorm** -- the person says the word, or the
 thread is plainly exploratory ("I'm wondering", "what are my options", "do
@@ -16,9 +16,17 @@ propose the design; do not create, edit, commit, push, open a pull request
 or merge. Answering a question inside it is not authorization, and neither
 is enthusiasm for the idea. **When in doubt, it is a brainstorm.**
 
+**stage-words.** **3 Booked = branch -> staging; 4 Debut = only the full tests on
+staging, moving nothing; 5 Produce = staging -> main.** The rest is the ladder set's `promote`.
+
 ## Occasion index
 
 ```
+When GitHub Actions comes up -- its minutes, billing or spend, or a workflow written, reviewed or pushed to:
+  actions-minutes-are-scarce — count jobs: one per trigger, none without a change, checks run in the session
+  cost-concern-face-value — take it at face value; never answer with a free tier or unused minutes
+When I say a change goes "everywhere":
+  everywhere-means-the-sources — BestPractice and precedent-* only; other repos get it by Update Vendors
 When a message says "Booked", "Approved", "Book it" or "Promote 3", or plainly authorizes a merge:
   go-update — stage 3, Booked: land it on the landing branch; high-risk: PR and merge
 When a person says "No ladders", or asks to see what somebody who does not use the ladder sees:
@@ -29,8 +37,22 @@ When a person says "Promote", "Promote N" or a stage word ("Consider", "Act", "D
   promote — the next tier up, chosen from the work and said first; "Promote N" does stage N
 When a person says "Write it up", or asks for a write-up:
   write-it-up — commit a full report: issue, options attacked, the fix that survived; link it
+When about to open more than three more repos in one session:
+  ask-before-opening-many-repos — ask first, naming each repo and why
+When adding or keeping anything on a schedule -- an Actions cron, a Claude routine, any timer:
+  crons-are-a-last-resort — no cron or Routine a person could trigger instead; register any essential one
 When building a document from a repository's content -- a Word file, a web page, a PDF, a deck -- or finding one that sits beside its sources:
   generated-docs-in-output — a document built from a folder's content goes in that folder's output/
+When handing work to another session, or spawning one:
+  handoff-only-when-blocked — hand off only what this session cannot do; check list_sessions first
+When pushing to staging or main, or merging a pull request into either, in any repository I work in:
+  promote-only — staging and main only by Promote or a staging-to-main PR; never a direct push
+When spawning a helper agent, or handing a small task to another model:
+  small-helpers-run-on-haiku — reading, summarizing, transcribing: Haiku; one helper per job, not per item
+When starting to build anything for me, landing it, or ending a session that built something:
+  ladder-required — for me: plan first, read back each stage, never leave work on a branch
+When telling me something will be lost, discarded, or go away with the container, clone or session:
+  loss-comes-with-a-verdict — never just 'it goes away': say it's fine to lose and why, or how I keep it
 
 (More on-demand practices are not listed here: one whose applies_to names real paths, or which declares a gate, is reached by those channels instead -- `precedent_paths.py FILE` and `precedent_gate.py MOMENT`. A trigger a PERSON SAYS cannot be reached that way and is always listed above. `precedent_show.py --index-omitted` names the omitted ones.)
 ```
