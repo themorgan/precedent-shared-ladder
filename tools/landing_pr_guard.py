@@ -167,7 +167,14 @@ def landing_branch(root):
 # checks, if any, will report; where it is not importable, the refusal says
 # not to wait on checks that are not listed.
 def route_note(root, landing):
-    """-> what to do once the pull request into `landing` is open."""
+    """-> what to do once the pull request into `landing` is open.
+
+    A push made by the land tool (it sets PRECEDENT_LANDING_SOURCE) gets no
+    note here: that tool ran the quick checks and prints its own note right
+    after, so this one said "Nothing has run the quick checks" two lines
+    above "The quick checks above passed" (2026-10-19)."""
+    if os.environ.get('PRECEDENT_LANDING_SOURCE'):
+        return 'The land tool that made this push says what follows, below.'
     if root is not None:
         try:
             return _engine(root).pull_request_route_note(str(root), landing)
