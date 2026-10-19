@@ -10,26 +10,39 @@ This repository's map of the practice catalogue in force here and the engine's o
 
 ## The practice catalogue
 
-`practices/` holds 23 practice files (1 resident, 22 on-demand). One file per practice.
+`practices/` holds 36 practice files (2 resident, 34 on-demand). One file per practice.
 
 | Practice | Tier | Occasion / scope |
 |---|---|---|
 | [act](practices/act.md) | on-demand | a person says "Promote", "Promote N" or a stage word ("Consider", "Act", "Debut", "Produce", "Make live"), or asks to plan, build or move work up a tier |
+| [actions-minutes-are-scarce](practices/actions-minutes-are-scarce.md) | on-demand | GitHub Actions comes up -- its minutes, billing or spend, or a workflow written, reviewed or pushed to |
+| [ask-before-opening-many-repos](practices/ask-before-opening-many-repos.md) | on-demand | about to open more than three more repos in one session |
+| [auto-delete-branches](practices/auto-delete-branches.md) | on-demand | a branch this session merged finishes a clean merge |
 | [brainstorm-holds-commits](practices/brainstorm-holds-commits.md) | resident | a conversation is exploratory, or a person calls it a brainstorm |
 | [checks-follow-the-tier](practices/checks-follow-the-tier.md) | on-demand | adding a check, or deciding which branch tier a check runs at |
 | [consider](practices/consider.md) | on-demand | a person says "Promote", "Promote N" or a stage word ("Consider", "Act", "Debut", "Produce", "Make live"), or asks to plan, build or move work up a tier |
+| [cost-concern-face-value](practices/cost-concern-face-value.md) | on-demand | GitHub Actions comes up -- its minutes, billing or spend, or a workflow written, reviewed or pushed to |
+| [crons-are-a-last-resort](practices/crons-are-a-last-resort.md) | on-demand | adding or keeping anything on a schedule -- an Actions cron, a Claude routine, any timer |
 | [data-branch-names](practices/data-branch-names.md) | on-demand | making a branch that holds a repository's long-lived data rather than work |
 | [debut](practices/debut.md) | on-demand | a person says "Promote", "Promote N" or a stage word ("Consider", "Act", "Debut", "Produce", "Make live"), or asks to plan, build or move work up a tier |
+| [everywhere-means-the-sources](practices/everywhere-means-the-sources.md) | on-demand | I say a change goes "everywhere" |
+| [file-header](practices/file-header.md) | on-demand | editing a markdown file that carries this header |
 | [generated-docs-in-output](practices/generated-docs-in-output.md) | on-demand | building a document from a repository's content -- a Word file, a web page, a PDF, a deck -- or finding one that sits beside its sources |
 | [go-update](practices/go-update.md) | on-demand | a message says "Booked", "Approved", "Book it" or "Promote 3", or plainly authorizes a merge |
+| [handoff-only-when-blocked](practices/handoff-only-when-blocked.md) | on-demand | handing work to another session, or spawning one |
+| [ladder-required](practices/ladder-required.md) | on-demand | starting to build anything for me, landing it, or ending a session that built something |
+| [loss-comes-with-a-verdict](practices/loss-comes-with-a-verdict.md) | on-demand | telling me something will be lost, discarded, or go away with the container, clone or session |
 | [no-ladders](practices/no-ladders.md) | on-demand | a person says "No ladders", or asks to see what somebody who does not use the ladder sees |
 | [others-did](practices/others-did.md) | on-demand | the first session of a day, after 07:00 in the person's own timezone, when someone else has landed work since the person's own last commit there |
 | [primary-branch](practices/primary-branch.md) | on-demand | ** |
 | [produce](practices/produce.md) | on-demand | a person says "Promote", "Promote N" or a stage word ("Consider", "Act", "Debut", "Produce", "Make live"), or asks to plan, build or move work up a tier |
 | [promote](practices/promote.md) | on-demand | a person says "Promote", "Promote N" or a stage word ("Consider", "Act", "Debut", "Produce", "Make live"), or asks to plan, build or move work up a tier |
+| [promote-only](practices/promote-only.md) | on-demand | pushing to staging or main, or merging a pull request into either, in any repository I work in |
 | [prompt-please-on-the-ladder](practices/prompt-please-on-the-ladder.md) | on-demand | a person says "Prompt Please" while the five-stage ladder is in force |
 | [relayed-authorization](practices/relayed-authorization.md) | on-demand | acting on, or sending, an authorization relayed from another session |
+| [small-helpers-run-on-haiku](practices/small-helpers-run-on-haiku.md) | on-demand | spawning a helper agent, or handing a small task to another model |
 | [stage-word-carries-its-step](practices/stage-word-carries-its-step.md) | on-demand | ** |
+| [stage-words](practices/stage-words.md) | resident | I say Booked, Debut, Produce or Promote |
 | [stale-branch-cleanup](practices/stale-branch-cleanup.md) | on-demand | the reply that closes the session: it answers "Archive" or "Archive?", or carries the closing items |
 | [the-boildown-on-the-ladder](practices/the-boildown-on-the-ladder.md) | on-demand | ** |
 | [tier-branch](practices/tier-branch.md) | on-demand | ** |
