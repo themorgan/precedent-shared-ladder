@@ -121,13 +121,35 @@ def changed(root, base, tip):
     return None if out is None else [p for p in out.splitlines() if p.strip()]
 
 
+# THE ENGINE IS THE CHECKED REPOSITORY'S OWN (2026-10-19). A bare
+# `import precedent_branches` also searches this script's own directory, so
+# in a repository with no engine it found the one beside the guard and
+# answered from that: a test of the no-engine case went red the day the
+# engine beside it gained pull_request_route_note.
+def _engine(root):
+    """-> root's own tools/precedent_branches.py as a module, or None."""
+    tools = pathlib.Path(root) / 'tools'
+    path = tools / 'precedent_branches.py'
+    if not path.is_file():
+        return None
+    import importlib.util
+    sys.path.insert(0, str(tools))
+    try:
+        spec = importlib.util.spec_from_file_location('precedent_branches', path)
+        mod = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(mod)
+        return mod
+    except Exception:                                        # noqa: BLE001
+        return None
+    finally:
+        sys.path.pop(0)
+
+
 def landing_branch(root):
     """The landing branch as the engine names it for this person; the
     repository's own declaration where the engine is not importable."""
-    sys.path.insert(0, str(pathlib.Path(root) / 'tools'))
     try:
-        import precedent_branches
-        return precedent_branches.landing_branch(str(root))[0]
+        return _engine(root).landing_branch(str(root))[0]
     except Exception:                                        # noqa: BLE001
         try:
             cfg = json.loads((pathlib.Path(root) / 'precedent.json')
@@ -135,8 +157,6 @@ def landing_branch(root):
         except (OSError, ValueError):
             cfg = {}
         return cfg.get('landing_branch') or cfg.get('base_branch') or 'main'
-    finally:
-        sys.path.pop(0)
 
 
 # WHAT FOLLOWS THE PULL REQUEST (2026-10-18). The refusal said "merge it
@@ -149,14 +169,10 @@ def landing_branch(root):
 def route_note(root, landing):
     """-> what to do once the pull request into `landing` is open."""
     if root is not None:
-        sys.path.insert(0, str(pathlib.Path(root) / 'tools'))
         try:
-            import precedent_branches
-            return precedent_branches.pull_request_route_note(str(root), landing)
+            return _engine(root).pull_request_route_note(str(root), landing)
         except Exception:                                    # noqa: BLE001
             pass
-        finally:
-            sys.path.pop(0)
     return ('Merge it once its checks pass, or straight away if the pull '
             'request lists none.')
 
