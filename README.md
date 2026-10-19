@@ -107,10 +107,6 @@ Every landing on staging brings in what other people put straight on main
 first, so staging never falls behind it. If main's GitHub test fails after
 a Produce, it is fixed in the same sitting.
 
-Until 2026-10-14 there was a third branch, pre-staging, beneath staging.
-It is retired for everyone; Update Vendors moves a repository that still
-has one onto staging.
-
 ## What you will see in replies
 
 - **The first time a reply names a step, its number follows**: Booked

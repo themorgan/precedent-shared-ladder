@@ -27,8 +27,7 @@ throwaway copy of it (`<date>-<me>-promote-to-main-<id>`), never from `staging` 
 session working for me never pushes straight to `staging` or `main`, and
 never merges a pull request into either unless the gate allows its head:
 a `--land` into `staging`, and `staging`'s `promote-to-main` copy into
-`main`. (Pre-staging, the tier below staging until 2026-10-14, is retired;
-`## Story` keeps how it worked.)
+`main`.
 
 **One exception: a brand-new repository's first install goes straight to
 `main`.** With no `main` yet, there is nothing to promote from and nothing
