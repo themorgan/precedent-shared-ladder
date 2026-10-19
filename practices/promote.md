@@ -10,6 +10,7 @@ gates:       ["merge"]
 gates_why:   "Promote is a move between branch tiers -- onto staging, or staging into main -- the moment that gate exists for."
 index_clause: "the next tier up, chosen from the work and said first; \"Promote N\" does stage N"
 checked_by:  null
+ships:       ["tools/ladder/ladder_branches.py", "tools/ladder/ladder_branches_cases.py"]
 defines:     ["Promote", "Promote N", "Graduate", "the five stages"]
 command:     {"Promote": "Move the work one tier up, whichever it needs, saying which before it starts: work still on this session's feature branch lands on staging first (Booked), and work on staging that main lacks moves into main (Produce). Each move gets its own checks -- the quick checks landing on staging, the quick checks into main with GitHub's test after the merge -- and nothing moves unless they pass. The full local tests on staging (Debut) are optional and move nothing. \"Promote N\" does stage N of the five-stage ladder: 1 Consider, 2 Act, 3 Booked, 4 Debut, 5 Produce."}
 status:      active
