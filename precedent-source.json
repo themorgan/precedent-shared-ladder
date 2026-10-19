@@ -55,16 +55,6 @@
         ]
       },
       {
-        "kind": "a branch tier",
-        "regex": "\\bpre-staging\\b",
-        "matches": [
-          "pre-staging"
-        ],
-        "never_matches": [
-          "prestaging"
-        ]
-      },
-      {
         "kind": "a ladder command",
         "regex": "\\b(?:Booked|Debut|Promote[sd]?|Promotion|Go update|Book it|Shared Save|Make live)\\b",
         "matches": [
