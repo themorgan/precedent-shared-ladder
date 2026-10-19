@@ -157,7 +157,7 @@ git mv PLANTED_DOC.md RENAMED_DOC.md
 
 # A merge is judged against the side a file came from, both directions
 # (2026-09-26). A Promote is one merge commit of a whole batch onto staging,
-# so a document added on pre-staging and bumped there is absent from the
+# so a document added on the branch below and bumped there is absent from the
 # first parent; reading only HEAD~1 called it "new at version 2, expected 1"
 # and refused the Promote. A file that NEITHER parent has is still new, and
 # still has to start at 1.

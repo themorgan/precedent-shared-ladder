@@ -368,12 +368,12 @@ def find_violations() -> list[str]:
         parent = read_at_head(renames.get(path, path), "HEAD~1")
         if parent is None:
             # A merge brings in files the first parent never had: a Promote
-            # merges a whole batch onto staging, and a document added on
-            # pre-staging and edited there three times arrives at version 4.
+            # merges a whole batch onto its tier, and a document added on
+            # the branch below and edited there three times arrives at version 4.
             # Its counter was held to account commit by commit on the branch
             # it came from, so read it against that side. Only a file NEITHER
             # parent has is new here (2026-09-26: a Promote refused over a
-            # meeting-notes file added and edited on pre-staging).
+            # meeting-notes file added and edited on the tier below).
             parent = read_at_head(path, "HEAD^2")
         if parent is None:
             if version != 1:
