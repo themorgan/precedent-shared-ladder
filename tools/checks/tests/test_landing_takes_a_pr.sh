@@ -57,9 +57,19 @@ hook() { printf 'refs/heads/w %s refs/heads/%s %s\n' "$1" "$2" "$base" \
 # the engine's pull_request_route_note it says what that reads from the
 # workflows; without it, not to wait when none is listed.
 said() { printf 'refs/heads/w %s refs/heads/staging %s\n' "$own" "$base" \
-  | (cd "$tmp" && PRECEDENT_USER_CONFIG="$tmp/none.json" PRECEDENT_ASSUME_LADDER=1 python3 "$GUARD" --pre-push 2>&1 >/dev/null); }
+  | (cd "$tmp" && PRECEDENT_LANDING_SOURCE="${PRECEDENT_LANDING_SOURCE:-}" PRECEDENT_USER_CONFIG="$tmp/none.json" PRECEDENT_ASSUME_LADDER=1 python3 "$GUARD" --pre-push 2>&1 >/dev/null); }
+# "Without the engine" is planted, not assumed: the guard's own folder may
+# hold a vendored engine, which Python finds first (2026-10-19: this case
+# failed wherever the engine sat beside the guard).
+printf 'raise ImportError("no engine here")\n' > "$tmp/tools/precedent_branches.py"
 said | grep -q 'straight away if the pull' || { echo "FAIL: without the engine, the refusal promised checks that may never start"; fail=1; }
 printf 'def pull_request_route_note(root, base):\n    return "ROUTE NOTE FOR " + base\n' > "$tmp/tools/precedent_branches.py"
 said | grep -q 'ROUTE NOTE FOR staging' || { echo "FAIL: the refusal did not use the engine's pull_request_route_note"; fail=1; }
+# A push the land tool makes gets no note of the guard's own: the tool ran
+# the quick checks and says what follows itself (2026-10-19: the guard said
+# "Nothing has run the quick checks" right above the tool's "passed").
+landed="$(PRECEDENT_LANDING_SOURCE=w said)"
+echo "$landed" | grep -q 'ROUTE NOTE' && { echo "FAIL: a push from the land tool got the guard's own route note"; fail=1; }
+echo "$landed" | grep -q 'land tool that made this push' || { echo "FAIL: a push from the land tool was not pointed at its note"; fail=1; }
 [ "$fail" = 0 ] && echo "PASS: check_landing_takes_a_pr"
 exit "$fail"
