@@ -7,8 +7,8 @@
   "_resident_block_comment": "This set's resident rules, read by every session of a person who brings it. Carved out of the universal set's 2,000 on 2026-10-02 (BestPractice spec/LADDER_OPT_IN_PLAN.md D15, Morgan, strength: decided), when brainstorm-holds-commits left universal for this set. Measured about 175 that day.",
   "surfaces": {
     "AGENTS.md": {
-      "ceiling": 1300,
-      "_note": "1,069 tokens measured 2026-10-02, once the ladder's rules had moved in. 1,300 was carved out of the universal set's AGENTS.md ceiling (7,650 to 6,950; BestPractice spec/LADDER_OPT_IN_PLAN.md D15, Morgan, strength: decided), so no ceiling went up in total. It was 600 at bootstrap, measured on an empty set."
+      "ceiling": 1400,
+      "_note": "1,069 tokens measured 2026-10-02, once the ladder's rules had moved in. 1,300 was carved out of the universal set's AGENTS.md ceiling (7,650 to 6,950; BestPractice spec/LADDER_OPT_IN_PLAN.md D15, Morgan, strength: decided), so no ceiling went up in total. It was 600 at bootstrap, measured on an empty set. Raised to 1,400 on 2026-10-19 when the always-loaded stage-words moved here from the individual set, whose ceiling went from 1,800 to 1,700, so no ceiling went up in total."
     },
     "CLAUDE.md": {
       "ceiling": 150,
@@ -21,14 +21,14 @@
   },
   "approved_budgets": {
     "occasion_index": {
-      "max": 550,
-      "strength": "baseline",
-      "approved_by": "baseline 2026-10-10: the values in force when the registry was first given approvals; every budget but surfaces/AGENTS.md is at or below its first commit (7c7f028e)"
+      "max": 750,
+      "strength": "decided",
+      "approved_by": "Morgan, 2026-10-19 (strength: decided): \"Sure, do that\", to moving the room with the thirteen rules that moved from the individual set into this one that day: this set 550 to 750, the individual set 600 to 400, so a person who brings both loads no more than before."
     },
     "occasion_share_tokens": {
-      "max": 550,
-      "strength": "baseline",
-      "approved_by": "baseline 2026-10-10: the values in force when the registry was first given approvals; every budget but surfaces/AGENTS.md is at or below its first commit (7c7f028e)"
+      "max": 750,
+      "strength": "decided",
+      "approved_by": "Morgan, 2026-10-19 (strength: decided): \"Sure, do that\", to moving the room with the thirteen rules that moved from the individual set into this one that day: this set 550 to 750, the individual set 600 to 400, so a person who brings both loads no more than before."
     },
     "resident_block_tokens": {
       "max": 250,
@@ -41,9 +41,9 @@
       "approved_by": "baseline 2026-10-10: the values in force when the registry was first given approvals; every budget but surfaces/AGENTS.md is at or below its first commit (7c7f028e)"
     },
     "surfaces/AGENTS.md": {
-      "max": 1300,
+      "max": 1400,
       "strength": "decided",
-      "approved_by": "Morgan F, 2026-10-02 -- approved the ladder opt-in plan (\"Go ... Let's do it, Act on the plan!\", BestPractice spec/LADDER_OPT_IN_PLAN.md), whose D15 carved this set's allowance out of universal's, so a ladder user's total did not change: 600 at bootstrap to 1,300, universal's AGENTS.md ceiling 7,650 to 6,950 the same day"
+      "approved_by": "Morgan, 2026-10-19 (strength: decided): \"Sure, do that\", to moving the room with the rules that moved from the individual set to the ladder set that day; stage-words, always loaded, took its AGENTS.md space with it."
     },
     "surfaces/CLAUDE.md": {
       "max": 150,
