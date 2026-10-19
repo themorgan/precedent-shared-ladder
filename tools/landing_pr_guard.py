@@ -139,12 +139,34 @@ def landing_branch(root):
         sys.path.pop(0)
 
 
-def refusal(landing, bad):
+# WHAT FOLLOWS THE PULL REQUEST (2026-10-18). The refusal said "merge it
+# once its checks pass". In BestPractice no workflow runs on a pull request
+# into staging, so a session opened one, waited for checks that never
+# started, and sat until Morgan asked whether anything was happening. The
+# engine's pull_request_route_note reads .github/workflows and says which
+# checks, if any, will report; where it is not importable, the refusal says
+# not to wait on checks that are not listed.
+def route_note(root, landing):
+    """-> what to do once the pull request into `landing` is open."""
+    if root is not None:
+        sys.path.insert(0, str(pathlib.Path(root) / 'tools'))
+        try:
+            import precedent_branches
+            return precedent_branches.pull_request_route_note(str(root), landing)
+        except Exception:                                    # noqa: BLE001
+            pass
+        finally:
+            sys.path.pop(0)
+    return ('Merge it once its checks pass, or straight away if the pull '
+            'request lists none.')
+
+
+def refusal(landing, bad, root=None):
     return (f'this push lands straight on {landing} and changes '
             f'{", ".join(bad)} -- a CI workflow or code other work is judged '
-            f'by. This one takes a pull request (go-update): push the branch, '
-            f'open a pull request into {landing}, and merge it once its checks '
-            f'pass.')
+            f'by. This one takes a pull request (go-update): push the branch '
+            f'and open a pull request into {landing}. '
+            f'{route_note(root, landing)}')
 
 
 def pre_push_refusals(root, lines, landing=None):
@@ -172,7 +194,7 @@ def pre_push_refusals(root, lines, landing=None):
             continue
         bad = risky(root, paths, lsha)
         if bad:
-            out.append(refusal(landing, bad))
+            out.append(refusal(landing, bad, root))
     return out
 
 

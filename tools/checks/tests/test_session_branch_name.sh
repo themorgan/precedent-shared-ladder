@@ -52,6 +52,13 @@ rm -rf "$up"
 [ -z "$(PRECEDENT_NO_LADDERS=1 start "$tmp")" ] || { echo "FAIL: a session-start note off the ladder"; fail=1; }
 git -C "$tmp" branch -q -m 2026-10-16-octo-some-work-ab1cd-x9y8z
 [ -z "$(start "$tmp")" ] || { echo "FAIL: a session-start note on a tool-made name"; fail=1; }
+# Named in the instructions, not yet checked out (2026-10-18): a session
+# that opens on main or a detached HEAD may be told to make a claude/ branch
+# later, and that cannot be read from here, so it hears the rule at start.
+git -C "$tmp" checkout -q -b main-again
+start "$tmp" | grep -q 'precedent_branch_name.py' || { echo "FAIL: no session-start note on a branch the naming tool did not make"; fail=1; }
+start "$tmp" | grep -q 'claude/' || { echo "FAIL: the session-start note did not name the harness prefix"; fail=1; }
+git -C "$tmp" checkout -q 2026-10-16-octo-some-work-ab1cd-x9y8z
 git -C "$tmp" checkout -q --detach
 [ "$(run)" = 2 ] || { echo "FAIL: a detached HEAD was not reported as SKIPPED"; fail=1; }
 [ "$fail" = 0 ] && echo "PASS: check_session_branch_name"

@@ -96,7 +96,7 @@ def main():
     print("VIOLATION: go-update -- a high-risk change takes a pull request")
     print(rule_text())
     print()
-    print(f"  {lpg.refusal(landing, bad)}")
+    print(f"  {lpg.refusal(landing, bad, ROOT)}")
     return 1
 
 
