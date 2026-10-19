@@ -58,8 +58,8 @@ named as one of the repository's code owners:
   the end of the update's commit message.
 - **Booked** prints it after the quick checks pass, and writes the lines into
   the commit it lands on staging.
-- **Debut** prints none of its own since pre-staging retired (2026-10-17):
-  it moves nothing, and Produce reviews the same batch.
+- **Debut** prints none of its own: it moves nothing, and Produce reviews
+  the same batch.
 - **Produce** prints it last and records nothing: main moves by a pull
   request.
 
