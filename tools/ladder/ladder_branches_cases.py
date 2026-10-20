@@ -3150,8 +3150,15 @@ def check_cases_pass_whatever_their_order():
                        capture_output=True, text=True, timeout=600,
                        env={**os.environ, 'PRECEDENT_ENGINE_ROOT': str(ENGINE_ROOT)})
     out = r.stdout + r.stderr
-    check('two cases run together pass as each does alone, in file order',
-          r.returncode == 0 and 'has no attribute' not in out
+    name = 'two cases run together pass as each does alone, in file order'
+    # Either case is N/A where BestPractice's own templates are absent (a
+    # consumer-shaped copy, 2026-10-20): then the pair cannot show the order
+    # dependence, which is not a failure.
+    if r.returncode == 0 and '2 passed' not in out and 'not applicable' in out:
+        not_applicable(name, 'a case of the pair is not applicable here, so '
+                             'the two cannot run together')
+        return
+    check(name, r.returncode == 0 and 'has no attribute' not in out
           and '2 passed, 0 failed' in out, out[-600:])
 
 
