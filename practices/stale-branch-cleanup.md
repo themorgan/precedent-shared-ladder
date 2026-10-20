@@ -1,14 +1,14 @@
 ---
 slug:        stale-branch-cleanup
-title:       "The closing Boildown links the person's one pinned page of every branch they can delete and every staging waiting to go live"
+title:       "Every reply that says the session can be archived links the person's one pinned page of every branch they can delete and every staging waiting to go live"
 tier:        on-demand
 severity:    default
 applies_to:  ["**"]
-applies_to_why: "A moment, not a place: the reply that closes a session. Routed by the `reply` gate."
-occasion:    "the reply that closes the session: it answers \"Archive\" or \"Archive?\", or carries the closing items"
+applies_to_why: "A moment, not a place: a reply that says the session can be archived. Routed by the `reply` gate."
+occasion:    "a reply that says \"You can archive this session\", or answers \"Archive\" or \"Archive?\""
 gates:       ["reply"]
-gates_why:   "This set's tools/ladder/branch_page_note.py counts the stale branches, and the repositories whose staging waits for main, at the start of every turn; the reply gate prints what it says (this set's reply_check.json, note_from_tool) only when there are any, so the closing reply is the one that can still carry the link."
-index_clause: "closing Boildown: refresh the pinned branch and staging page, only if any"
+gates_why:   "This set's tools/ladder/branch_page_note.py counts the stale branches, and the repositories whose staging waits for main, at the start of every turn; the reply gate prints what it says (this set's reply_check.json, note_from_tool) only when there are any, so a reply that says the session can be archived is the one that can still carry the link."
+index_clause: "with every archive line: link the pinned branch and staging page, only if any"
 index_required: false
 checked_by:  null
 ships:       ["tools/ladder/branch_page_note.py"]
@@ -19,13 +19,15 @@ visible_to:  code-owners
 supersedes:  []
 overrides:   null
 added:       "2026-10-05"
-approved_by: "Morgan F, 2026-10-16 -- the page also lists each repository whose staging waits to go into main, taken over from the retired chief-of-staff: \"Let's implement your three suggestion\" (strength: decided). Morgan F, 2026-10-11 -- one pinned page updated in place, its address in his identity.json, instead of a new page every session: \"Let's do this\" (strength: decided). Earlier, Morgan F, 2026-10-05 -- \"in the Boildown, give the user an artifact with a list of all stale temp github repos that can be deleted, from all repos that are open in that session. Don't do that if there aren't any. If in doubt, do NOT include it\"; the closing reply only, and for code owners only (strength: decided)"
+approved_by: "Morgan F, 2026-10-20 -- the page with every archive line, not only the closing reply: \"That page should be given. Anytime you do tell me that I can archive the page. Booked.\" (strength: decided). Morgan F, 2026-10-16 -- the page also lists each repository whose staging waits to go into main, taken over from the retired chief-of-staff: \"Let's implement your three suggestion\" (strength: decided). Morgan F, 2026-10-11 -- one pinned page updated in place, its address in his identity.json, instead of a new page every session: \"Let's do this\" (strength: decided). Earlier, Morgan F, 2026-10-05 -- \"in the Boildown, give the user an artifact with a list of all stale temp github repos that can be deleted, from all repos that are open in that session. Don't do that if there aren't any. If in doubt, do NOT include it\"; the closing reply only, and for code owners only (strength: decided)"
 ---
 
 ## Rule
 
-**In the reply that closes the session, when any branch can be deleted or any staging is waiting to go into main, publish a page
-listing them and link it in one Boildown line.** The list covers every
+**In every reply that says "You can archive this session", and in one
+that answers "Archive" or "Archive?", when any branch can be deleted or any
+staging is waiting to go into main, link the page listing them in one
+Boildown line.** The list covers every
 repository open in the session where the person is a code owner. A branch
 is on it only when it is already in `main`, so deleting it loses nothing;
 `main`, `staging` and the engine's own branches never are.
@@ -35,14 +37,18 @@ a change `main` lacks**: how many commits, the oldest one's date, and a link
 to GitHub's comparison. A repository where `main` is staging has no row. The
 tool builds this list too; nothing extra to run.
 
-**The closing reply** answers "Archive" or "Archive?", or is the one that
-carries the closing items after the archive conditions (BestPractice's
-the-boildown). Not the archive sentence itself: since 2026-10-18 that
-sentence can end any reply with nothing running and nothing off its
-landing branch, and a page rebuilt at each of those would come back every
-message.
+**Build and publish it the first time a session gives it, and again only
+when this session has made, landed or merged a branch since it last
+published; otherwise link the saved page as it stands.** The archive
+sentence can end any reply with nothing running and nothing off its landing
+branch (BestPractice's the-boildown, since 2026-10-18), so a page rebuilt
+at each one would be rebuilt every message. From 2026-10-18 to 2026-10-20
+this rule solved that by giving the page only in the closing reply, and
+since Morgan rarely types "Archive", the page stopped appearing at all.
+The link costs one line; the rebuild is what only a change earns.
 
-**Nothing to delete and nothing waiting, no page. In doubt, no page.** Not in any other reply either.
+**Nothing to delete and nothing waiting, no page.** Not in a reply that
+does not say the session can be archived.
 
 **It is one page, updated in place.** Build it with `python3
 tools/precedent_stale_branches.py --fetch --html
@@ -165,7 +171,9 @@ where the person is not a code owner is left off the page.
 Morgan asked for this list by hand, session after session. On 2026-10-05 a
 session built it once, as a page with 80 links across four repositories,
 and he asked for it to come every time there is something to clean up --
-but only then, and only at the close.
+but only then, and only at the close. On 2026-10-20 he asked for it with
+every reply that says the session can be archived, since that is when he
+decides whether to archive it.
 
 ## Story
 
@@ -232,3 +240,13 @@ the publish, since another session had published last. After the read it
 also refused the same content once more, and the third publish went
 through. The read cannot be skipped while the Artifact tool asks for it, so
 the rule now says to do it before the first publish, in ranges.
+
+2026-10-20: a session fixing how a shared set came to hold copies of every
+other source's rules closed with four separate branch delete links and no
+page. Since 2026-10-18 the page rode only with a reply that answers
+"Archive", and that session's archive line was not one, so the rule said
+"In doubt, no page." Morgan: "how come recently you are no longer giving me
+the link to the artifact with all the branches to delete from the
+session?", then "That page should be given. Anytime you do tell me that I
+can archive the page. Booked." The page now comes with every archive line,
+rebuilt only when the session's branches changed.
