@@ -43,7 +43,7 @@ whether it's reassurance or a warning.
 ## Detail
 **This is the chat-reply form of a check the archive line already makes.**
 Universal `the-boildown` requires every checkout the container holds to be
-safe before "You can archive this session" is said, and gives each one a
+safe before the archive-line reply (the-boildown), and gives each one a
 `**Checkout disposition:** NAME -- discard (reason)` line. That covers the
 archive moment only. This covers every other moment a reply mentions a loss
 -- mid-task, in a status note, in a caveat -- where no gate is looking.

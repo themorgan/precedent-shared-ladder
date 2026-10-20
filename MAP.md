@@ -43,7 +43,7 @@ This repository's map of the practice catalogue in force here and the engine's o
 | [small-helpers-run-on-haiku](practices/small-helpers-run-on-haiku.md) | on-demand | spawning a helper agent, or handing a small task to another model |
 | [stage-word-carries-its-step](practices/stage-word-carries-its-step.md) | on-demand | ** |
 | [stage-words](practices/stage-words.md) | resident | I say Booked, Debut, Produce or Promote |
-| [stale-branch-cleanup](practices/stale-branch-cleanup.md) | on-demand | a reply that says "You can archive this session", or answers "Archive" or "Archive?" |
+| [stale-branch-cleanup](practices/stale-branch-cleanup.md) | on-demand | the archive-line reply or the closing reply (the-boildown) |
 | [the-boildown-on-the-ladder](practices/the-boildown-on-the-ladder.md) | on-demand | ** |
 | [tier-branch](practices/tier-branch.md) | on-demand | ** |
 | [upstream-review](practices/upstream-review.md) | on-demand | Update Vendors finishes, or a Booked, Debut or Produce lands |
@@ -127,6 +127,7 @@ This repository's map of the practice catalogue in force here and the engine's o
 | [tools/precedent_merge_vendors.py](tools/precedent_merge_vendors.py) | At a merge: when the vendored engine or catalogue is behind, runs Update Vendors from the BestPractice clone and commits the result on its own, or takes it all back and says why; never blocks the merge |
 | [tools/precedent_migrate_status.py](tools/precedent_migrate_status.py) | Classifies practices written under the old status vocabulary, where `retired` meant two different things; proposes, and refuses to guess a renamed successor |
 | [tools/precedent_migrate_views.py](tools/precedent_migrate_views.py) | Moves a hand-written MAP.md and GLOSSARY.md into their sources, and splits any index many threads add rows to into a directory of one file per row, joined back into the file people read |
+| [tools/precedent_moments.py](tools/precedent_moments.py) | Which practices key on the Boildown's two named moments, and which restate one in their own words instead of naming it |
 | [tools/precedent_paths.py](tools/precedent_paths.py) | The PATH-TRIGGERED channel — matches a touched file against every practice's `applies_to` |
 | [tools/precedent_practice_refs.py](tools/precedent_practice_refs.py) | Who cites a practice, across this repo and every source it declares -- live citations vs history; the lookup behind practice-change-propagates, the merge moment and Update Vendors |
 | [tools/precedent_promote.py](tools/precedent_promote.py) | Stage 3 (phase 5) — runs a candidate against the four promotion criteria |

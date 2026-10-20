@@ -1,13 +1,13 @@
 ---
 slug:        stale-branch-cleanup
-title:       "Every reply that says the session can be archived links the person's one pinned page of every branch they can delete and every staging waiting to go live"
+title:       "Every archive-line reply and closing reply links the person's one pinned page of every branch they can delete and every staging waiting to go live"
 tier:        on-demand
 severity:    default
 applies_to:  ["**"]
-applies_to_why: "A moment, not a place: a reply that says the session can be archived. Routed by the `reply` gate."
-occasion:    "a reply that says \"You can archive this session\", or answers \"Archive\" or \"Archive?\""
+applies_to_why: "A moment, not a place: the archive-line reply and the closing reply, both named by the-boildown. Routed by the `reply` gate."
+occasion:    "the archive-line reply or the closing reply (the-boildown)"
 gates:       ["reply"]
-gates_why:   "This set's tools/ladder/branch_page_note.py counts the stale branches, and the repositories whose staging waits for main, at the start of every turn; the reply gate prints what it says (this set's reply_check.json, note_from_tool) only when there are any, so a reply that says the session can be archived is the one that can still carry the link."
+gates_why:   "This set's tools/ladder/branch_page_note.py counts the stale branches, and the repositories whose staging waits for main, at the start of every turn; the reply gate prints what it says (this set's reply_check.json, note_from_tool) only when there are any, so the archive-line reply or the closing reply (the-boildown) can still carry the link."
 index_clause: "with every archive line: link the pinned branch and staging page, only if any"
 index_required: false
 checked_by:  null
@@ -19,13 +19,14 @@ visible_to:  code-owners
 supersedes:  []
 overrides:   null
 added:       "2026-10-05"
-approved_by: "Morgan F, 2026-10-20 -- the page with every archive line, not only the closing reply: \"That page should be given. Anytime you do tell me that I can archive the page. Booked.\" (strength: decided). Morgan F, 2026-10-16 -- the page also lists each repository whose staging waits to go into main, taken over from the retired chief-of-staff: \"Let's implement your three suggestion\" (strength: decided). Morgan F, 2026-10-11 -- one pinned page updated in place, its address in his identity.json, instead of a new page every session: \"Let's do this\" (strength: decided). Earlier, Morgan F, 2026-10-05 -- \"in the Boildown, give the user an artifact with a list of all stale temp github repos that can be deleted, from all repos that are open in that session. Don't do that if there aren't any. If in doubt, do NOT include it\"; the closing reply only, and for code owners only (strength: decided)"
+approved_by: "Morgan F, 2026-10-20 -- a rebuild only after a branch this session changed, never before the answer, and the page and its Boildown line bare: \"Can you make the enforcement of that stronger? ... when you give me the branches to delete now, you give me paragraphs about it's checkmarks etc - ... just give it to me and say nothing else. Do these and booked.\" (strength: decided). Morgan F, 2026-10-20 -- the page with every archive line, not only the closing reply: \"That page should be given. Anytime you do tell me that I can archive the page. Booked.\" (strength: decided). Morgan F, 2026-10-16 -- the page also lists each repository whose staging waits to go into main, taken over from the retired chief-of-staff: \"Let's implement your three suggestion\" (strength: decided). Morgan F, 2026-10-11 -- one pinned page updated in place, its address in his identity.json, instead of a new page every session: \"Let's do this\" (strength: decided). Earlier, Morgan F, 2026-10-05 -- \"in the Boildown, give the user an artifact with a list of all stale temp github repos that can be deleted, from all repos that are open in that session. Don't do that if there aren't any. If in doubt, do NOT include it\"; the closing reply only, and for code owners only (strength: decided)"
 ---
 
 ## Rule
 
-**In every reply that says "You can archive this session", and in one
-that answers "Archive" or "Archive?", when any branch can be deleted or any
+**In the archive-line reply and the closing reply -- the two moments
+[the-boildown](https://github.com/alex137/BestPractice/blob/staging/practices/the-boildown.md)
+names and owns -- when any branch can be deleted or any
 staging is waiting to go into main, link the page listing them in one
 Boildown line.** The list covers every
 repository open in the session where the person is a code owner. A branch
@@ -37,9 +38,16 @@ a change `main` lacks**: how many commits, the oldest one's date, and a link
 to GitHub's comparison. A repository where `main` is staging has no row. The
 tool builds this list too; nothing extra to run.
 
-**Build and publish it the first time a session gives it, and again only
-when this session has made, landed or merged a branch since it last
-published; otherwise link the saved page as it stands.** The archive
+**Rebuild and republish it only when this session has made, landed or
+merged a branch since the page was last published, and only after the
+reply's answer is written; otherwise link the saved page as it stands.**
+**The answer always goes first**
+([answer-first-ask-before-long-work](https://github.com/alex137/BestPractice/blob/staging/practices/answer-first-ask-before-long-work.md)):
+BestPractice's answer-first gate holds the build and the publish while the
+person's question has no answer (2026-10-20: a session asked whether
+BestPractice had a process for vendoring itself spent minutes rebuilding
+this page for its archive line before writing a word of the answer, because
+this rule said to build it the first time a session gives it). The archive
 sentence can end any reply with nothing running and nothing off its landing
 branch (BestPractice's the-boildown, since 2026-10-18), so a page rebuilt
 at each one would be rebuilt every message. From 2026-10-18 to 2026-10-20
@@ -47,8 +55,8 @@ this rule solved that by giving the page only in the closing reply, and
 since Morgan rarely types "Archive", the page stopped appearing at all.
 The link costs one line; the rebuild is what only a change earns.
 
-**Nothing to delete and nothing waiting, no page.** Not in a reply that
-does not say the session can be archived.
+**Nothing to delete and nothing waiting, no page.** Not in any reply
+but those two.
 
 **It is one page, updated in place.** Build it with `python3
 tools/precedent_stale_branches.py --fetch --html
@@ -63,9 +71,12 @@ the file that read saved, with `--merge`, and never rebuild the page from
 your own copy of it. Read the page immediately before building, every time,
 and merge that file: never a copy from earlier in the session, and never the
 page this session built last.** **Before the first publish, Read every
-line of that saved file**, in two or three ranges with offset and limit
-(one Read of the whole page is over the tool's size cap), and change
-nothing in it. When another session, or the page itself, published the
+line of that saved file**, in ranges of about 100 lines with offset and
+limit (one Read of the whole page is over the tool's size cap; on
+2026-10-20 the page was about 1,000 lines and took seven reads), and change
+nothing in it. The read is the platform's rule, so it is required; the
+point this practice owns is the merge -- never a page built from your own
+copy. When another session, or the page itself, published the
 version last -- the usual case for this shared page -- the Artifact tool
 refuses a publish until the file has been read through, and after one
 refusal it refuses the same content once more before letting it through
@@ -95,7 +106,12 @@ Boildown line that it was not refreshed and that Update Vendors here
 fixes it (2026-10-13: a to-do repository's older tool would have erased
 42 branches across seven repositories). Write the line as: *"Branches you can delete: Branch cleanup, N across M
 repositories"*, with the page's name linked to it, and, when anything is
-waiting, add *"; waiting to go live: <repository>, <repository>"*. The reply gate prints the count at the start of a
+waiting, add *"; waiting to go live: <repository>, <repository>"*.
+**Nothing else on that line, and nothing about the page anywhere else in
+the reply**: not its ticks, its buttons, or whether a button was tried
+(Morgan, 2026-10-20: "just give it to me and say nothing else"). The page
+says nothing about itself either: no intro and no notes on how a button
+works, only the list. The reply gate prints the count at the start of a
 turn when there is one, so the session knows before it writes the close.
 
 ## Detail
@@ -118,10 +134,11 @@ the button is always there.** **In a private one it shows only once
 `github_branch_cleanup_every_hours` (in the person's `identity.json`; 336
 for Morgan) has passed since that repository's last cleanup run**, one
 tracker per repository, apart from the main test's; otherwise the line
-says the date it comes back. A click hides that button at once and is
+shows the date it comes back. A click hides that button at once and is
 saved into the page. Every row stays as it was, for counting, reading the
 names, and deleting one at a time instead. A repository whose `main` lacks
-the workflow says so; Update Vendors installs it. **One more button, above
+the workflow has no button, and the page says nothing about why; Update
+Vendors installs it. **One more button, above
 the repositories, starts the workflow in every public repository at once**
 (2026-10-16): one click, through the person's own GitHub connector, so the
 page is published with the capabilities the builder prints, which add that
@@ -157,7 +174,7 @@ fast.
 
 **Waiting to go live, merged like the branches.** A repository this session
 checked gets its fresh row, or none once staging and `main` are level; one
-it could not see keeps its last row, dated and marked as possibly moved.
+it could not see keeps its last row, with the date it was checked.
 So the page covers, over a few closes, every repository the person works
 in, and no single session has to read them all. A repository nobody opens
 is the gap: its row only ages. A staging that merged `main` back in after a
