@@ -7,7 +7,7 @@ branch_page_note.py -- what the archive-line reply and the closing reply
 The page itself is the engine's (tools/precedent_stale_branches.py): its
 delete button runs on GitHub, where nothing a set ships is present. What
 is this set's is the rule that those two replies link the page (rebuilding
-it, after the answer, only when this session's branches changed), and only when there is something on it ("Don't do that if
+it, after the answer, only when the person asks), and only when there is something on it ("Don't do that if
 there aren't any", Morgan, 2026-10-05). That rule lived in BestPractice's
 reply gate until 2026-10-17 (BestPractice
 spec/ENFORCEMENT_LIVES_WITH_ITS_PRACTICE_PLAN.md part 3); the gate now runs
@@ -50,21 +50,23 @@ def note():
     except Exception:                                         # noqa: BLE001
         url = ''
     where = f" ({url})" if url else ''
-    # ANSWER FIRST, REBUILD RARELY (Morgan, 2026-10-20, strength: decided:
-    # "Can you make the enforcement of that stronger?"): a session rebuilt
-    # this page before answering a plain question, because the note said to
-    # build it the first time a session gives it. Now only a branch this
-    # session made, landed or merged earns a rebuild, and never before the
-    # answer; BestPractice's answer-first gate holds the build and publish.
+    # REBUILD ONLY WHEN ASKED (Morgan, 2026-10-20, strength: decided: "Sure
+    # let's rebuild the page only when I ask"): the page's delete-all button
+    # needs a GitHub tool, so every publish asks him to approve it, and a
+    # rebuild after every landing put that prompt in nearly every session.
+    # The answer still goes first; BestPractice's answer-first gate holds
+    # the build and publish.
     return (f"In the archive-line reply and the closing reply (the moments "
             f"the-boildown names): {what} (the page "
             f"counts them, after a fetch), so link the branch cleanup "
             f"page{where} in one Boildown line, and nothing else on that line. "
-            f"Rebuild and republish it only when this session has made, landed "
-            f"or merged a branch since the page was last published, and only "
-            f"after the reply's answer is written; otherwise link it as it "
-            f"stands -- and link it as it stands, saying it was not refreshed, "
-            f"when this engine is too old to build it. To rebuild: read the "
+            f"Link it as it stands: rebuild and republish it only when the "
+            f"person asks for a fresh list in this conversation, never because "
+            f"this session made, landed or merged a branch -- each publish asks "
+            f"them to approve the page's GitHub tool -- and only after the "
+            f"reply's answer is written. When asked and this engine is too old "
+            f"to build it, link it as it stands and say it was not refreshed. "
+            f"To rebuild: read the "
             f"saved page's url with the Artifact tool, WITHOUT a path, "
             f"IMMEDIATELY before building, and run `python3 tools/"
             f"precedent_stale_branches.py --fetch --html "

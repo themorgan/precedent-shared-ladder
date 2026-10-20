@@ -19,7 +19,7 @@ visible_to:  code-owners
 supersedes:  []
 overrides:   null
 added:       "2026-10-05"
-approved_by: "Morgan F, 2026-10-20 -- a rebuild only after a branch this session changed, never before the answer, and the page and its Boildown line bare: \"Can you make the enforcement of that stronger? ... when you give me the branches to delete now, you give me paragraphs about it's checkmarks etc - ... just give it to me and say nothing else. Do these and booked.\" (strength: decided). Morgan F, 2026-10-20 -- the page with every archive line, not only the closing reply: \"That page should be given. Anytime you do tell me that I can archive the page. Booked.\" (strength: decided). Morgan F, 2026-10-16 -- the page also lists each repository whose staging waits to go into main, taken over from the retired chief-of-staff: \"Let's implement your three suggestion\" (strength: decided). Morgan F, 2026-10-11 -- one pinned page updated in place, its address in his identity.json, instead of a new page every session: \"Let's do this\" (strength: decided). Earlier, Morgan F, 2026-10-05 -- \"in the Boildown, give the user an artifact with a list of all stale temp github repos that can be deleted, from all repos that are open in that session. Don't do that if there aren't any. If in doubt, do NOT include it\"; the closing reply only, and for code owners only (strength: decided)"
+approved_by: "Morgan F, 2026-10-20 -- the page rebuilt only when he asks, since every publish asked him to approve the page's GitHub tool: \"Sure let's rebuild the page only when I ask. Act and staging.\" (strength: decided). Morgan F, 2026-10-20 -- a rebuild only after a branch this session changed, never before the answer, and the page and its Boildown line bare: \"Can you make the enforcement of that stronger? ... when you give me the branches to delete now, you give me paragraphs about it's checkmarks etc - ... just give it to me and say nothing else. Do these and booked.\" (strength: decided). Morgan F, 2026-10-20 -- the page with every archive line, not only the closing reply: \"That page should be given. Anytime you do tell me that I can archive the page. Booked.\" (strength: decided). Morgan F, 2026-10-16 -- the page also lists each repository whose staging waits to go into main, taken over from the retired chief-of-staff: \"Let's implement your three suggestion\" (strength: decided). Morgan F, 2026-10-11 -- one pinned page updated in place, its address in his identity.json, instead of a new page every session: \"Let's do this\" (strength: decided). Earlier, Morgan F, 2026-10-05 -- \"in the Boildown, give the user an artifact with a list of all stale temp github repos that can be deleted, from all repos that are open in that session. Don't do that if there aren't any. If in doubt, do NOT include it\"; the closing reply only, and for code owners only (strength: decided)"
 ---
 
 ## Rule
@@ -38,22 +38,24 @@ a change `main` lacks**: how many commits, the oldest one's date, and a link
 to GitHub's comparison. A repository where `main` is staging has no row. The
 tool builds this list too; nothing extra to run.
 
-**Rebuild and republish it only when this session has made, landed or
-merged a branch since the page was last published, and only after the
-reply's answer is written; otherwise link the saved page as it stands.**
+**Rebuild and republish it only when the person asks for it** -- "refresh
+the branch page", or anything that plainly asks for a fresh list -- **and
+only after the reply's answer is written; every other time, link the saved
+page as it stands.** A branch this session made, landed or merged does not
+earn a rebuild on its own (Morgan, 2026-10-20). The page carries one GitHub
+tool for its delete-all button, so every publish asks the person to approve
+it, and a rebuild after every landing put that prompt in nearly every
+session: "I keep in getting asked for permission ... it is very
+frustrating". A link asks for nothing.
 **The answer always goes first**
 ([answer-first-ask-before-long-work](https://github.com/alex137/BestPractice/blob/staging/practices/answer-first-ask-before-long-work.md)):
 BestPractice's answer-first gate holds the build and the publish while the
-person's question has no answer (2026-10-20: a session asked whether
-BestPractice had a process for vendoring itself spent minutes rebuilding
-this page for its archive line before writing a word of the answer, because
-this rule said to build it the first time a session gives it). The archive
-sentence can end any reply with nothing running and nothing off its landing
-branch (BestPractice's the-boildown, since 2026-10-18), so a page rebuilt
-at each one would be rebuilt every message. From 2026-10-18 to 2026-10-20
-this rule solved that by giving the page only in the closing reply, and
-since Morgan rarely types "Archive", the page stopped appearing at all.
-The link costs one line; the rebuild is what only a change earns.
+person's question has no answer (2026-10-20: a session spent minutes
+rebuilding this page for its archive line before writing a word of the
+answer). The archive sentence can end any reply with nothing running and
+nothing off its landing branch (BestPractice's the-boildown, since
+2026-10-18), and the link goes with each one; between refreshes the page
+shows the date of its last build, so a stale row is easy to spot.
 
 **Nothing to delete and nothing waiting, no page.** Not in any reply
 but those two.
@@ -268,3 +270,12 @@ the link to the artifact with all the branches to delete from the
 session?", then "That page should be given. Anytime you do tell me that I
 can archive the page. Booked." The page now comes with every archive line,
 rebuilt only when the session's branches changed.
+
+Later the same day, Morgan: "I keep in getting asked for permission to
+access the branch and it is very frustrating - how do we stop it
+constantly asking for authorization". A session read its own log: the one
+prompt it had raised was the republish of this page, whose delete-all
+button needs a GitHub tool, and every session that landed a branch
+republished it. He weighed a new page each time (it would most likely ask
+the same way, lose his ticks and change the link) and chose a rebuild only
+when he asks.
