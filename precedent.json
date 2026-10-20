@@ -1,5 +1,11 @@
 {
   "format_version": 1,
+  "visibility": "public",
+  "_visibility_comment": [
+    "Declared 2026-10-20: GitHub's API reports themorgan/precedent-shared-ladder",
+    "as public. Without this field build_views warned on every run that it",
+    "assumed PUBLIC; the declaration states it once, at the source."
+  ],
   "sources": [
     {
       "level": "universal",
