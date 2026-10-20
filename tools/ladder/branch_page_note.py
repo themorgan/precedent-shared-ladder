@@ -50,6 +50,11 @@ def note():
     except Exception:                                         # noqa: BLE001
         url = ''
     where = f" ({url})" if url else ''
+    # READ THE MERGED FILE THROUGH (2026-10-20): this note said "Never Read
+    # that file yourself", and the Artifact tool refused the publish until
+    # every line of it had been Read, so a session that obeyed was refused
+    # every time. What the note meant -- merge only the file just read --
+    # stays; the publish steps are the engine's last line's, named here.
     return (f"In the archive-line reply and the closing reply (the moments "
             f"the-boildown names): {what} (the page "
             f"counts them, after a fetch), so link the branch cleanup "
@@ -65,13 +70,17 @@ def note():
             f"Artifact tool, WITHOUT a path, IMMEDIATELY before building -- the "
             f"read a republish needs -- and pass the file it says the full HTML "
             f"was saved to as `--merge FILE` (only a page that came back inline "
-            f"needs a second read, with path index.html, for the file). Never "
-            f"Read that file yourself, and never a copy from earlier in the "
-            f"session, so rows from repositories this session cannot see, and "
-            f"ticks saved since, are kept -- publish it as an artifact the way "
-            f"its last line says (the page saves the person's ticks into "
-            f"itself). In any other reply, say nothing about it (practice: "
-            f"stale-branch-cleanup).")
+            f"needs a second read, with path index.html, for the file). Merge "
+            f"only that file, never a copy from earlier in the session, so "
+            f"rows from repositories this session cannot see, and ticks saved "
+            f"since, are kept. Then publish it the way the build's last line "
+            f"says: Read every line of the merged file (the one just read, "
+            f"never an earlier copy) in ranges, changing nothing -- the "
+            f"Artifact tool refuses the publish until it has been read "
+            f"through -- then publish, and if it is refused as identical "
+            f"content, send it once more unchanged (the page saves the "
+            f"person's ticks into itself). In any other reply, say nothing "
+            f"about it (practice: stale-branch-cleanup).")
 
 
 if __name__ == '__main__':

@@ -26,7 +26,11 @@ stub 0 0; out="$(run)"
 stub 2 0; out="$(run)"
 case "$out" in *"some branches can be deleted (the page"*"rc=0") ;; *) echo "FAIL: deletable branches not said: $out"; fail=1;; esac
 case "$out" in *"waiting to go into main"*) echo "FAIL: named a waiting staging that is not there"; fail=1;; esac
-case "$out" in *'In EVERY reply that says "You can archive this session"'*) ;; *) echo "FAIL: the note no longer rides with every archive line: $out"; fail=1;; esac
+case "$out" in *'In the archive-line reply and the closing reply'*) ;; *) echo "FAIL: the note no longer rides with every archive line: $out"; fail=1;; esac
+# 2026-10-20: the note forbade Reading the merged file, and the Artifact tool
+# refused the publish until it had been Read through.
+case "$out" in *"Never Read"*) echo "FAIL: the note still forbids reading the merged file"; fail=1;; esac
+case "$out" in *"Read every line of the merged file"*"send it once more unchanged"*) ;; *) echo "FAIL: the note lost the publish steps: $out"; fail=1;; esac
 stub 0 1; out="$(run)"
 case "$out" in *"a repository's staging is waiting to go into main"*"--fetch --html <scratchpad>/branch-cleanup.html"*"rc=0") ;; *) echo "FAIL: waiting staging not said: $out"; fail=1;; esac
 rm "$tmp/tools/precedent_stale_branches.py"; out="$(run)"
