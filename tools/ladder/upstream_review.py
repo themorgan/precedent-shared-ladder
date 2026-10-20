@@ -49,8 +49,7 @@ Booked and again at Debut is one item.
 --from reads a run's output (a check, an update); --note adds something the
 session met that no tool printed. The range defaults to the batch the stage
 moves: origin/<landing>..HEAD for booked and update, origin/<staging>..
-origin/main..origin/<staging> for debut and produce (pre-staging is
-retired, Morgan, 2026-10-17).
+origin/main..origin/<staging> for debut and produce.
 Exit 0 always -- a review is a report, never a gate. Off the ladder, or for
 someone who is not a code owner, it prints one line saying why and nothing
 else.
