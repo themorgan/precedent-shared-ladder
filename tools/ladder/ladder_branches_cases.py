@@ -1790,6 +1790,108 @@ def check_main_test_wait_does_not_ask_to_merge_what_is_merged():
           not bad, '; '.join(f'{n} ({d})' for n, d in bad))
 
 
+def check_main_test_wait_says_what_it_waits_on():
+    """--wait-main-test agrees with Update Vendors on what passed, says at
+    once when no run will start, and is never silent for long.
+
+    2026-10-19: after a fast Produce a consumer's session ran the wait on a
+    commit and it said nothing for over an hour. Update Vendors took a main
+    whose files carried the passed marker; the wait read GitHub's runs only.
+    """
+    import tempfile
+    sys.path.insert(0, str(ROOT / 'tools'))
+    try:
+        import precedent_branches as pb
+    finally:
+        sys.path.pop(0)
+    cases = []
+    saved = (pb.github_tests, pb.github_test_state, pb.passed_markers, pb._slug,
+             pb.GITHUB_POLL_SECONDS, pb.GITHUB_TEST_WAIT_SECONDS,
+             pb.GITHUB_START_WAIT_SECONDS, pb.PROGRESS_SECONDS, time.sleep)
+
+    class GH:
+        def __init__(self, pulls):
+            self.pulls = pulls
+
+        def call(self, path, cache=True):
+            return self.pulls, None
+    try:
+        pb.github_tests = lambda root, sha: [('.github/workflows/t.yml', None)]
+        pb._slug = lambda root: 'o/r'
+        with tempfile.TemporaryDirectory() as td:
+            tmp = pathlib.Path(td)
+            env = _fixture_git_env()
+            g = lambda cwd, *a: subprocess.run(['git', '-C', str(cwd), *a], env=env,
+                                               capture_output=True, text=True)
+            g(tmp, 'init', '-q', '--bare', '-b', 'main', str(tmp / 'o.git'))
+            g(tmp, 'clone', '-q', str(tmp / 'o.git'), str(tmp / 'w'))
+            w = tmp / 'w'
+            g(w, 'checkout', '-q', '-B', 'main')
+            (w / 'a').write_text('a'); g(w, 'add', '-A'); g(w, 'commit', '-qm', 'a')
+            g(w, 'push', '-q', 'origin', 'main')
+            g(w, 'checkout', '-q', '-b', 'side')
+            (w / 'b').write_text('b'); g(w, 'add', '-A'); g(w, 'commit', '-qm', 'b')
+            side = g(w, 'rev-parse', 'HEAD').stdout.strip()
+            tree = g(w, 'rev-parse', 'HEAD^{tree}').stdout.strip()
+
+            # (a) The marker answers first, as it does for Update Vendors.
+            pb.passed_markers = lambda root: {tree}
+            pb.github_test_state = lambda *a, **k: ('failed', 'a push run that tested nothing')
+            said = []
+            rc = pb.wait_for_main_test(w, side, said.append, GH([]))
+            cases.append(('files carrying the passed marker read PASSED, as Update '
+                          'Vendors reads them', rc == 0 and 'PASSED' in said[-1]
+                          and 'passed marker' in said[-1], said[-1]))
+
+            # (b) No run will ever start: said at once, no polling.
+            pb.passed_markers = lambda root: set()
+            pb.github_test_state = lambda *a, **k: ('none', 't.yml never ran on it')
+            pb.GITHUB_START_WAIT_SECONDS = 3600
+
+            def no_sleep(_s):
+                raise AssertionError('slept')
+            time.sleep = no_sleep
+            said = []
+            try:
+                rc = pb.wait_for_main_test(w, side, said.append, GH([]))
+                ok = rc == 1 and 'no run of it will start' in said[-1]
+            except AssertionError:
+                ok = False
+            cases.append(("a commit that is neither main's tip nor an open pull "
+                          "request's head is refused at once, not waited on",
+                          ok, said[-1] if said else ''))
+            open_pr = [{'base': {'ref': 'main'}, 'state': 'open', 'number': 7,
+                        'head': {'sha': side}}]
+            pb.GITHUB_START_WAIT_SECONDS = 0
+            time.sleep = lambda _s: None
+            said = []
+            rc = pb.wait_for_main_test(w, side, said.append, GH(open_pr))
+            cases.append(("...but an open pull request's head is waited on as before",
+                          rc == 1 and 'no run of it will start' not in said[-1],
+                          said[-1]))
+
+            # (c) A run that never finishes: progress lines, then a timeout
+            # that says so.
+            pb.github_test_state = lambda *a, **k: ('running', 't.yml has not finished')
+            pb.GITHUB_POLL_SECONDS = 0
+            pb.GITHUB_TEST_WAIT_SECONDS = 0.05
+            pb.PROGRESS_SECONDS = 0
+            said = []
+            rc = pb.wait_for_main_test(w, side, said.append, GH(open_pr))
+            cases.append(('a long wait prints a line as it goes',
+                          any('still waiting' in s for s in said), said[:3]))
+            cases.append(('...and ends saying it stopped waiting, and how to wait more',
+                          rc == 1 and 'stopped waiting after' in said[-1]
+                          and '--wait-main-test again' in said[-1], said[-1]))
+    finally:
+        (pb.github_tests, pb.github_test_state, pb.passed_markers, pb._slug,
+         pb.GITHUB_POLL_SECONDS, pb.GITHUB_TEST_WAIT_SECONDS,
+         pb.GITHUB_START_WAIT_SECONDS, pb.PROGRESS_SECONDS, time.sleep) = saved
+    bad = [(n, d) for n, ok, d in cases if not ok]
+    check(f'the main-test wait says what it waits on ({len(cases)} stated cases)',
+          not bad, '; '.join(f'{n} ({d})' for n, d in bad))
+
+
 def check_a_failed_result_never_carries_its_success_word():
     """A LAND RESULT or PROMOTE RESULT line that reports a failure never
     contains LANDED or PROMOTED.
