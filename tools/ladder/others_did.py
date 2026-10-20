@@ -102,8 +102,7 @@ def identity_key(identity):
 
 def watched_branches(repo):
     """The tier branches this repository has: main, its staging branch and
-    whatever precedent.json names as base_branch. (pre-staging is retired,
-    Morgan, 2026-10-17.)"""
+    whatever precedent.json names as base_branch."""
     names = ['main', 'staging']
     try:
         import precedent_branches as pb
