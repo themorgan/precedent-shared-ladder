@@ -3035,13 +3035,66 @@ def check_the_engine_finds_this_sets_moves():
           found is not None and found.resolve() == LADDER.resolve(), repr(found))
 
 
+def check_cases_pass_whatever_their_order():
+    """Two cases that each pass alone pass run together, in file order: a
+    case never sees the engine module an earlier one cached (_run_one).
+
+    Negative control, measured 2026-10-20 on the old runner: the pair below
+    failed, "module 'precedent_branches' has no attribute
+    'wait_for_main_test'"."""
+    pair = ('check_private_repo_skipped_gate_is_not_main_test',
+            'check_main_test_wait_does_not_ask_to_merge_what_is_merged')
+    r = subprocess.run([sys.executable, str(pathlib.Path(__file__).resolve()), *pair],
+                       capture_output=True, text=True, timeout=600,
+                       env={**os.environ, 'PRECEDENT_ENGINE_ROOT': str(ENGINE_ROOT)})
+    out = r.stdout + r.stderr
+    check('two cases run together pass as each does alone, in file order',
+          r.returncode == 0 and 'has no attribute' not in out
+          and '2 passed, 0 failed' in out, out[-600:])
+
+
+def _engine_modules():
+    """-> the names in sys.modules loaded from the engine's tools/ or the
+    assembled one's, symlinks resolved."""
+    dirs = {(ROOT / 'tools').resolve(), (ENGINE_ROOT / 'tools').resolve()}
+    out = set()
+    for name, mod in list(sys.modules.items()):
+        f = getattr(mod, '__file__', None)
+        try:
+            if f and pathlib.Path(f).resolve().parent in dirs:
+                out.add(name)
+        except (OSError, ValueError):
+            pass
+    return out
+
+
+def _run_one(n):
+    """Run one case, then drop every engine module it loaded, so the next
+    case imports its own.
+
+    WHY (2026-10-20). check_private_repo_skipped_gate_is_not_main_test
+    imports a tool whose symlink resolves into the engine's own tools/,
+    which puts that directory on sys.path and caches the engine's plain
+    precedent_branches, without this set's moves. A later case in the same
+    run then failed: "module 'precedent_branches' has no attribute
+    'wait_for_main_test'", while each passed alone."""
+    before = _engine_modules()
+    path = list(sys.path)
+    try:
+        globals()[n]()
+    finally:
+        for name in _engine_modules() - before:
+            sys.modules.pop(name, None)
+        sys.path[:] = path
+
+
 def _run_all(only):
     names = [n for n in globals() if n.startswith('check_')]
     try:
         for n in names:
             if not only or n in only:
                 try:
-                    globals()[n]()
+                    _run_one(n)
                 except FileNotFoundError as exc:
                     # A few cases also hold Promote to BestPractice's own
                     # workflow templates, which only BestPractice has: beside
