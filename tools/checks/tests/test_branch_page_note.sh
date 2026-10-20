@@ -26,7 +26,13 @@ stub 0 0; out="$(run)"
 stub 2 0; out="$(run)"
 case "$out" in *"some branches can be deleted (the page"*"rc=0") ;; *) echo "FAIL: deletable branches not said: $out"; fail=1;; esac
 case "$out" in *"waiting to go into main"*) echo "FAIL: named a waiting staging that is not there"; fail=1;; esac
-case "$out" in *'In EVERY reply that says "You can archive this session"'*) ;; *) echo "FAIL: the note no longer rides with every archive line: $out"; fail=1;; esac
+case "$out" in *"In the archive-line reply and the closing reply"*) ;; *) echo "FAIL: the note no longer rides with every archive line: $out"; fail=1;; esac
+# 2026-10-20: a rebuild only for a branch this session changed, never before
+# the answer, the line bare, and the saved page read through before publishing.
+case "$out" in *"only when this session has made, landed or merged a branch"*"only after the reply's answer is written"*) ;; *) echo "FAIL: the note no longer limits the rebuild: $out"; fail=1;; esac
+case "$out" in *"nothing else on that line"*) ;; *) echo "FAIL: the note no longer keeps the line bare: $out"; fail=1;; esac
+case "$out" in *"Read every line of that saved file"*) ;; *) echo "FAIL: the note no longer says to read the saved page through: $out"; fail=1;; esac
+case "$out" in *"Never Read that file"*) echo "FAIL: the note still forbids the read the Artifact tool needs"; fail=1;; esac
 stub 0 1; out="$(run)"
 case "$out" in *"a repository's staging is waiting to go into main"*"--fetch --html <scratchpad>/branch-cleanup.html"*"rc=0") ;; *) echo "FAIL: waiting staging not said: $out"; fail=1;; esac
 rm "$tmp/tools/precedent_stale_branches.py"; out="$(run)"
