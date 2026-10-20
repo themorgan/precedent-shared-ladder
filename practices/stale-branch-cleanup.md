@@ -1,13 +1,13 @@
 ---
 slug:        stale-branch-cleanup
-title:       "Every reply that says the session can be archived links the person's one pinned page of every branch they can delete and every staging waiting to go live"
+title:       "Every archive-line reply and closing reply links the person's one pinned page of every branch they can delete and every staging waiting to go live"
 tier:        on-demand
 severity:    default
 applies_to:  ["**"]
-applies_to_why: "A moment, not a place: a reply that says the session can be archived. Routed by the `reply` gate."
-occasion:    "a reply that says \"You can archive this session\", or answers \"Archive\" or \"Archive?\""
+applies_to_why: "A moment, not a place: the archive-line reply and the closing reply, both named by the-boildown. Routed by the `reply` gate."
+occasion:    "the archive-line reply or the closing reply (the-boildown)"
 gates:       ["reply"]
-gates_why:   "This set's tools/ladder/branch_page_note.py counts the stale branches, and the repositories whose staging waits for main, at the start of every turn; the reply gate prints what it says (this set's reply_check.json, note_from_tool) only when there are any, so a reply that says the session can be archived is the one that can still carry the link."
+gates_why:   "This set's tools/ladder/branch_page_note.py counts the stale branches, and the repositories whose staging waits for main, at the start of every turn; the reply gate prints what it says (this set's reply_check.json, note_from_tool) only when there are any, so the archive-line reply or the closing reply (the-boildown) can still carry the link."
 index_clause: "with every archive line: link the pinned branch and staging page, only if any"
 index_required: false
 checked_by:  null
@@ -24,8 +24,9 @@ approved_by: "Morgan F, 2026-10-20 -- the page with every archive line, not only
 
 ## Rule
 
-**In every reply that says "You can archive this session", and in one
-that answers "Archive" or "Archive?", when any branch can be deleted or any
+**In the archive-line reply and the closing reply -- the two moments
+[the-boildown](https://github.com/alex137/BestPractice/blob/staging/practices/the-boildown.md)
+names and owns -- when any branch can be deleted or any
 staging is waiting to go into main, link the page listing them in one
 Boildown line.** The list covers every
 repository open in the session where the person is a code owner. A branch
@@ -47,8 +48,8 @@ this rule solved that by giving the page only in the closing reply, and
 since Morgan rarely types "Archive", the page stopped appearing at all.
 The link costs one line; the rebuild is what only a change earns.
 
-**Nothing to delete and nothing waiting, no page.** Not in a reply that
-does not say the session can be archived.
+**Nothing to delete and nothing waiting, no page.** Not in any reply
+but those two.
 
 **It is one page, updated in place.** Build it with `python3
 tools/precedent_stale_branches.py --fetch --html
