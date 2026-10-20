@@ -64,9 +64,12 @@ the file that read saved, with `--merge`, and never rebuild the page from
 your own copy of it. Read the page immediately before building, every time,
 and merge that file: never a copy from earlier in the session, and never the
 page this session built last.** **Before the first publish, Read every
-line of that saved file**, in two or three ranges with offset and limit
-(one Read of the whole page is over the tool's size cap), and change
-nothing in it. When another session, or the page itself, published the
+line of that saved file**, in ranges of about 100 lines with offset and
+limit (one Read of the whole page is over the tool's size cap; on
+2026-10-20 the page was about 1,000 lines and took seven reads), and change
+nothing in it. The read is the platform's rule, so it is required; the
+point this practice owns is the merge -- never a page built from your own
+copy. When another session, or the page itself, published the
 version last -- the usual case for this shared page -- the Artifact tool
 refuses a publish until the file has been read through, and after one
 refusal it refuses the same content once more before letting it through

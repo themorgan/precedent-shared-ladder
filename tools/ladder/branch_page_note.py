@@ -65,11 +65,14 @@ def note():
             f"Artifact tool, WITHOUT a path, IMMEDIATELY before building -- the "
             f"read a republish needs -- and pass the file it says the full HTML "
             f"was saved to as `--merge FILE` (only a page that came back inline "
-            f"needs a second read, with path index.html, for the file). Never "
-            f"Read that file yourself, and never a copy from earlier in the "
+            f"needs a second read, with path index.html, for the file). Merge "
+            f"that file, never your own copy or one from earlier in the "
             f"session, so rows from repositories this session cannot see, and "
-            f"ticks saved since, are kept -- publish it as an artifact the way "
-            f"its last line says (the page saves the person's ticks into "
+            f"ticks saved since, are kept. Before publishing, Read every line "
+            f"of it, in ranges of about 100 lines, changing nothing: the "
+            f"Artifact tool refuses a republish over a version this session "
+            f"has not read through. Then publish it as an artifact the way the "
+            f"build's last line says (the page saves the person's ticks into "
             f"itself). In any other reply, say nothing about it (practice: "
             f"stale-branch-cleanup).")
 
