@@ -89,8 +89,9 @@ next close then updates it. Either way, unedited and within the hour.
 accept `--merge`, or session start reported the engine behind upstream
 (ENGINE BEHIND UPSTREAM), do not publish: an older tool writes only the
 repositories this session can see, and publishing it over the saved page
-erases every other repository's rows and the page's saved ticks. Say in
-the Boildown line that the page was skipped and that Update Vendors here
+erases every other repository's rows and the page's saved ticks. **Still
+link the saved page as it stands**: a link overwrites nothing. Say in the
+Boildown line that it was not refreshed and that Update Vendors here
 fixes it (2026-10-13: a to-do repository's older tool would have erased
 42 branches across seven repositories). Write the line as: *"Branches you can delete: Branch cleanup, N across M
 repositories"*, with the page's name linked to it, and, when anything is
