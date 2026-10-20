@@ -34,6 +34,8 @@ Never open a handoff because you inferred this session was ending. *"I will then
 
 The check has to happen here, at the moment of spawning, because there is no later point where it is possible: a session spawned into a repository this one could not attach cannot enumerate that repository's other sessions either, so the burden cannot be passed downstream. This is the same move as the capability check above -- measure rather than assume -- asked about a different question. That one asks whether I CAN do it; this one asks whether it is ALREADY being done, and satisfying the first says nothing about the second.
 
+**A handoff that tells the new session to attach another repository says what to do when the attach is refused**: do the part it can reach and report the rest plainly, or have me start the session with every repository selected. An attach asked for inside a seeded prompt can be refused by that session's own permission check even where the owners allow it ([`prompt-please`](https://github.com/alex137/BestPractice/blob/staging/practices/prompt-please.md), Detail, 2026-10-20); a seed that assumes it succeeds strands half the work.
+
 A handoff is normally **partial**, and that is the point. Three open items, one of which is in a file you already have open in the repository you are already rooted in: you fix that one, and the handoff document carries the other two. Sorting them is the work; a document listing all three is the work not done.
 
 ## Detail

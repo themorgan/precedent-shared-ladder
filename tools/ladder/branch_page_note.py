@@ -1,13 +1,12 @@
 #!/usr/bin/env python3
-"""Prints the reply gate's note about the branch cleanup page -- only when some branches can be deleted or a staging waits to go into main -- for every Boildown that says the session can be archived (practices/stale-branch-cleanup.md); run by the gate through this set's reply_check.json `note_from_tool`
+"""Prints the reply gate's note about the branch cleanup page -- only when some branches can be deleted or a staging waits to go into main -- for the archive-line reply and the closing reply, the moments the-boildown names (practices/stale-branch-cleanup.md); run by the gate through this set's reply_check.json `note_from_tool`
 
-branch_page_note.py -- what a reply that says the session can be archived
-owes the branch cleanup page.
+branch_page_note.py -- what the archive-line reply and the closing reply
+(the moments the-boildown names) owe the branch cleanup page.
 
 The page itself is the engine's (tools/precedent_stale_branches.py): its
 delete button runs on GitHub, where nothing a set ships is present. What
-is this set's is the rule that a Boildown saying the session can be
-archived links the page (building and publishing it when this session's
+is this set's is the rule that those two replies link the page (building and publishing it when this session's
 branches changed), and only when there is something on it ("Don't do that if
 there aren't any", Morgan, 2026-10-05). That rule lived in BestPractice's
 reply gate until 2026-10-17 (BestPractice
@@ -51,8 +50,8 @@ def note():
     except Exception:                                         # noqa: BLE001
         url = ''
     where = f" ({url})" if url else ''
-    return (f"In EVERY reply that says \"You can archive this session\", and "
-            f"one that answers \"Archive\" or \"Archive?\": {what} (the page "
+    return (f"In the archive-line reply and the closing reply (the moments "
+            f"the-boildown names): {what} (the page "
             f"counts them, after a fetch), so link the branch cleanup "
             f"page{where} in one Boildown line. Build and publish it the first "
             f"time this session gives it, and again only when this session has "
@@ -71,8 +70,8 @@ def note():
             f"session, so rows from repositories this session cannot see, and "
             f"ticks saved since, are kept -- publish it as an artifact the way "
             f"its last line says (the page saves the person's ticks into "
-            f"itself). In a reply that does not say the session can be "
-            f"archived, say nothing about it (practice: stale-branch-cleanup).")
+            f"itself). In any other reply, say nothing about it (practice: "
+            f"stale-branch-cleanup).")
 
 
 if __name__ == '__main__':
