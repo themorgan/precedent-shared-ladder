@@ -97,8 +97,63 @@ def main_copy_tip(root, mtip, stip, message):
 # going to, and waiting the full half hour for it would only hide that.
 GITHUB_START_WAIT_SECONDS = 5 * 60
 
+# A WAIT THAT SAYS NOTHING FOR AN HOUR LOOKS HUNG (2026-10-19, a consumer's
+# Update Vendors after a fast Produce): one line every this often, flushed,
+# so a session reading the output as it comes sees the wait is alive.
+PROGRESS_SECONDS = 5 * 60
 
-def wait_for_main_test(root, sha, say=print, gh=None, copy=None):
+
+def _say(line):
+    print(line, flush=True)
+
+
+def _main_test_state(root, sha, tests, gh):
+    """-> (state, detail) as core.github_test_state, the passed marker first.
+
+    ONE ANSWER TO "DID MAIN'S TEST PASS?" (2026-10-20). Update Vendors in
+    another repository takes a main commit whose files carry the marker
+    deep-check.yml pushes on a pass (refs/precedent/passed/<tree>) before it
+    asks GitHub; this wait asked GitHub only, so the two could disagree on
+    the same commit. Both now read the marker first."""
+    markers = getattr(core, 'passed_markers', None)
+    tree = core._git(root, 'rev-parse', f'{sha}^{{tree}}')
+    if markers and tree:
+        try:
+            marked = markers(root) or set()
+        except Exception:                                      # noqa: BLE001
+            marked = set()
+        if tree in marked:
+            return 'passed', ("its files carry main's passed marker, the one "
+                              "Update Vendors takes")
+    return core.github_test_state(root, sha, tests, gh)
+
+
+def _run_expected(root, sha, gh=None):
+    """-> (True/False/None, why): will a run of main's GitHub test ever
+    start on `sha`? One starts on a push to main and on a pull request into
+    main, so a commit that is neither main's tip nor the head of an open
+    pull request into main gets none. None when GitHub cannot say; the wait
+    then waits, as before."""
+    if core._remote_tip(root, core.MAIN) == sha:
+        return True, f"it is {core.MAIN}'s tip"
+    gh = gh or core._sibling('github_budget')
+    slug = core._slug(root)
+    if gh is None or not slug:
+        return None, 'GitHub cannot be asked from here'
+    pulls, err = gh.call(f'repos/{slug}/commits/{sha}/pulls', cache=False)
+    if err or not isinstance(pulls, list):
+        return None, err or 'GitHub gave an answer this could not read'
+    for pr in pulls:
+        if ((pr.get('base') or {}).get('ref') == core.MAIN and pr.get('state') == 'open'
+                and (pr.get('head') or {}).get('sha') == sha):
+            return True, f'it is the head of pull request #{pr.get("number")}'
+    return False, (f"it is neither {core.MAIN}'s tip nor the head of an open pull "
+                   f'request into {core.MAIN}, and those are the only two places '
+                   f'a run starts. Name the to-main copy or its pull request '
+                   f'number instead')
+
+
+def wait_for_main_test(root, sha, say=_say, gh=None, copy=None):
     """Wait for main's GitHub test on `sha` -- the to-main copy's tip, once
     its pull request into main is open -- and -> 0 passed, 1 anything else.
 
@@ -123,17 +178,32 @@ def wait_for_main_test(root, sha, say=print, gh=None, copy=None):
             f'to {core.MAIN} once this merges. Merge the pull request into {core.MAIN} with '
             f'a merge commit{core._at_head(sha)}.')
         return 0
-    say(f'waiting for the GitHub test on {sha[:12]} (up to '
-        f'{core.GITHUB_TEST_WAIT_SECONDS // 60} minutes): ' + ', '.join(p for p, _ in tests))
+    limit = core.GITHUB_TEST_WAIT_SECONDS
+    say(f'waiting for the GitHub test on {sha[:12]} (up to {limit // 60} minutes, '
+        f'a line every {PROGRESS_SECONDS // 60} minutes): ' + ', '.join(p for p, _ in tests))
     t0 = time.monotonic()
-    state, detail = core.github_test_state(root, sha, tests, gh)
+    state, detail = _main_test_state(root, sha, tests, gh)
+    if state == 'none':
+        coming, why = _run_expected(root, sha, gh)
+        if coming is False:
+            say(f'GitHub test NONE on {sha[:12]}: {detail}, and no run of it will '
+                f'start: {why}. Not waiting. Do not merge.')
+            return 1
+    said_at = t0
     while state in ('running', 'none'):
         waited = time.monotonic() - t0
-        if waited >= core.GITHUB_TEST_WAIT_SECONDS or (
-                state == 'none' and waited >= GITHUB_START_WAIT_SECONDS):
+        if waited >= limit or (state == 'none' and waited >= GITHUB_START_WAIT_SECONDS):
             break
         time.sleep(core.GITHUB_POLL_SECONDS)
-        state, detail = core.github_test_state(root, sha, tests, gh)
+        state, detail = _main_test_state(root, sha, tests, gh)
+        if time.monotonic() - said_at >= PROGRESS_SECONDS:
+            said_at = time.monotonic()
+            say(f'  still waiting on {sha[:12]}, {(said_at - t0) / 60:.0f} of '
+                f'{limit // 60} minutes: {state}, {detail}')
+    if state in ('running', 'none'):
+        detail = (f'{detail}; stopped waiting after '
+                  f'{(time.monotonic() - t0) / 60:.0f} minutes. Run the same '
+                  f'--wait-main-test again to keep waiting')
     # A fast move merges first and waits after, so by now main may already
     # carry the commit (2026-10-10: a passed test still said "Merge the pull
     # request" twice, over a pull request merged half an hour before).
