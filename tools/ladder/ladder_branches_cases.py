@@ -3040,7 +3040,18 @@ def _run_all(only):
     try:
         for n in names:
             if not only or n in only:
-                globals()[n]()
+                try:
+                    globals()[n]()
+                except FileNotFoundError as exc:
+                    # A few cases also hold Promote to BestPractice's own
+                    # workflow templates, which only BestPractice has: beside
+                    # any other engine they cannot run, and say so.
+                    missing = pathlib.Path(exc.filename or '')
+                    if not str(missing).startswith(str(ROOT)):
+                        raise
+                    not_applicable(n, f'{missing.relative_to(ROOT)} is not '
+                                      f'here; it is BestPractice\'s own, so this '
+                                      f'runs beside BestPractice\'s engine')
     finally:
         shutil.rmtree(_ASM, ignore_errors=True)
     print(f'ladder_branches: {len(PASSED)} passed, {len(FAILED)} failed, '
