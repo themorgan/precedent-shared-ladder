@@ -49,7 +49,12 @@ red counting from the newest run that has finished, so a fix opened while
 (2026-10-27: a fix was refused in that window and went through `staging`
 and a second Produce instead). Morgan, 2026-10-27: "Red or urgent issues
 can go straight to main then integrated back to staging" (strength:
-decided).
+decided). **An urgent fix while `main` is green takes the ladder in one
+sitting**: Booked, then Produce straight after, minutes in all. The gate
+has no way to tell an urgent change from any other, so a separate way in
+would be a hole in it; the red-main exception covers the case where `main`
+itself is broken (Morgan, 2026-10-27, on this choice: "do what you think is
+best and recommend. Approved.", strength: assented).
 
 **A third exception: my own content goes straight to `main`.** A change
 whose every file is under the repository's `content_paths` (its
