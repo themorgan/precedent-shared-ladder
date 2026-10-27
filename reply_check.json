@@ -62,7 +62,7 @@
     "note_from_tool": {
       "run": "tools/ladder/branch_page_note.py"
     },
-    "why": "The closing Boildown builds, publishes and links the branch cleanup page, only when there is something on it (Morgan, 2026-10-05). The gate runs this set's tool and prints its note before the reply; it moved out of BestPractice's reply gate on 2026-10-17 (BestPractice spec/ENFORCEMENT_LIVES_WITH_ITS_PRACTICE_PLAN.md part 3). Printed only, never evaluated: an engine older than that day reports note_from_tool as a key it does not know, until Update Vendors.",
+    "why": "The archive-line reply and the closing reply link the branch cleanup page, only when there is something on it (Morgan, 2026-10-05), and rebuild it only when the person says \"Branch cleanup\" (Morgan, 2026-10-20 and 2026-10-27). The gate runs this set's tool and prints its note before the reply; it moved out of BestPractice's reply gate on 2026-10-17 (BestPractice spec/ENFORCEMENT_LIVES_WITH_ITS_PRACTICE_PLAN.md part 3). Printed only, never evaluated: an engine older than that day reports note_from_tool as a key it does not know, until Update Vendors.",
     "checks_practice_at": "practices/stale-branch-cleanup.md"
   }
 ]

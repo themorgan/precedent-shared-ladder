@@ -31,6 +31,7 @@ case "$out" in *"In the archive-line reply and the closing reply"*) ;; *) echo "
 # and never before the answer, the line bare, and the saved page read
 # through before publishing.
 case "$out" in *"only when the person asks for a fresh list"*"never because this session made, landed or merged a branch"*"only after the reply's answer is written"*) ;; *) echo "FAIL: the note no longer limits the rebuild to the person's ask: $out"; fail=1;; esac
+case "$out" in *'"Branch cleanup"'*) ;; *) echo "FAIL: the note no longer names the word that asks for a rebuild: $out"; fail=1;; esac
 case "$out" in *"nothing else on that line"*) ;; *) echo "FAIL: the note no longer keeps the line bare: $out"; fail=1;; esac
 case "$out" in *"Read every line of that saved file"*) ;; *) echo "FAIL: the note no longer says to read the saved page through: $out"; fail=1;; esac
 case "$out" in *"Never Read that file"*) echo "FAIL: the note still forbids the read the Artifact tool needs"; fail=1;; esac

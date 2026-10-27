@@ -55,13 +55,14 @@ def note():
     # needs a GitHub tool, so every publish asks him to approve it, and a
     # rebuild after every landing put that prompt in nearly every session.
     # The answer still goes first; BestPractice's answer-first gate holds
-    # the build and publish.
+    # the build and publish. 2026-10-27: "Branch cleanup" names the ask.
     return (f"In the archive-line reply and the closing reply (the moments "
             f"the-boildown names): {what} (the page "
             f"counts them, after a fetch), so link the branch cleanup "
             f"page{where} in one Boildown line, and nothing else on that line. "
             f"Link it as it stands: rebuild and republish it only when the "
-            f"person asks for a fresh list in this conversation, never because "
+            f"person asks for a fresh list in this conversation (\"Branch "
+            f"cleanup\", the page's name), never because "
             f"this session made, landed or merged a branch -- each publish asks "
             f"them to approve the page's GitHub tool -- and only after the "
             f"reply's answer is written. When asked and this engine is too old "

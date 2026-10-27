@@ -5,21 +5,22 @@ tier:        on-demand
 severity:    default
 applies_to:  ["**"]
 applies_to_why: "A moment, not a place: the archive-line reply and the closing reply, both named by the-boildown. Routed by the `reply` gate."
-occasion:    "the archive-line reply or the closing reply (the-boildown)"
+occasion:    "a person says \"Branch cleanup\", or the archive-line reply or the closing reply (the-boildown)"
 gates:       ["reply"]
 gates_why:   "This set's tools/ladder/branch_page_note.py counts the stale branches, and the repositories whose staging waits for main, at the start of every turn; the reply gate prints what it says (this set's reply_check.json, note_from_tool) only when there are any, so the archive-line reply or the closing reply (the-boildown) can still carry the link."
-index_clause: "with every archive line: link the pinned branch and staging page, only if any"
-index_required: false
+index_clause: "\"Branch cleanup\" rebuilds the branch page; archive lines only link it"
+index_required: true
 checked_by:  null
 ships:       ["tools/ladder/branch_page_note.py"]
-defines:     []
+defines:     ["Branch cleanup"]
+command:     {"Branch cleanup": "Rebuild your pinned Branch cleanup page now, from every repository this session can see, and republish it in place; at the close of any other session it is only linked as it stands."}
 status:      active
 in_force_at: null
 visible_to:  code-owners
 supersedes:  []
 overrides:   null
 added:       "2026-10-05"
-approved_by: "Morgan F, 2026-10-20 -- the page rebuilt only when he asks, since every publish asked him to approve the page's GitHub tool: \"Sure let's rebuild the page only when I ask. Act and staging.\" (strength: decided). Morgan F, 2026-10-20 -- a rebuild only after a branch this session changed, never before the answer, and the page and its Boildown line bare: \"Can you make the enforcement of that stronger? ... when you give me the branches to delete now, you give me paragraphs about it's checkmarks etc - ... just give it to me and say nothing else. Do these and booked.\" (strength: decided). Morgan F, 2026-10-20 -- the page with every archive line, not only the closing reply: \"That page should be given. Anytime you do tell me that I can archive the page. Booked.\" (strength: decided). Morgan F, 2026-10-16 -- the page also lists each repository whose staging waits to go into main, taken over from the retired chief-of-staff: \"Let's implement your three suggestion\" (strength: decided). Morgan F, 2026-10-11 -- one pinned page updated in place, its address in his identity.json, instead of a new page every session: \"Let's do this\" (strength: decided). Earlier, Morgan F, 2026-10-05 -- \"in the Boildown, give the user an artifact with a list of all stale temp github repos that can be deleted, from all repos that are open in that session. Don't do that if there aren't any. If in doubt, do NOT include it\"; the closing reply only, and for code owners only (strength: decided)"
+approved_by: "Morgan F, 2026-10-27 -- \"Branch cleanup\", the page's name, as the word that asks for a rebuild, since a rebuild's read-through cost about 98,000 tokens: \"Both, A first. ... Act, Book.\" (strength: decided). Morgan F, 2026-10-20 -- the page rebuilt only when he asks, since every publish asked him to approve the page's GitHub tool: \"Sure let's rebuild the page only when I ask. Act and staging.\" (strength: decided). Morgan F, 2026-10-20 -- a rebuild only after a branch this session changed, never before the answer, and the page and its Boildown line bare: \"Can you make the enforcement of that stronger? ... when you give me the branches to delete now, you give me paragraphs about it's checkmarks etc - ... just give it to me and say nothing else. Do these and booked.\" (strength: decided). Morgan F, 2026-10-20 -- the page with every archive line, not only the closing reply: \"That page should be given. Anytime you do tell me that I can archive the page. Booked.\" (strength: decided). Morgan F, 2026-10-16 -- the page also lists each repository whose staging waits to go into main, taken over from the retired chief-of-staff: \"Let's implement your three suggestion\" (strength: decided). Morgan F, 2026-10-11 -- one pinned page updated in place, its address in his identity.json, instead of a new page every session: \"Let's do this\" (strength: decided). Earlier, Morgan F, 2026-10-05 -- \"in the Boildown, give the user an artifact with a list of all stale temp github repos that can be deleted, from all repos that are open in that session. Don't do that if there aren't any. If in doubt, do NOT include it\"; the closing reply only, and for code owners only (strength: decided)"
 ---
 
 ## Rule
@@ -38,15 +39,17 @@ a change `main` lacks**: how many commits, the oldest one's date, and a link
 to GitHub's comparison. A repository where `main` is staging has no row. The
 tool builds this list too; nothing extra to run.
 
-**Rebuild and republish it only when the person asks for it** -- "refresh
-the branch page", or anything that plainly asks for a fresh list -- **and
+**Rebuild and republish it only when the person says "Branch cleanup"**,
+the page's name, or anything else that plainly asks for a fresh list, **and
 only after the reply's answer is written; every other time, link the saved
 page as it stands.** A branch this session made, landed or merged does not
 earn a rebuild on its own (Morgan, 2026-10-20). The page carries one GitHub
 tool for its delete-all button, so every publish asks the person to approve
 it, and a rebuild after every landing put that prompt in nearly every
 session: "I keep in getting asked for permission ... it is very
-frustrating". A link asks for nothing.
+frustrating". A rebuild is also dear: the read-through below came to about
+98,000 tokens on 2026-10-27, for a page of about 1,100 lines. A link asks
+for nothing and costs one line.
 **The answer always goes first**
 ([answer-first-ask-before-long-work](https://github.com/alex137/BestPractice/blob/staging/practices/answer-first-ask-before-long-work.md)):
 BestPractice's answer-first gate holds the build and the publish while the
@@ -279,3 +282,12 @@ button needs a GitHub tool, and every session that landed a branch
 republished it. He weighed a new page each time (it would most likely ask
 the same way, lose his ticks and change the link) and chose a rebuild only
 when he asks.
+
+2026-10-27: a session in another repository measured the read-through a
+rebuild needs at about 98,000 tokens, for a page of 1,097 lines, and found
+sessions still rebuilding after every landing: the 2026-10-20 change above
+had reached this set's staging but not `main`, which is what every
+repository reads. Morgan named the word that asks for a rebuild, "Branch
+cleanup", the page's name, so it is in the vocabulary, and chose to move the
+page's rows into the page's own database next, so a refresh needs no
+read-through and can be cheap enough to come back on its own.
