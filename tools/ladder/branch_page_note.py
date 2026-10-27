@@ -6,7 +6,7 @@ branch_page_note.py -- what the archive-line reply and the closing reply
 
 The page itself is the engine's (tools/precedent_stale_branches.py): its
 delete button runs on GitHub, where nothing a set ships is present. What
-is this set's is the rule that those two replies link the page (rebuilding
+is this set's is the rule that those two replies link the page (refreshing
 it, after the answer, only when the person asks), and only when there is something on it ("Don't do that if
 there aren't any", Morgan, 2026-10-05). That rule lived in BestPractice's
 reply gate until 2026-10-17 (BestPractice
@@ -50,37 +50,32 @@ def note():
     except Exception:                                         # noqa: BLE001
         url = ''
     where = f" ({url})" if url else ''
-    # REBUILD ONLY WHEN ASKED (Morgan, 2026-10-20, strength: decided: "Sure
-    # let's rebuild the page only when I ask"): the page's delete-all button
-    # needs a GitHub tool, so every publish asks him to approve it, and a
-    # rebuild after every landing put that prompt in nearly every session.
-    # The answer still goes first; BestPractice's answer-first gate holds
-    # the build and publish. 2026-10-27: "Branch cleanup" names the ask.
+    # REFRESH ONLY WHEN ASKED (Morgan, 2026-10-20, strength: decided: "Sure
+    # let's rebuild the page only when I ask"; 2026-10-27, "Branch cleanup"
+    # names the ask). The answer still goes first; BestPractice's
+    # answer-first gate holds the tool's run.
+    # THE ROWS LIVE IN THE PAGE'S DATABASE (2026-10-27, Morgan: "Both, A
+    # first. ... Act, Book."): a refresh is a listing, one run and one batch
+    # of writes; the page is never republished for it, so nothing is read
+    # through and nothing merged.
+    folder = f"<scratchpad>/{getattr(sb, 'DB_DIRNAME', 'branch-db')}"
     return (f"In the archive-line reply and the closing reply (the moments "
             f"the-boildown names): {what} (the page "
             f"counts them, after a fetch), so link the branch cleanup "
             f"page{where} in one Boildown line, and nothing else on that line. "
-            f"Link it as it stands: rebuild and republish it only when the "
+            f"Link it as it stands: refresh it only when the "
             f"person asks for a fresh list in this conversation (\"Branch "
             f"cleanup\", the page's name), never because "
-            f"this session made, landed or merged a branch -- each publish asks "
-            f"them to approve the page's GitHub tool -- and only after the "
-            f"reply's answer is written. When asked and this engine is too old "
-            f"to build it, link it as it stands and say it was not refreshed. "
-            f"To rebuild: read the "
-            f"saved page's url with the Artifact tool, WITHOUT a path, "
-            f"IMMEDIATELY before building, and run `python3 tools/"
-            f"precedent_stale_branches.py --fetch --html "
-            f"<scratchpad>/{sb.PAGE_FILENAME} --merge FILE` with the file that "
-            f"read says the full HTML was saved to (only a page that came back "
-            f"inline needs a second read, with path index.html, for the file). "
-            f"Never merge a copy from earlier in the session. Before the first "
-            f"publish, Read every line of that saved file in ranges of about 100 "
-            f"lines and change "
-            f"nothing: the Artifact tool refuses a republish over a page "
-            f"another session published until it has been read through. Then "
-            f"publish it the way the build's last line says. In any other "
-            f"reply, say nothing about it (practice: stale-branch-cleanup).")
+            f"this session made, landed or merged a branch, and only after the "
+            f"reply's answer is written. To refresh: ArtifactData list of "
+            f"collection repos on the page's url with out_dir {folder}; then "
+            f"`python3 tools/precedent_stale_branches.py --fetch --db-docs "
+            f"{folder} --versions \"<the listing's lines>\"`; then ArtifactData "
+            f"batch with the writes it prints. Never publish to the page's "
+            f"address for a refresh. When this engine's tool does not take "
+            f"--db-docs, link the page as it stands and say it was not "
+            f"refreshed. In any other reply, say nothing about it (practice: "
+            f"stale-branch-cleanup).")
 
 
 if __name__ == '__main__':

@@ -8,19 +8,19 @@ applies_to_why: "A moment, not a place: the archive-line reply and the closing r
 occasion:    "a person says \"Branch cleanup\", or the archive-line reply or the closing reply (the-boildown)"
 gates:       ["reply"]
 gates_why:   "This set's tools/ladder/branch_page_note.py counts the stale branches, and the repositories whose staging waits for main, at the start of every turn; the reply gate prints what it says (this set's reply_check.json, note_from_tool) only when there are any, so the archive-line reply or the closing reply (the-boildown) can still carry the link."
-index_clause: "\"Branch cleanup\" rebuilds the branch page; archive lines only link it"
+index_clause: "\"Branch cleanup\" refreshes the branch page; archive lines only link it"
 index_required: true
 checked_by:  null
 ships:       ["tools/ladder/branch_page_note.py"]
 defines:     ["Branch cleanup"]
-command:     {"Branch cleanup": "Rebuild your pinned Branch cleanup page now, from every repository this session can see, and republish it in place; at the close of any other session it is only linked as it stands."}
+command:     {"Branch cleanup": "Refresh your pinned Branch cleanup page now, from every repository this session can see; at the close of any other session it is only linked as it stands."}
 status:      active
 in_force_at: null
 visible_to:  code-owners
 supersedes:  []
 overrides:   null
 added:       "2026-10-05"
-approved_by: "Morgan F, 2026-10-27 -- \"Branch cleanup\", the page's name, as the word that asks for a rebuild, since a rebuild's read-through cost about 98,000 tokens: \"Both, A first. ... Act, Book.\" (strength: decided). Morgan F, 2026-10-20 -- the page rebuilt only when he asks, since every publish asked him to approve the page's GitHub tool: \"Sure let's rebuild the page only when I ask. Act and staging.\" (strength: decided). Morgan F, 2026-10-20 -- a rebuild only after a branch this session changed, never before the answer, and the page and its Boildown line bare: \"Can you make the enforcement of that stronger? ... when you give me the branches to delete now, you give me paragraphs about it's checkmarks etc - ... just give it to me and say nothing else. Do these and booked.\" (strength: decided). Morgan F, 2026-10-20 -- the page with every archive line, not only the closing reply: \"That page should be given. Anytime you do tell me that I can archive the page. Booked.\" (strength: decided). Morgan F, 2026-10-16 -- the page also lists each repository whose staging waits to go into main, taken over from the retired chief-of-staff: \"Let's implement your three suggestion\" (strength: decided). Morgan F, 2026-10-11 -- one pinned page updated in place, its address in his identity.json, instead of a new page every session: \"Let's do this\" (strength: decided). Earlier, Morgan F, 2026-10-05 -- \"in the Boildown, give the user an artifact with a list of all stale temp github repos that can be deleted, from all repos that are open in that session. Don't do that if there aren't any. If in doubt, do NOT include it\"; the closing reply only, and for code owners only (strength: decided)"
+approved_by: "Morgan F, 2026-10-27 -- the rows in the page's own database, so a refresh needs no read-through and no republish: \"Both, A first. ... Act, Book.\" (strength: decided). Morgan F, 2026-10-27 -- \"Branch cleanup\", the page's name, as the word that asks for a rebuild, since a rebuild's read-through cost about 98,000 tokens: \"Both, A first. ... Act, Book.\" (strength: decided). Morgan F, 2026-10-20 -- the page rebuilt only when he asks, since every publish asked him to approve the page's GitHub tool: \"Sure let's rebuild the page only when I ask. Act and staging.\" (strength: decided). Morgan F, 2026-10-20 -- a rebuild only after a branch this session changed, never before the answer, and the page and its Boildown line bare: \"Can you make the enforcement of that stronger? ... when you give me the branches to delete now, you give me paragraphs about it's checkmarks etc - ... just give it to me and say nothing else. Do these and booked.\" (strength: decided). Morgan F, 2026-10-20 -- the page with every archive line, not only the closing reply: \"That page should be given. Anytime you do tell me that I can archive the page. Booked.\" (strength: decided). Morgan F, 2026-10-16 -- the page also lists each repository whose staging waits to go into main, taken over from the retired chief-of-staff: \"Let's implement your three suggestion\" (strength: decided). Morgan F, 2026-10-11 -- one pinned page updated in place, its address in his identity.json, instead of a new page every session: \"Let's do this\" (strength: decided). Earlier, Morgan F, 2026-10-05 -- \"in the Boildown, give the user an artifact with a list of all stale temp github repos that can be deleted, from all repos that are open in that session. Don't do that if there aren't any. If in doubt, do NOT include it\"; the closing reply only, and for code owners only (strength: decided)"
 ---
 
 ## Rule
@@ -39,17 +39,18 @@ a change `main` lacks**: how many commits, the oldest one's date, and a link
 to GitHub's comparison. A repository where `main` is staging has no row. The
 tool builds this list too; nothing extra to run.
 
-**Rebuild and republish it only when the person says "Branch cleanup"**,
+**Refresh it only when the person says "Branch cleanup"**,
 the page's name, or anything else that plainly asks for a fresh list, **and
 only after the reply's answer is written; every other time, link the saved
 page as it stands.** A branch this session made, landed or merged does not
-earn a rebuild on its own (Morgan, 2026-10-20). The page carries one GitHub
-tool for its delete-all button, so every publish asks the person to approve
-it, and a rebuild after every landing put that prompt in nearly every
-session: "I keep in getting asked for permission ... it is very
-frustrating". A rebuild is also dear: the read-through below came to about
-98,000 tokens on 2026-10-27, for a page of about 1,100 lines. A link asks
-for nothing and costs one line.
+earn a refresh on its own (Morgan, 2026-10-20). Until 2026-10-27 a refresh
+republished the page, and each publish asked the person to approve the
+page's GitHub tool, so a rebuild after every landing put that prompt in
+nearly every session: "I keep in getting asked for permission ... it is
+very frustrating". It was also dear: the read-through a republish needed
+came to about 98,000 tokens on 2026-10-27, for a page of about 1,100
+lines, which is why the rows then moved into the page's database (below).
+A link asks for nothing and costs one line.
 **The answer always goes first**
 ([answer-first-ask-before-long-work](https://github.com/alex137/BestPractice/blob/staging/practices/answer-first-ask-before-long-work.md)):
 BestPractice's answer-first gate holds the build and the publish while the
@@ -63,53 +64,40 @@ shows the date of its last build, so a stale row is easy to spot.
 **Nothing to delete and nothing waiting, no page.** Not in any reply
 but those two.
 
-**It is one page, updated in place.** Build it with `python3
-tools/precedent_stale_branches.py --fetch --html
-<scratchpad>/branch-cleanup.html`. **With a saved page it first asks for
-that page as it stands, and writes nothing until it has it:** read that
-address once with the Artifact tool, **without a path** -- the read a
-republish needs -- and run the command again adding `--merge <the file that
-read says the full HTML was saved to>`. Only a page small enough to come
-back inline needs a second read, with path `index.html`, for the file; a
-read with the path alone does not count for the republish. **Hand the tool
-the file that read saved, with `--merge`, and never rebuild the page from
-your own copy of it. Read the page immediately before building, every time,
-and merge that file: never a copy from earlier in the session, and never the
-page this session built last.** **Before the first publish, Read every
-line of that saved file**, in ranges of about 100 lines with offset and
-limit (one Read of the whole page is over the tool's size cap; on
-2026-10-20 the page was about 1,000 lines and took seven reads), and change
-nothing in it. The read is the platform's rule, so it is required; the
-point this practice owns is the merge -- never a page built from your own
-copy. When another session, or the page itself, published the
-version last -- the usual case for this shared page -- the Artifact tool
-refuses a publish until the file has been read through, and after one
-refusal it refuses the same content once more before letting it through
-(measured 2026-10-17: refused unread; read through; refused as "identical
-content already refused"; published on the third try). Reading first
-costs one publish. When this session published the last version itself,
-the tool counts it as viewed and the read is not needed. Another session may
-have republished it in between, and a merge against an older copy drops
-that session's rows and every tick saved since; the tool warns when the
-file it is handed is not a fresh read. The page then keeps the
-rows of every repository this session cannot see, under the date they were
-last checked, and replaces the rest; `--replace` is only for a saved page
-that is gone or unreadable. Then publish the file to that address (the
-Artifact tool's `url`), so the person keeps the one page pinned in their
-sidebar. When it says none is saved,
-publish it as a new page, pin it, and save its address as
-`branch_cleanup_page` in the person's individual `identity.json` -- the
-next close then updates it. Either way, unedited and within the hour.
+**It is one page, and its rows live in its own database** (since
+2026-10-27): one document a repository, which a refresh writes for the
+repositories this session can see and leaves alone for every other. The
+page itself is never rebuilt or republished for a refresh, so nothing has to
+be read first or merged. **A refresh is three steps:**
 
-**An engine too old for this skips the page.** If the tool here does not
-accept `--merge`, or session start reported the engine behind upstream
-(ENGINE BEHIND UPSTREAM), do not publish: an older tool writes only the
-repositories this session can see, and publishing it over the saved page
-erases every other repository's rows and the page's saved ticks. **Still
-link the saved page as it stands**: a link overwrites nothing. Say in the
-Boildown line that it was not refreshed and that Update Vendors here
-fixes it (2026-10-13: a to-do repository's older tool would have erased
-42 branches across seven repositories). Write the line as: *"Branches you can delete: Branch cleanup, N across M
+1. ArtifactData `list` of collection `repos` on the page's url, with
+   `out_dir` `<scratchpad>/branch-db` -- it saves the files and prints each
+   document's version, and nothing of the rows comes into the conversation;
+2. `python3 tools/precedent_stale_branches.py --fetch --db-docs
+   <scratchpad>/branch-db --versions "<the listing's lines, or id=version
+   pairs>"` -- the listing's files hold each document but not its version,
+   and every write over a document is pinned to the version it was listed
+   at, so the tool refuses until it has one for each;
+3. ArtifactData `batch` with the `writes` line the tool prints.
+
+A write refused for its version means another session wrote that
+repository in between: list again and run the tool again. The page reads
+the documents live, so the refresh shows the moment the batch lands. When
+no page is saved, `--db-page <scratchpad>/branch-cleanup.html` writes the
+page: publish it as a new page with the capabilities it prints, pin it,
+save its address as `branch_cleanup_page` in the person's individual
+`identity.json`, and fill it with the three steps. The page is published
+again only when its code changes, never for its rows.
+
+**An engine too old for this skips the refresh.** If the tool here does not
+accept `--db-docs`, or session start reported the engine behind upstream
+(ENGINE BEHIND UPSTREAM), do not refresh, and never publish anything to the
+page's address: an older tool builds a whole page of only the repositories
+this session can see, and publishing it over the saved page would replace
+its database-backed page. **Still link the saved page as it stands**: a
+link overwrites nothing. Say in the Boildown line that it was not refreshed
+and that Update Vendors here fixes it (2026-10-13: a to-do repository's
+older tool would have erased 42 branches across seven repositories). Write the line as: *"Branches you can delete: Branch cleanup, N across M
 repositories"*, with the page's name linked to it, and, when anything is
 waiting, add *"; waiting to go live: <repository>, <repository>"*.
 **Nothing else on that line, and nothing about the page anywhere else in
@@ -124,7 +112,8 @@ turn when there is one, so the session knows before it writes the close.
 **What the page is.** One section per repository, one row per branch: a
 link to GitHub's branch list filtered to that one branch, where the trash
 icon deletes it, and the branch's last commit date. A tick per row keeps
-the person's place, in their browser only. The session never deletes a
+the person's place, saved in the page's database (`ticks`), and counts only
+for the check it was made on. The session never deletes a
 branch: a remote branch is the person's to delete
 ([never-delete-a-remote-branch](https://github.com/alex137/BestPractice/blob/staging/practices/never-delete-a-remote-branch.md),
 universal).
@@ -140,14 +129,14 @@ the button is always there.** **In a private one it shows only once
 for Morgan) has passed since that repository's last cleanup run**, one
 tracker per repository, apart from the main test's; otherwise the line
 shows the date it comes back. A click hides that button at once and is
-saved into the page. Every row stays as it was, for counting, reading the
+saved in the page's database (`clicks`). Every row stays as it was, for counting, reading the
 names, and deleting one at a time instead. A repository whose `main` lacks
 the workflow has no button, and the page says nothing about why; Update
 Vendors installs it. **One more button, above
 the repositories, starts the workflow in every public repository at once**
 (2026-10-16): one click, through the person's own GitHub connector, so the
 page is published with the capabilities the builder prints, which add that
-one GitHub tool to the page's own saves. A private repository, or one whose
+one GitHub tool to the page's database. A private repository, or one whose
 visibility is unknown, is never in it. **Any of these clicks checks off
 every row of the repositories it covers** (Morgan: "it should check the box
 and cross it off if it doesn't already", strength: decided). The page's builder,
@@ -156,18 +145,18 @@ says how it decides.
 
 **Why one page.** A new page every session left a pile of snapshots, each
 showing branches already deleted. The pinned page is where the person looks,
-any time. It says when it was refreshed, in their own timezone, because
-between closes it shows the last close's list. Its ticks belong to that
-build: a refreshed list starts unticked, since a branch still on it was not
-deleted. A page the person owns cannot be updated from somebody else's
+any time. It says when it was refreshed, in their own timezone, and each
+repository checked before that says when it was, because between refreshes
+it shows the last list. A repository's ticks belong to its check: a
+refreshed list starts unticked, since a branch still on it was not deleted. A page the person owns cannot be updated from somebody else's
 account, which is why the address is theirs, in their individual source,
 and never in a shared one.
 
 **It passes the publish gate.** Universal's
 [docs-track-models](https://github.com/alex137/BestPractice/blob/staging/practices/docs-track-models.md)
 lets only a fresh render reach a link, and the engine registers this tool
-as one of its page generators: the gate passes the page it writes, as it
-wrote it, for an hour. Edit the file and the gate refuses it as hand-made;
+as one of its page generators: the gate passes the page `--db-page` writes,
+as it wrote it, for an hour. Edit the file and the gate refuses it as hand-made;
 run the tool again instead.
 
 **What counts as stale.** The tool lists a remote branch whose tip is
@@ -177,7 +166,7 @@ changed nothing. It reads the remote-tracking refs, so `--fetch` first
 makes the page match GitHub; the turn-start count skips the fetch to stay
 fast.
 
-**Waiting to go live, merged like the branches.** A repository this session
+**Waiting to go live, kept like the branches.** A repository this session
 checked gets its fresh row, or none once staging and `main` are level; one
 it could not see keeps its last row, with the date it was checked.
 So the page covers, over a few closes, every repository the person works
@@ -291,3 +280,11 @@ repository reads. Morgan named the word that asks for a rebuild, "Branch
 cleanup", the page's name, so it is in the vocabulary, and chose to move the
 page's rows into the page's own database next, so a refresh needs no
 read-through and can be cheap enough to come back on its own.
+
+The same day, the page moved into its own database. The last read-through
+of the old page, to republish it in place one final time, found its script
+broken: an unescaped apostrophe in one string, so nothing on it had run --
+no ticks, no buttons, no Open next. BestPractice's harness now parses the
+page's script. A refresh since is a listing, one tool run and one batch of
+writes, a few thousand tokens, and touches only the repositories the
+session can see.
