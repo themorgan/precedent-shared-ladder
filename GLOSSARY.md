@@ -16,6 +16,7 @@ Built from every practice's `defines:` frontmatter field -- the terms that pract
 | Book it | [go-update](practices/go-update.md) |
 | Booked | [go-update](practices/go-update.md) |
 | Brainstorm | [brainstorm-holds-commits](practices/brainstorm-holds-commits.md) |
+| Branch cleanup | [stale-branch-cleanup](practices/stale-branch-cleanup.md) |
 | Consider | [consider](practices/consider.md) |
 | Data branch | [data-branch-names](practices/data-branch-names.md) |
 | Debut | [debut](practices/debut.md) |

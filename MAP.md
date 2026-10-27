@@ -43,7 +43,7 @@ This repository's map of the practice catalogue in force here and the engine's o
 | [small-helpers-run-on-haiku](practices/small-helpers-run-on-haiku.md) | on-demand | spawning a helper agent, or handing a small task to another model |
 | [stage-word-carries-its-step](practices/stage-word-carries-its-step.md) | on-demand | ** |
 | [stage-words](practices/stage-words.md) | resident | I say Booked, Debut, Produce or Promote |
-| [stale-branch-cleanup](practices/stale-branch-cleanup.md) | on-demand | the archive-line reply or the closing reply (the-boildown) |
+| [stale-branch-cleanup](practices/stale-branch-cleanup.md) | on-demand | a person says "Branch cleanup", or the archive-line reply or the closing reply (the-boildown) |
 | [the-boildown-on-the-ladder](practices/the-boildown-on-the-ladder.md) | on-demand | ** |
 | [tier-branch](practices/tier-branch.md) | on-demand | ** |
 | [upstream-review](practices/upstream-review.md) | on-demand | Update Vendors finishes, or a Booked, Debut or Produce lands |
