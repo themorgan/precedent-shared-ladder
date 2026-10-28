@@ -49,7 +49,11 @@ gets. A Produce is the named go-ahead that merging into `main` needs.
      2026-10-11, strength: assented; `red_main_fix` in
      [tools/precedent_branches.py](https://github.com/alex137/BestPractice/blob/staging/tools/precedent_branches.py)).
      Then land the same branch on staging, which refuses a landing that
-     lacks it until it does.
+     lacks it until it does. **The merge lets it through only on a red
+     verdict recorded where the merge runs**: GitHub's failed test, or a
+     failed `--run-tests main` in the same clone. Where no GitHub test
+     runs (a practice set) or `main` went red some other way, run
+     `--run-tests main` first; the refusal says so (2026-10-28).
    - **When GitHub's test is not due, the full local suite runs on `main`
      after the merge instead**, in the background:
      `--run-tests main`. Do not end the turn while an owed run has not
