@@ -9,7 +9,7 @@ set -u
 HERE="$(cd "$(dirname "$0")" && pwd)"
 SET_ROOT="$(cd "$HERE/../../.." && pwd)"
 SET_ROOT="$SET_ROOT" python3 - <<'PY'
-import os, pathlib, shutil, subprocess, sys, tempfile
+import json, os, pathlib, shutil, subprocess, sys, tempfile
 SET_ROOT = pathlib.Path(os.environ['SET_ROOT'])
 sys.path.insert(0, str(SET_ROOT / 'tools' / 'ladder'))
 sys.path.insert(0, str(SET_ROOT / 'tools'))
@@ -260,12 +260,30 @@ def gate_cases():
                if k not in ('PRECEDENT_ASSUME_LADDER', 'PRECEDENT_NO_LADDERS')}
     env_off['PRECEDENT_USER_CONFIG'] = str(pathlib.Path(tempfile.gettempdir())
                                            / 'no-such-precedent-config.json')
-    r = subprocess.run([sys.executable, '-c',
-                        'import sys; sys.path.insert(0, "tools"); '
-                        'import sys; sys.path.insert(0, "tools/ladder"); '
-                        'import others_did as b; '
-                        'print(b.off_ladder("."))'],
-                       cwd=str(SET_ROOT), env=env_off, capture_output=True, text=True)
+    # "There" is a repository that binds nobody to the ladder: this set's own
+    # when the test runs in it, else a throwaway one. Materialized into a
+    # consumer, SET_ROOT is the consumer, whose precedent.json may bind
+    # everyone to the ladder, and the case read its real config
+    # (2026-10-28: red in the one consumer whose binds_everyone resolved).
+    try:
+        own = json.loads((SET_ROOT / 'precedent-source.json').read_text(
+            encoding='utf-8')).get('name') == 'precedent-shared-ladder'
+    except (OSError, ValueError):
+        own = False
+    there = SET_ROOT if own else pathlib.Path(tempfile.mkdtemp(prefix='others-did-off-'))
+    if not own:
+        (there / 'precedent.json').write_text('{"sources": []}\n', encoding='utf-8')
+    try:
+        r = subprocess.run([sys.executable, '-c',
+                            'import sys; sys.path.insert(0, sys.argv[1] + "/tools"); '
+                            'sys.path.insert(0, sys.argv[1] + "/tools/ladder"); '
+                            'import others_did as b; '
+                            'print(b.off_ladder(sys.argv[2]))',
+                            str(SET_ROOT), str(there)],
+                           cwd=str(there), env=env_off, capture_output=True, text=True)
+    finally:
+        if not own:
+            shutil.rmtree(there, ignore_errors=True)
     cases.append(('...and a person with no set of their own is off the ladder there',
                   r.stdout.strip() == 'True', (r.stdout + r.stderr)[-200:]))
 
