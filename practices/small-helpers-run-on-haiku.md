@@ -33,6 +33,17 @@ does anything, about 100,000 tokens for a single tool call (measured
 - **give me the cost** in the reply when it was a large job: tokens, tool
   calls, minutes, from the helper's own report.
 
+**A helper's "save it exactly" is a retype, not a copy.** A helper writes
+a file by typing what it read, so a long tool result can come back altered
+with nothing to say so (2026-10-28: a 40,000-character transcript,
+"retyped ... the byte-for-byte match is not verified"). When the harness
+already saved the result to a file (a result too large for the context
+lands in the session's tool-results folder, byte for byte), copy that file
+instead. A brief that asks a helper to save anything verbatim names the
+check the copy must pass against the tool's own output (its length, its
+line count, or its first and last timestamp), and the helper reports that
+check, passed or failed.
+
 Haiku makes each token cheap. It does not make the fixed load go away.
 
 ## Story
@@ -42,3 +53,8 @@ difference was calls, not reading. Morgan asked the same day for Haiku on
 small internal jobs as a standing rule. The universal
 `session-spend-follows-the-task` says the same about whole sessions; this
 says it about helpers, which that rule's occasion never reaches.
+
+2026-10-28: a helper asked to save a 40,000-character transcript exactly
+reported it had "retyped" it and that "the byte-for-byte match is not
+verified"; the harness had already saved the same result to a file that a
+plain copy would have carried intact.
