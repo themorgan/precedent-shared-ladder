@@ -29,7 +29,7 @@ there**, so a reclaimed container loses nothing. It is not shared yet:
 nothing reaches staging until [Booked](go-update.md).
 
 **The branch is named when Act starts, by
-[tools/precedent_branch_name.py](../tools/precedent_branch_name.py), never
+[tools/precedent_branch_name.py](https://github.com/alex137/BestPractice/blob/staging/tools/precedent_branch_name.py), never
 by hand**: `git switch -c "$(python3 tools/precedent_branch_name.py <a few
 words>)"` gives `2026-10-11-themorgan-branch-naming-awpkv-q7m2x` -- the
 day; whose branch it is, the person's GitHub username; what the work is;
@@ -209,8 +209,8 @@ since at start the work is unknown and this rule names a branch for what
 it holds; a rename later costs nothing.
 
 ## Install
-The naming tool ships with the engine ([precedent_branch_name.py](../tools/precedent_branch_name.py) in
-[tools/precedent_vendor_engine.py](../tools/precedent_vendor_engine.py)'s
+The naming tool ships with the engine ([precedent_branch_name.py](https://github.com/alex137/BestPractice/blob/staging/tools/precedent_branch_name.py) in
+[tools/precedent_vendor_engine.py](https://github.com/alex137/BestPractice/blob/staging/tools/precedent_vendor_engine.py)'s
 `ENGINE_FILES`); it reads the session ID through
 `precedent_detect.this_session_id()` and the date through
 `precedent_time`. The reply gate already says when a feature branch holds
