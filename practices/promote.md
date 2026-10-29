@@ -330,7 +330,7 @@ checked once, so pre-staging only ever received a tree that passed (Morgan,
 strength: decided). The Promote then moved staging and pre-staging to the
 same commit in one push. Booked's `--land` composes the same way today.
 
-**2026-10-06: a Promote's branches named like a session's.** Morgan, reading a fix branch named `promote-fix-20261006T165108-0300` in a reply: *"isn't our URL format for temporary GitHub repo URLs to start with the timestamps then the slug then a few random characters? ... let's do that"*. The fix branch and the copy of staging are named by [tools/precedent_branch_name.py](../tools/precedent_branch_name.py) now, like every temporary branch; the old `promote-fix-DATE` and `to-main-DATE` names are still recognized, and a repository whose GitHub test knows only those keeps getting them until Update Vendors brings the new workflow. strength: decided.
+**2026-10-06: a Promote's branches named like a session's.** Morgan, reading a fix branch named `promote-fix-20261006T165108-0300` in a reply: *"isn't our URL format for temporary GitHub repo URLs to start with the timestamps then the slug then a few random characters? ... let's do that"*. The fix branch and the copy of staging are named by [tools/precedent_branch_name.py](https://github.com/alex137/BestPractice/blob/staging/tools/precedent_branch_name.py) now, like every temporary branch; the old `promote-fix-DATE` and `to-main-DATE` names are still recognized, and a repository whose GitHub test knows only those keeps getting them until Update Vendors brings the new workflow. strength: decided.
 
 **Debut is optional**, 2026-10-11. With work landed straight on staging,
 a session called the next step "Debut, staging into main". Morgan
@@ -352,7 +352,7 @@ cases `check_promote_pre_staging` and
 into staging and the copy down into pre-staging.
 
 ## Install
-Nothing to install beyond the engine: [precedent_branches.py](../tools/precedent_branches.py) ships in
+Nothing to install beyond the engine: [precedent_branches.py](https://github.com/alex137/BestPractice/blob/staging/tools/precedent_branches.py) ships in
 every kind's engine files. Its behaviour is pinned by [verify_harness.py](https://github.com/alex137/BestPractice/blob/staging/tools/verify_harness.py)'s
 `check_landing_on_staging_run_tests_and_fast_move_into_main` -- landing on
 staging, the tests that move nothing, and the fast move into main -- and
