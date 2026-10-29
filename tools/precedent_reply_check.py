@@ -351,6 +351,50 @@ def _inherit_pair(earlier, pair):
     return merged
 
 
+def inherit_requirement(earlier, r):
+    """-> `r` merged over the `earlier` requirement it replaces with
+    "inherits": true: every key of `earlier` that `r` does not set, and each
+    require_in_fence_paired_with pair merged with the earlier pair at the
+    same position (_inherit_pair)."""
+    merged = {**earlier, **r}
+    key = 'require_in_fence_paired_with'
+    if isinstance(earlier.get(key), list) and isinstance(r.get(key), list):
+        merged[key] = [
+            _inherit_pair(earlier[key][i] if i < len(earlier[key]) else {}, pair)
+            for i, pair in enumerate(r[key])]
+    return merged
+
+
+def inherited_from(repo, rid):
+    """-> the requirement with id `rid` that `repo`'s own requirement of that
+    id replaces: the last one declared by a source weaker than `repo` itself,
+    or None when no such source declares one or none can be read.
+
+    A set's requirement that says "inherits": true is only whole merged over
+    this one, so a check that tests the set's requirement by its examples
+    needs it too (2026-10-29: the ladder set's landing pair, trimmed to what
+    it adds, let its own refused example through when tested alone)."""
+    try:
+        import precedent_resolve as pr
+        root = pathlib.Path(repo).resolve()
+        sources = _with_own_set(pr, repo, pr.load_config(repo))
+    except Exception:                                       # noqa: BLE001
+        return None
+    found = None
+    for s in sources:
+        if pr._same_repository(s['path'], root):
+            break
+        try:
+            d = json.loads((pathlib.Path(s['path']) / CONFIG_NAME).read_text(
+                encoding='utf-8'))
+        except (OSError, ValueError):
+            continue
+        for item in (d if isinstance(d, list) else [d]):
+            if isinstance(item, dict) and item.get('id') == rid:
+                found = item
+    return found
+
+
 def _settle(reqs, repo):
     """Two generic keys a requirement may carry (spec/LADDER_OPT_IN_PLAN.md
     D11, 2026-10-02):
@@ -386,13 +430,7 @@ def _settle(reqs, repo):
     for rid, r in list(last.items()):
         earlier = next((x for x in reqs if x.get('id') == rid), None)
         if r.get('inherits') is True and earlier is not None and earlier is not r:
-            merged = {**earlier, **r}
-            key = 'require_in_fence_paired_with'
-            if isinstance(earlier.get(key), list) and isinstance(r.get(key), list):
-                merged[key] = [
-                    _inherit_pair(earlier[key][i] if i < len(earlier[key]) else {}, pair)
-                    for i, pair in enumerate(r[key])]
-            last[rid] = merged
+            last[rid] = inherit_requirement(earlier, r)
     kept = []
     for i, r in enumerate(reqs):
         rid = r.get('id')
@@ -537,6 +575,32 @@ def _is_prompt_row(d):
             isinstance(b, dict) and b.get('type') == 'tool_result' for b in content):
         return False
     return True
+
+
+def turn_text_count(transcript):
+    """-> how many assistant rows with prose this turn has written so far
+    (the rows after the last prompt row), or None when the transcript cannot
+    be read or shows no prompt row to count from. previous_section() skips
+    that many: a reply is never compared with any part of its own turn."""
+    try:
+        rows = [json.loads(l) for l in
+                pathlib.Path(transcript).read_text(encoding='utf-8').splitlines()
+                if l.strip()]
+    except (OSError, json.JSONDecodeError):
+        return None
+    count = None
+    for d in rows:
+        if _is_prompt_row(d):
+            count = 0
+        elif count is None:
+            continue
+        elif d.get('type') == 'assistant':
+            content = (d.get('message') or {}).get('content')
+            if isinstance(content, list) and '\n'.join(
+                    b.get('text', '') for b in content
+                    if isinstance(b, dict) and b.get('type') == 'text').strip():
+                count += 1
+    return count
 
 
 def last_prompt_text(transcript):
@@ -928,15 +992,26 @@ def item_repeats(item, earlier, same_when_both_say=()):
     return False
 
 
-def previous_section(timeline, text, pattern):
+def previous_section(timeline, text, pattern, turn=None):
     """-> the bullets of the most recent EARLIER reply carrying a section
     under `pattern`, or None. `timeline` is assistant_timeline()'s output;
-    the current reply is its last entry with prose, and is skipped."""
+    the entries of this turn are skipped: the last `turn` entries with prose
+    when the caller counted them (turn_text_count()), else every trailing
+    entry that is part of `text`.
+
+    WHY (2026-10-28). Only the last entry was skipped, and only when it
+    equalled `text`. A turn a background job woke is judged by every text
+    block of the turn joined (turn_wake), so a turn with a few short notes
+    before its final message matched no entry, kept its own final message,
+    and was refused for repeating its own Boildown."""
     if not timeline:
         return None
     entries = [t for _ctx, t in timeline if t and t.strip()]
-    if entries and entries[-1].strip() == text.strip():
-        entries = entries[:-1]
+    if turn:
+        entries = entries[:max(0, len(entries) - turn)]
+    else:
+        while entries and entries[-1].strip() in text.strip():
+            entries = entries[:-1]
     for t in reversed(entries):
         items = section_bullets(t, pattern)
         if items:
@@ -1316,7 +1391,7 @@ def _unknown_predicates(req):
                   if not k.startswith('_') and k not in KNOWN_REQUIREMENT_KEYS)
 
 
-def violations(text, reqs, timeline=None, wake=None, prompt=None):
+def violations(text, reqs, timeline=None, wake=None, prompt=None, turn=None):
     """-> list of records, one per unmet requirement:
 
         {'kind': 'heading' | 'first_item' | 'sentence' | 'contradiction'
@@ -1494,7 +1569,7 @@ def violations(text, reqs, timeline=None, wake=None, prompt=None):
         rep = r.get('require_section_not_repeated')
         if rep and rep.get('heading') and timeline is not None:
             cur = section_bullets(text, rep['heading'])
-            prev = (previous_section(timeline, text, rep['heading'])
+            prev = (previous_section(timeline, text, rep['heading'], turn)
                     if cur and len(cur) > 1 else None)
             # A delete-link line for a branch still owed one is not a repeat
             # to refuse: the one-line form plus the owed link lines is what
@@ -2738,6 +2813,7 @@ def main():
         return 0
 
     timeline = None
+    turn = None
     wake = None
     prompt = None
     if '--text' in argv:
@@ -2759,6 +2835,7 @@ def main():
         if not transcript:
             return 0
         timeline = assistant_timeline(transcript)
+        turn = turn_text_count(transcript)
         text = last_assistant_text(transcript)
         prompt = last_prompt_text(transcript)
         # A turn a background job woke is judged by its own words only --
@@ -2788,7 +2865,7 @@ def main():
     # reply is refused below for something else (S. Alexander Jacobson,
     # 2026-10-20: a branch already given up kept being reported as unlanded).
     _record_given_up(text)
-    bad = [b for b in violations(text, reqs, timeline, wake, prompt)
+    bad = [b for b in violations(text, reqs, timeline, wake, prompt, turn)
            if not b.get('advisory')]
     # A refused reply has been shown too, so the delete links it gave are
     # given (2026-10-20: recorded on a pass only, a link given in a refused
