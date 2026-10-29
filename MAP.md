@@ -47,7 +47,7 @@ This repository's map of the practice catalogue in force here and the engine's o
 | [the-boildown-on-the-ladder](practices/the-boildown-on-the-ladder.md) | on-demand | ** |
 | [tier-branch](practices/tier-branch.md) | on-demand | ** |
 | [upstream-review](practices/upstream-review.md) | on-demand | Update Vendors finishes, or a Booked, Debut or Produce lands |
-| [vendor-update-on-the-ladder](practices/vendor-update-on-the-ladder.md) | on-demand | a person says "Update Vendors" in a repo on the five-stage ladder |
+| [vendor-update-on-the-ladder](practices/vendor-update-on-the-ladder.md) | on-demand | a person says "Update Vendors" or "Update All Vendors" in a repo on the five-stage ladder |
 | [very-deep-check-on-the-ladder](practices/very-deep-check-on-the-ladder.md) | on-demand | running a very deep check where the five-stage ladder is in force |
 | [write-it-up](practices/write-it-up.md) | on-demand | a person says "Write it up", or asks for a write-up |
 
