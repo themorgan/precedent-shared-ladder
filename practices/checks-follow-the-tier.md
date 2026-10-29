@@ -86,7 +86,7 @@ judges it, and a repair here would be overwritten by the next sync
 practice).
 
 **What landing runs today** is the closed list in
-[tools/precedent_push_check.py](../tools/precedent_push_check.py)'s
+[tools/precedent_push_check.py](https://github.com/alex137/BestPractice/blob/staging/tools/precedent_push_check.py)'s
 `BASIC_CHECKS_APPROVED`, each entry with the words that let it in: the
 lint, the leak gate (the whole tree, since a secret anywhere is this
 landing's to stop) and the commit checks (author, date, session trailer),
@@ -111,7 +111,7 @@ in their own words**, after being told its time and urged to leave it to
 the Debut ([quick-tier-is-closed](https://github.com/alex137/BestPractice/blob/staging/practices/quick-tier-is-closed.md)).
 A check that cannot name a file, or needs the test suite, belongs to the
 full run. On 2026-09-29 seven test-suite checks that each judge one
-practice file moved into [precedent_check.py](../tools/precedent_check.py)'s `practice-file-shape` on
+practice file moved into [precedent_check.py](https://github.com/alex137/BestPractice/blob/staging/tools/precedent_check.py)'s `practice-file-shape` on
 the first two conditions, and the routing reason's check moved with the
 reason into the practice file (`routing-reason`) (Morgan, 2026-09-29,
 strength: decided; his words are in the Story); since 2026-10-16 both run
@@ -127,11 +127,11 @@ to a file the push had not changed, so it read everything and could never
 refuse. The whole history is the very deep check's to read (Morgan,
 2026-09-29; his words are in the Story).
 
-**Where it is built.** [tools/precedent_push_check.py](../tools/precedent_push_check.py) decides the tier from
+**Where it is built.** [tools/precedent_push_check.py](https://github.com/alex137/BestPractice/blob/staging/tools/precedent_push_check.py) decides the tier from
 the branch a push writes (`precedent_branches.tier_for_push`) and adds the
 per-file pass for a landing on staging;
-[tools/precedent_merge_check.py](../tools/precedent_merge_check.py) does the same for a pull request merged
-through GitHub; `--land` and `--run-tests` in [tools/precedent_branches.py](../tools/precedent_branches.py)
+[tools/precedent_merge_check.py](https://github.com/alex137/BestPractice/blob/staging/tools/precedent_merge_check.py) does the same for a pull request merged
+through GitHub; `--land` and `--run-tests` in [tools/precedent_branches.py](https://github.com/alex137/BestPractice/blob/staging/tools/precedent_branches.py)
 run the quick and the full checks on the tree they compose;
 [spec/BRANCH_TIERS_PLAN.md](https://github.com/alex137/BestPractice/blob/staging/spec/BRANCH_TIERS_PLAN.md)
 holds the tier design.
