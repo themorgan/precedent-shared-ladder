@@ -2,7 +2,8 @@
 # Test for tools/ladder/ladder_branches.py, this set's branch_moves: Promote,
 # Produce and the wait on main's GitHub test. Moved from BestPractice's
 # verify_harness.py with the moves on 2026-10-19; the cases are in
-# tools/ladder/ladder_branches_cases.py, shipped beside the moves.
+# ladder_branches_cases.py beside this file, which travels with it
+# (2026-10-20: a test's <name>_cases.py helper ships with the test).
 #
 # Runs against the engine in tools/ beside it, or the one PRECEDENT_ENGINE_ROOT
 # names. An engine older than the move still does these moves itself and never
@@ -15,5 +16,5 @@ if ! grep -q "^MOVES_KEY = 'branch_moves'" "$ENGINE_ROOT/tools/precedent_branche
   echo "N/A: ladder_branches -- the engine in $ENGINE_ROOT/tools still does Promote and Produce itself; these cases run once it hands them to this set"
   exit 0
 fi
-python3 "$SET_ROOT/tools/ladder/ladder_branches_cases.py" || { echo "FAIL: ladder_branches"; exit 1; }
+python3 "$HERE/ladder_branches_cases.py" || { echo "FAIL: ladder_branches"; exit 1; }
 echo "PASS: ladder_branches"
