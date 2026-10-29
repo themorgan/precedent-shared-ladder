@@ -25,6 +25,10 @@ strength:    decided
 **Produce is step 5 of the five-stage ladder ([promote](promote.md)): a
 Promote from staging into main.** `main` is **production** -- what everyone
 gets. A Produce is the named go-ahead that merging into `main` needs.
+**"Update Vendors" and "Update All Vendors" carry one** for each
+repository they update: the update goes live in the same sitting
+([vendor-update-on-the-ladder](vendor-update-on-the-ladder.md); Morgan,
+2026-10-28, strength: decided).
 
 **Take the short way, every time, unless the person asks for the long one:**
 
