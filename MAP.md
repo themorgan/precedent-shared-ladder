@@ -47,7 +47,7 @@ This repository's map of the practice catalogue in force here and the engine's o
 | [the-boildown-on-the-ladder](practices/the-boildown-on-the-ladder.md) | on-demand | ** |
 | [tier-branch](practices/tier-branch.md) | on-demand | ** |
 | [upstream-review](practices/upstream-review.md) | on-demand | Update Vendors finishes, or a Booked, Debut or Produce lands |
-| [vendor-update-on-the-ladder](practices/vendor-update-on-the-ladder.md) | on-demand | a person says "Update Vendors" in a repo on the five-stage ladder |
+| [vendor-update-on-the-ladder](practices/vendor-update-on-the-ladder.md) | on-demand | a person says "Update Vendors" or "Update All Vendors" in a repo on the five-stage ladder |
 | [very-deep-check-on-the-ladder](practices/very-deep-check-on-the-ladder.md) | on-demand | running a very deep check where the five-stage ladder is in force |
 | [write-it-up](practices/write-it-up.md) | on-demand | a person says "Write it up", or asks for a write-up |
 
@@ -155,6 +155,7 @@ This repository's map of the practice catalogue in force here and the engine's o
 | [tools/precedent_whats_new.py](tools/precedent_whats_new.py) | The mechanics behind "What's new?": which finished days on main a project's running log lacks, what changed on each, today so far, and marking the log current -- the entries themselves are the session's to write |
 | [tools/precedent_which_repo.py](tools/precedent_which_repo.py) | Names the repo an engine tool reads, and warns when it is run from inside a different one -- engine tools read their own file's repo, never the current directory |
 | [tools/qualified_mention.py](tools/qualified_mention.py) | Whether a line's mention of a path names another repository's file. |
+| [tools/repo_attach_gate.py](tools/repo_attach_gate.py) | Refuses a sweep of repository attaches the person did not ask for |
 | [tools/session_load_trend.py](tools/session_load_trend.py) | How much room every always-loaded surface has left and how fast it is going -- headroom, the hand-written/generated split, and the growth rate; its headroom_notice() is what the merge and push gates print |
 | [tools/set_words.py](tools/set_words.py) | The one matcher for a practice set's own words -- the ones a set declares in its precedent-source.json `owned_words`, which belong in that set and nowhere a person who does not bring it reads -- used by the check that holds every other set to them and by the tests that hold engine output to the same (spec/ENFORCEMENT_LIVES_WITH_ITS_PRACTICE_PLAN.md part 3) |
 | [tools/split_practices.py](tools/split_practices.py) | PRACTICES.md ↔ practices/ converter |

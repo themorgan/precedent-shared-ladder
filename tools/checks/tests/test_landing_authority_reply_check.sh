@@ -5,20 +5,39 @@
 # it as one example in a bracketed list, does not. Run through the engine's
 # violations() in tools/ beside this set. REPLY_CHECK names another copy of
 # the file to judge, so the old one can be shown failing.
+#
+# JUDGED WITH UNIVERSAL'S RULE (2026-10-29). The pair states only what it
+# adds and inherits universal's triggers (the engine's _inherit_pair), so it
+# is judged as a session sees it: universal's rule and this one through the
+# engine's _settle. UNIVERSAL_REPLY_CHECK names universal's file; by default
+# it is the BestPractice clone beside this set, which precedent.json declares.
 set -u
 HERE="$(cd "$(dirname "$0")" && pwd)"
 TOOLS="$HERE/../.."
 REPLY_CHECK="${REPLY_CHECK:-$TOOLS/../reply_check.json}"
-PYTHONDONTWRITEBYTECODE=1 python3 - "$TOOLS" "$REPLY_CHECK" <<'PY'
-import json, sys
+UNIVERSAL_REPLY_CHECK="${UNIVERSAL_REPLY_CHECK:-$TOOLS/../../BestPractice/reply_check.json}"
+PYTHONDONTWRITEBYTECODE=1 python3 - "$TOOLS" "$REPLY_CHECK" "$UNIVERSAL_REPLY_CHECK" <<'PY'
+import json, pathlib, sys
 sys.path.insert(0, sys.argv[1])
 import precedent_reply_check as rc
 
-reqs = [r for r in json.load(open(sys.argv[2], encoding='utf-8'))
-        if r.get('id') == 'prompt-please-landing-authority']
-assert len(reqs) == 1, 'the landing-authority pair is not in reply_check.json'
-req = {'id': reqs[0]['id'], 'practice': reqs[0].get('practice'),
-       'require_in_fence_paired_with': reqs[0]['require_in_fence_paired_with'][:1]}
+RID = 'prompt-please-landing-authority'
+if not pathlib.Path(sys.argv[3]).is_file():
+    print(f'FAIL: universal\'s reply_check.json is not at {sys.argv[3]}; this '
+          f'set\'s pair inherits its triggers, so it cannot be judged without it '
+          f'(set UNIVERSAL_REPLY_CHECK, or attach BestPractice beside this set)')
+    sys.exit(1)
+universal = [r for r in json.load(open(sys.argv[3], encoding='utf-8'))
+             if r.get('id') == RID]
+own = [r for r in json.load(open(sys.argv[2], encoding='utf-8'))
+       if r.get('id') == RID]
+assert len(own) == 1, 'the landing-authority pair is not in reply_check.json'
+assert len(universal) == 1, 'universal has no landing-authority rule to inherit'
+settled = [r for r in rc._settle(universal + own, pathlib.Path(sys.argv[1]).parent)
+           if r.get('id') == RID]
+assert len(settled) == 1, 'the two rules did not settle into one'
+req = {'id': RID, 'practice': settled[0].get('practice'),
+       'require_in_fence_paired_with': settled[0]['require_in_fence_paired_with'][:1]}
 
 def refused(body):
     text = 'Paste into: a new session.\n\n```\n' + body + '\n```\n'
@@ -36,6 +55,10 @@ orders = [
     'You can push it to staging.',
     'Merge the PR, then stop.',
     'Land it on staging.',
+    'Open a PR into staging.',
+    'Booked.',
+    'Run precedent_branches.py --promote.',
+    'git push origin staging',
 ]
 fail = 0
 for body in passes:

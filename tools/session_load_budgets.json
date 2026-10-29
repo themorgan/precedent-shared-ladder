@@ -3,6 +3,7 @@
     "Seeded at bootstrap (practice: session-load-budget) so the early-warning notice starts ON. headroom_floor_pct matches BestPractice's own value; each surface's ceiling is measured plus ~20% headroom, the convention every hand-written entry in that repo already uses. .precedent/SESSION_PRACTICES.md is regenerated at every session start and grows with the universal catalogue, so re-measure it when it trips rather than reading the trip as this set growing. A ceiling is a watermark, not an endorsement: review and reduce, never just raise, when it is crossed for real."
   ],
   "headroom_floor_pct": 5,
+  "session_load_tokens": 10000,
   "resident_block_tokens": 250,
   "_resident_block_comment": "This set's resident rules, read by every session of a person who brings it. Carved out of the universal set's 2,000 on 2026-10-02 (BestPractice spec/LADDER_OPT_IN_PLAN.md D15, Morgan, strength: decided), when brainstorm-holds-commits left universal for this set. Measured about 175 that day.",
   "surfaces": {
@@ -20,6 +21,7 @@
     }
   },
   "approved_budgets": {
+    "session_load_tokens": {"max": 10000, "strength": "decided", "approved_by": "Morgan, 2026-10-28 (strength: decided): \"okay, yes, let's do it, 10k approved\", for one session-load total in every repository (BestPractice spec/SESSION_LOAD_ONE_TOTAL_PLAN.md, \"Go, one number everywhere\", the same day)"},
     "occasion_index": {
       "max": 750,
       "strength": "decided",
