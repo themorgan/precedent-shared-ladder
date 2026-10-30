@@ -58,6 +58,12 @@ repository they update: the update goes live in the same sitting
      failed `--run-tests main` in the same clone. Where no GitHub test
      runs (a practice set) or `main` went red some other way, run
      `--run-tests main` first; the refusal says so (2026-10-28).
+     **When a check's false alarm on the repository's own practice is what
+     turned `main` red**, the fix goes to that practice's own source file,
+     never its generated copy, and in the same sitting the check's root fix
+     goes to the repository that owns the check ([upstream-fix](https://github.com/alex137/BestPractice/blob/staging/practices/upstream-fix.md)).
+     The local edit is a band-aid until that lands, and the reply says so
+     (Morgan, 2026-10-29, strength: decided: "act and book that").
    - **When GitHub's test is not due, the full local suite runs on `main`
      after the merge instead**, in the background:
      `--run-tests main`. Do not end the turn while an owed run has not
