@@ -236,9 +236,17 @@ def _on_main_already(root, sha):
                 f'origin/{core.MAIN}').returncode == 0
 
 
+# A `work` the Promote cannot use is a refusal, never "nothing to promote"
+# (2026-10-30): produce.md's short way passes `--work BRANCH`, and a name no
+# checkout could see -- a fresh one, a typo -- printed NOTHING TO PROMOTE and
+# exited 0, which read as success while nothing had moved.
+REFUSE = 'refuse'
+
+
 def promotion_step(root, to=None, work=None):
-    """-> (step, why): which Promote to run -- MAIN (staging into main) or
-    None (nothing waiting, or nothing a Promote may do here).
+    """-> (step, why): which Promote to run -- MAIN (staging into main),
+    None (nothing waiting, or nothing a Promote may do here), or REFUSE
+    (the `work` named cannot be seen, or is not on staging yet).
 
     Work reaches staging by Booked (--land); a Promote only moves staging
     into main (Morgan, 2026-10-17, strength: decided). Asked for a step
@@ -258,11 +266,11 @@ def promotion_step(root, to=None, work=None):
         sha = core._git(root, 'rev-parse', '--verify', '--quiet', f'{work}^{{commit}}') \
             or core._git(root, 'rev-parse', '--verify', '--quiet', f'origin/{work}^{{commit}}')
         if not sha:
-            return None, (f'{work!r} is not a branch or commit this checkout can '
+            return REFUSE, (f'{work!r} is not a branch or commit this checkout can '
                           f'see, so nothing was chosen from it')
         if not (stip and core._run(root, 'merge-base', '--is-ancestor', sha,
                               stip).returncode == 0):
-            return None, (f'the work just done ({work}) is not on {staging} yet: '
+            return REFUSE, (f'the work just done ({work}) is not on {staging} yet: '
                           f'Book it there first (--land), then Promote')
     if to == core.MAIN or (stip and mtip and core._new_commits(root, mtip, stip)):
         return core.MAIN, ('asked for by name (--to main)' if to == core.MAIN else
@@ -358,6 +366,10 @@ def _promote_run(root, say=print, to=None, work=None, fast=False,
         return 0
     step, why = promotion_step(root, to, work)
     staging = core.staging_branch(root)
+    if step == REFUSE:
+        say(f'not promoting: {why}.')
+        _verdict(f'PROMOTE REFUSED: {why}')
+        return 1
     if step is None:
         say(f'nothing to promote: {why}.')
         _verdict(f'NOTHING TO PROMOTE: {why}')

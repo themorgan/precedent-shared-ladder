@@ -108,12 +108,42 @@ def exempt(root, rev, path, engine=None, manifest=None):
     return False
 
 
+# ALREADY ON MAIN BY ITS PULL REQUEST (2026-10-30). Main moves only by a
+# pull request, whose GitHub test is the high-risk route's own gate. A file
+# whose bytes at `rev` are exactly main's has been through that route, so
+# carrying it down to the landing branch is not a direct landing of it.
+# Without this, a fix for a red main -- merged into main by its pull
+# request, as the red-main rule says -- turned `--run-tests main` red again
+# on this check until the same fix also reached staging: main was judged as
+# a push into staging, and the fix touched test code. Never for a workflow
+# file, as with the other exemptions.
+def _main_ref(root):
+    """-> `origin/<main>` when it exists, else None."""
+    try:
+        cfg = json.loads((pathlib.Path(root) / 'precedent.json')
+                         .read_text(encoding='utf-8'))
+    except (OSError, ValueError):
+        cfg = {}
+    ref = f"origin/{cfg.get('base_branch') or 'main'}"
+    return ref if _git(root, 'rev-parse', '--verify', '-q', ref) else None
+
+
+def on_main(root, rev, path, main_ref):
+    """True when `path` at `rev` is byte for byte what `main_ref` holds."""
+    if not main_ref or path.startswith(WORKFLOWS):
+        return False
+    here = _blob(root, rev, path)
+    return here is not None and here == _blob(root, main_ref, path)
+
+
 def risky(root, paths, rev):
     """-> the paths in `paths` that make a push of `rev` take a pull request."""
     engine = _json_at(root, rev, 'tools/ENGINE_MANIFEST.json')
     manifest = _json_at(root, rev, 'MANIFEST.json')
+    main_ref = _main_ref(root)
     return [p for p in paths if high_risk(p)
-            and not exempt(root, rev, p, engine, manifest)]
+            and not exempt(root, rev, p, engine, manifest)
+            and not on_main(root, rev, p, main_ref)]
 
 
 def changed(root, base, tip):
