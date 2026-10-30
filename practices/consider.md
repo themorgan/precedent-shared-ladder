@@ -41,6 +41,17 @@ corrected in one word.
 needs is the failure this stage exists to avoid as much as no plan at all:
 a document nobody needed is cost, not care.
 
+**Every size ends by asking to act.** The reply that finishes the plan --
+one line, Brainstorm, Plan it or Write it up -- asks "Do you want to act on
+this plan?" with what acting does and the session's pick, or says it is
+already acting on it. How that ask is written, and what the reply gate
+refuses, is universal's
+[the-boildown](https://github.com/alex137/BestPractice/blob/staging/practices/the-boildown.md)
+item 1; it is not restated here. Morgan, 2026-10-30 (strength: decided):
+*"if a session has just considered or made any sort of plan, then upon the
+completion of the plan, it needs to ask or tell me to see if I want to
+implement the plan."*
+
 ## Detail
 **Plan it, in full** (folded in from plan-it, 2026-09-30: it is this stage's middle size, and Morgan asked that it be recognized as one of Consider's sizes rather than kept as its own trigger).
 
