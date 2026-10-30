@@ -16,6 +16,15 @@ HERE="$(cd "$(dirname "$0")" && pwd)"
 TOOLS="$HERE/../.."
 REPLY_CHECK="${REPLY_CHECK:-$TOOLS/../reply_check.json}"
 UNIVERSAL_REPLY_CHECK="${UNIVERSAL_REPLY_CHECK:-$TOOLS/../../BestPractice/reply_check.json}"
+# --run-tests judges a throwaway worktree in /tmp, where nothing sits beside
+# the tree (2026-10-30: main went red on that alone). There, look beside the
+# clone the worktree belongs to, which git's common dir names.
+if [ ! -f "$UNIVERSAL_REPLY_CHECK" ]; then
+    _common="$(git -C "$HERE" rev-parse --path-format=absolute --git-common-dir 2>/dev/null || true)"
+    if [ -n "$_common" ] && [ -f "$(dirname "$_common")/../BestPractice/reply_check.json" ]; then
+        UNIVERSAL_REPLY_CHECK="$(dirname "$_common")/../BestPractice/reply_check.json"
+    fi
+fi
 PYTHONDONTWRITEBYTECODE=1 python3 - "$TOOLS" "$REPLY_CHECK" "$UNIVERSAL_REPLY_CHECK" <<'PY'
 import json, pathlib, sys
 sys.path.insert(0, sys.argv[1])
