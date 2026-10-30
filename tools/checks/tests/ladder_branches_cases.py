@@ -1001,12 +1001,15 @@ def check_promote_picks_its_step():
         git(work, 'commit', '-q', '-m', 'not landed')
         git(work, 'push', '-q', 'origin', 'HEAD:refs/heads/w-feature')
         rc, out = branches('--promote', '--work', 'w-feature')
-        cases.append(('work not on staging yet is not promoted: Book it first',
-                      rc == 0 and 'not on staging yet' in out
-                      and 'Now promoting' not in out))
+        cases.append(('work not on staging yet is refused, exit 1: Book it first',
+                      rc == 1 and 'not on staging yet' in out
+                      and 'PROMOTE REFUSED' in out and 'Now promoting' not in out))
+        # 2026-10-30: this said NOTHING TO PROMOTE and exited 0, which a
+        # session read as success with nothing moved.
         rc, out = branches('--promote', '--work', 'no-such-thing')
-        cases.append(('a --work it cannot see chooses nothing and says why',
-                      rc == 0 and 'is not a branch or commit' in out
+        cases.append(('a --work it cannot see is refused, exit 1, and says why',
+                      rc == 1 and 'is not a branch or commit' in out
+                      and 'PROMOTE REFUSED' in out and 'NOTHING TO PROMOTE' not in out
                       and 'Now promoting' not in out))
         wts = git(work, 'worktree', 'list').stdout.strip().splitlines()
         cases.append(('no worktree is left behind', len(wts) == 1))
