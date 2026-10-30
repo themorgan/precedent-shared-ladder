@@ -71,5 +71,18 @@ said | grep -q 'ROUTE NOTE FOR staging' || { echo "FAIL: the refusal did not use
 landed="$(PRECEDENT_LANDING_SOURCE=w said)"
 echo "$landed" | grep -q 'ROUTE NOTE' && { echo "FAIL: a push from the land tool got the guard's own route note"; fail=1; }
 echo "$landed" | grep -q 'land tool that made this push' || { echo "FAIL: a push from the land tool was not pointed at its note"; fail=1; }
+# A file already on main, byte for byte, came through main's pull request
+# (2026-10-30: a red-main fix merged into main went red again on this check
+# at `--run-tests main` until it also reached staging). A workflow is still
+# refused, and a file that differs from main's is still judged.
+g update-ref refs/remotes/origin/main "$own"
+[ "$(hook "$own" staging)" = 0 ] || { echo "FAIL: pre-push refused a check already on main by its pull request"; fail=1; }
+[ "$(PRECEDENT_CHANGED_SINCE="$synced" run staging)" = 0 ] || { echo "FAIL: the check refused a check already on main by its pull request"; fail=1; }
+echo 'y' > "$tmp/local/tools/checks/check_own.py"; g commit -qam "differs from main"; differs="$(g rev-parse HEAD)"
+[ "$(hook "$differs" staging)" = 1 ] || { echo "FAIL: pre-push let through a check that differs from main's"; fail=1; }
+mkdir -p "$tmp/.github/workflows"; echo 'on: push' > "$tmp/.github/workflows/y.yml"
+g add -A; g commit -qm wf-main; wfm="$(g rev-parse HEAD)"; g update-ref refs/remotes/origin/main "$wfm"
+[ "$(hook "$wfm" staging)" = 1 ] || { echo "FAIL: pre-push let a workflow through because main has it"; fail=1; }
+g update-ref -d refs/remotes/origin/main
 [ "$fail" = 0 ] && echo "PASS: check_landing_takes_a_pr"
 exit "$fail"
