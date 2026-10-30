@@ -3,7 +3,7 @@ title:         Ladder redesign plan
 kind:          proposal
 status:        executed
 opened:        2026-10-09
-closed:        2026-10-14
+closed:        null
 superseded_by: null
 supersedes:    []
 audience:      contributor
