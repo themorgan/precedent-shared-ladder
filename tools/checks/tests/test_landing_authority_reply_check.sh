@@ -15,10 +15,18 @@ set -u
 HERE="$(cd "$(dirname "$0")" && pwd)"
 TOOLS="$HERE/../.."
 REPLY_CHECK="${REPLY_CHECK:-$TOOLS/../reply_check.json}"
+# The push check exports where universal really is, resolved the engine's
+# way, a throwaway worktree in /tmp included (BestPractice PR #1440,
+# 2026-10-30). The sibling path is the default when it does not.
+if [ -z "${UNIVERSAL_REPLY_CHECK:-}" ] && [ -n "${PRECEDENT_SOURCE_DIR_PRECEDENT:-}" ]; then
+    UNIVERSAL_REPLY_CHECK="$PRECEDENT_SOURCE_DIR_PRECEDENT/reply_check.json"
+fi
 UNIVERSAL_REPLY_CHECK="${UNIVERSAL_REPLY_CHECK:-$TOOLS/../../BestPractice/reply_check.json}"
 # --run-tests judges a throwaway worktree in /tmp, where nothing sits beside
 # the tree (2026-10-30: main went red on that alone). There, look beside the
-# clone the worktree belongs to, which git's common dir names.
+# clone the worktree belongs to, which git's common dir names. RETIRE this
+# once this set's tools/ENGINE_MANIFEST.json records a BestPractice main
+# carrying precedent_resolve.source_dir_env: the variable above covers it.
 if [ ! -f "$UNIVERSAL_REPLY_CHECK" ]; then
     _common="$(git -C "$HERE" rev-parse --path-format=absolute --git-common-dir 2>/dev/null || true)"
     if [ -n "$_common" ] && [ -f "$(dirname "$_common")/../BestPractice/reply_check.json" ]; then

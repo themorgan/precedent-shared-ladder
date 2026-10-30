@@ -36,6 +36,11 @@ repository they update: the update goes live in the same sitting
 
 ([tools/precedent_branches.py](https://github.com/alex137/BestPractice/blob/staging/tools/precedent_branches.py))
 
+`BRANCH` is the branch this session's work was Booked from: the Promote
+first confirms that work is on staging. Leave `--work` off when the
+session has no such branch. A name it cannot find, or work not on staging
+yet, is refused with exit 1 (PROMOTE REFUSED), never "nothing to promote".
+
 1. **The quick checks** on what moves. If the last Debut ("Run tests")
    failed on exactly this staging commit, it lists the failures and asks
    once (exit 4); on a yes, run it again with `--despite-failed-tests`.
