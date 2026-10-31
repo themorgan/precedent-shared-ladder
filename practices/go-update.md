@@ -62,7 +62,9 @@ named here, and the Story the incidents.
    ends `LAND RESULT: ...` ([promote](promote.md) says what it does step by
    step). **A high-risk change goes through a pull request into staging
    instead**, with `origin/staging` and `origin/main` merged into the work
-   first. High-risk is at least one of these four, and size and reach are
+   first; `--land` opens and merges that pull request itself where a
+   GitHub token works, and prints the steps where not. High-risk is at
+   least one of these four, and size and reach are
    never the test ("The high-risk test in full"):
    - **It touches enforcement or gating code**: a CI workflow,
      [tools/precedent_check.py](https://github.com/alex137/BestPractice/blob/staging/tools/precedent_check.py),
@@ -298,6 +300,21 @@ change goes through a pull request into staging instead**: merge
 request into staging is let through only when it already carries
 everything main has. Getting it into main is a separate step,
 [Produce](produce.md).
+
+**`--land` takes that pull request itself, and watches what each landing
+reaches** (Morgan, 2026-10-31, strength: assented: "Yes on all four", from
+the root issues of the 2026-10-30 very deep check's session). Where a
+GitHub token is set and the API answers, it opens the pull request from
+the branch it pushed the checked composition to, merges it at exactly that
+commit and runs `--land-confirm`; anything short of that prints the steps
+by hand, as before. After every landing it starts the harness checks the
+landing reaches in the background, on a worktree of what landed, and
+records the verdict in the checkout's git directory. **The next `--land`
+refuses while one is red**, naming the failing cases, except the landing
+that says it is the fix: `--land BRANCH --fixing <the red landing's
+commit>`. In that session, about ten landings stopped for a pull request
+the session merged a minute later by hand, and staging went red twice on
+checks only that background run reached.
 
 ### The vendor update
 
