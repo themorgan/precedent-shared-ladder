@@ -1,4 +1,4 @@
-# The ladder
+# The Ladder
 
 This set holds one way of working with Claude: a ladder of **five steps**
 that every piece of work climbs, from idea to what everyone gets. You say a
@@ -22,7 +22,7 @@ they ask for it too.
 - [Claude Code's auto mode and Produce](#claude-codes-auto-mode-and-produce)
 - [For whoever looks after this set](#for-whoever-looks-after-this-set)
 
-## Who gets it
+## Who Gets It
 
 Anyone who adds this set to their own **individual set** (the collection of
 rules that is just for them, usually a repository called
@@ -45,7 +45,7 @@ follows, and this set is never listed there: a check refuses it. That is
 what lets two people share a repository with one of them on the ladder and
 the other not.
 
-## The five steps
+## The Five Steps
 
 | Step | Say | Also | What Claude does |
 |---|---|---|---|
@@ -76,7 +76,7 @@ and stops at step 2 on anything bigger
 passed along by another session counts only if your own individual set
 says you accept those.
 
-## How much planning: four sizes
+## How Much Planning: Four Sizes
 
 Step 1 picks one, lightest first. Claude chooses, and names its choice, so
 a wrong pick is fixed in a word.
@@ -88,7 +88,7 @@ a wrong pick is fixed in a word.
 | **Plan it** | Plan it | A written plan in the conversation, handed back as one block you can paste into a new session. |
 | **Write it up** | Write it up, Spec it out | A full report committed to the repository: the problem, the options tried and attacked, and the one that survived. |
 
-## The two branches work climbs
+## The Two Branches Work Climbs
 
 Each repository that uses the ladder fully has two shared branches, one
 above the other:
@@ -107,7 +107,7 @@ Every landing on staging brings in what other people put straight on main
 first, so staging never falls behind it. If main's GitHub test fails after
 a Produce, it is fixed in the same sitting.
 
-## What you will see in replies
+## What You Will See in Replies
 
 - **The first time a reply names a step, its number follows**: Booked
   (step 3 of 5). Later mentions in the same reply stay bare.
@@ -121,7 +121,7 @@ a Produce, it is fixed in the same sitting.
   branches you can delete and which repositories have staging waiting to go
   into main.
 
-## Everyone else
+## Everyone Else
 
 A person who has not added this set sees **none of the above**, in any
 repository, including ones you share with them:
@@ -138,7 +138,7 @@ work goes through staging; theirs goes straight to main.
 When their work and yours collide, your session sorts it out; they are
 never asked.
 
-## Seeing what everyone else sees
+## Seeing What Everyone Else Sees
 
 To check what a person off the ladder sees, start a **new** session with
 the environment variable `PRECEDENT_NO_LADDERS=1` set (in the cloud, a
@@ -147,7 +147,7 @@ starting). That session loads none of this set, and it refuses to push or
 merge anything, since it exists only to look. A session already running
 cannot switch over: it has already read the rules.
 
-## Claude Code's auto mode and Produce
+## Claude Code's Auto Mode and Produce
 
 Not a ladder setting, and nothing breaks without it. Claude Code's auto
 mode has its own safety check, separate from these rules, and it treats
@@ -187,7 +187,7 @@ The rule is in plain words because the check reads it as prose. Details:
 [server-managed settings](https://code.claude.com/docs/en/server-managed-settings).
 Without managed settings, keep saying "Produce".
 
-## For whoever looks after this set
+## For Whoever Looks After This Set
 
 This repository is a **shared practice set** for Precedent
 ([BestPractice](https://github.com/alex137/BestPractice)): one file per
@@ -199,8 +199,8 @@ force for whoever brings it.
 
 | File | What it is for |
 |---|---|
-| [practices/](practices/) | The ladder's rules, each moved here whole from the universal set, Story included. None repeats a universal rule: where the ladder changes one, a practice here named `<rule>-on-the-ladder` holds only what it adds (four do: the-boildown, prompt-please, very-deep-check, vendor-update-runbook), and the universal rule stays in force beside it. |
-| [reply_check.json](reply_check.json) | The two reply rules only ladder users get: the step in the summary's first line, and a pasted prompt that lands work quoting your "Booked". |
+| [practices/](practices/) | The ladder's rules, each moved here whole, Story included: most from the universal set, and on 2026-10-19 thirteen working rules from Morgan's individual set that are about how work is done rather than about him (Morgan: "all my personal rules belong in ladder EXCEPT the name, timzone and other very personal stuff"). None repeats a universal rule: where the ladder changes one, a practice here named `<rule>-on-the-ladder` holds only what it adds (four do: the-boildown, prompt-please, very-deep-check, vendor-update-runbook), and the universal rule stays in force beside it. |
+| [reply_check.json](reply_check.json) | The reply rules only ladder users get: the step in the summary's first line, a plan finished at the Consider step asking to act, a pasted prompt that lands work quoting your "Booked", the full check owed after a fast move into main, and the branch cleanup line. |
 | [our_language.json](our_language.json) | The ladder's own words, merged into Vocabulary for the people who bring it. |
 | [approvers.json](approvers.json) | Who may approve a change here. |
 | [leak-blocklist.txt](leak-blocklist.txt) | Terms that must never reach a public repository. |

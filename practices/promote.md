@@ -48,7 +48,8 @@ third was for a fix to make the approved one pass).
 branch onto staging (Booked), and from staging into main (Produce). The
 ladder is **optional for everyone**: anyone may use its words, nobody has
 to, and a repository whose only shared branch is `main` simply has fewer
-stages. A person's own individual set may require it for them.
+stages. Bringing this set is the choice, and for whoever brings it
+[ladder-required](ladder-required.md) makes it the way their work goes.
 
 **Debut is optional: a step in the middle to test the work on staging.**
 Staging into main is always **Produce**, never Debut, and work on staging
