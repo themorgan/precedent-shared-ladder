@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+# practice: act -- claims this test, so a consuming repository receives it
 # tools/precedent_branch_rules.py changes nothing for a person who has not
 # opted in, and once opted in applies only to repositories that person's
 # own GitHub account owns. GitHub is stubbed: nothing here reaches it.

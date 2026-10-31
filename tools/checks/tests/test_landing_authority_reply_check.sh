@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+# practice: prompt-please-on-the-ladder -- claims this test, so a consuming repository receives it
 # Test for this set's landing-authority pair in reply_check.json
 # (id "prompt-please-landing-authority"): a paste block that orders a landing
 # needs the person's quoted Booked; one that only reports a landing, or lists
