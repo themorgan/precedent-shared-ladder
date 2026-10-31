@@ -34,15 +34,83 @@ N**, and each stage has its own word and a synonym:
 | 4 | **Debut** | Test Readiness | Optional: run the full local tests on `staging`, and move nothing: `--run-tests`. Also **Run tests**. | [debut](debut.md) |
 | 5 | **Produce** | Make live | Promote staging into main -- production -- quick checks, GitHub's test after the merge. | [produce](produce.md) |
 
-**An approved Booked or Produce covers its own follow-through.** When the
-work it moved needs a fix to go green -- a check it trips, a test that
-fails after it, a fix in another repository that work depends on -- that
-fix is landed and produced as far as the approved move went, in every
-repository it needs, without asking again; the reply says what was done.
-**New work still waits for the person's own word**, and so does a move
-that would carry somebody else's unapproved work along with it (Morgan,
-2026-10-18, strength: decided, after one Produce took three approvals: the
-third was for a fix to make the approved one pass).
+The ladder is optional for everyone; bringing this set is the choice ("Who
+the ladder is for"). The Detail section has the how and why under the
+headings named here, and the Story the incidents.
+
+1. **Pick the step from the work, never from a keyword** ("Picking the step
+   in full"). A step the person named wins, and stage 5, which changes
+   production, is read most strictly. Otherwise a bare Promote (or
+   "Graduate") is the next step this work has not done, the lower one
+   first, never skipping one:
+   - **This session's work is not on staging yet** -- uncommitted, or
+     committed but not landed: Booked, with no second question, then
+     confirm `origin/staging` carries it.
+   - **It is on staging and main lacks it:** Produce.
+   - **Neither** -- a session with no work of its own: staging into main
+     when staging carries work main lacks, and otherwise say in one line
+     there is nothing to promote.
+
+   Debut runs only when asked. Staging into main is always Produce, never
+   Debut, and a Promote never sends finished work back to Consider.
+2. **Read back every stage before it runs, and open the reply with it**:
+   its number, word and synonym and the repository and branches -- *"Now
+   Promote 3: Booked, the Shared Save -- moving `<branch>` onto staging
+   (BestPractice)"*. A request covering several stages names them all.
+3. **Run the command; it does the whole move, and a session adds nothing**
+   ("The moves in full"). Booked is `--land BRANCH` and ends
+   `LAND RESULT: ...`; Debut is `--run-tests`, moves nothing, and runs with
+   a long timeout or in the background. Produce is
+
+       python3 tools/precedent_branches.py --promote --to main --work BRANCH
+
+   the fast way unless the person's own words ask for the full one
+   (`--full --because '<their words>'`). A Promote that resolves to staging
+   into main is the named go-ahead main needs; nobody is asked again.
+4. **Finish Produce: exit 3 means main has not moved.** The tool pushes a
+   throwaway copy of staging, `DATE-promote-to-main-ID`, and stops with
+   *"MAIN HAS NOT MOVED YET"*. Open the pull request from that copy into
+   main, never from staging itself; wait with `python3
+   tools/precedent_branches.py --wait-main-test COPY`; merge it with a
+   merge commit; confirm with a fetch that `origin/main` carries staging's
+   tip. In a private repository a copy named `-not-due-` skips GitHub's
+   test and `--wait-main-test` says **NOT DUE**; say due or not due, with
+   the line Promote printed for why.
+5. **Report what it printed, plainly**: what moved, and whether a full
+   check ran or stood from an earlier run. On `LAND REFUSED` or
+   `PROMOTE REFUSED`, name the failing check and what it was run on; the
+   fix goes on a feature branch, is landed by Booked, and is promoted
+   again, never pushed to a tier some other way. A landing conflict in
+   hand-written text: merge `origin/staging` and `origin/main` into the
+   branch, resolve it there, push, and land again. When another window
+   moved the same work meanwhile, the tool says so, and that is the whole
+   report.
+
+**One window at a time** ("The lock and other windows"). If another window
+holds the Promote lock, a Promote does nothing and says *"another window is
+promoting right now"*. Its branch, `data-promote-lock`, is never deleted
+or tidied up. Never recommend a Promote, a Booked or a merge of
+the same work that another session is already running -- look first, at
+the pull request, the branch tips and any session on the same work.
+
+**An approved Booked or Produce covers its own follow-through**: a fix the
+moved work needs to go green is landed and produced as far as the approved
+move went, in every repository it needs, without asking again. New work,
+or a move carrying somebody else's unapproved work, waits for the person's
+own word ("Follow-through").
+
+**When Claude Code's own safety check stops the move into main**, say in
+one line that Claude Code's safety check stopped it, not this repository's
+rules, and ask for **"Produce"** (or "Promote 5"). Never work around the
+check ("Reporting and refusals").
+
+**Waiting for a Promote never keeps a session open**, and **this command is
+about branches, never practice promotion** ("Sessions and waiting", "Not
+practice promotion").
+
+## Detail
+
+### Who the ladder is for
 
 **Two branch tiers: `staging`, then `main`.** Work goes from its feature
 branch onto staging (Booked), and from staging into main (Produce). The
@@ -56,6 +124,8 @@ Staging into main is always **Produce**, never Debut, and work on staging
 goes there with no Debut at all (Morgan, 2026-10-11, strength: decided:
 "the next step is Produce, staging into main. (Debut is an optional step
 in the middle to test it.)").
+
+### Picking the step in full
 
 - **Read back every stage before it runs**, with its number, word and
   synonym and the repository and branches: *"Now Promote 3: Booked, the
@@ -75,8 +145,6 @@ in the middle to test it.)").
   so a bare Promote never runs it, and a bare Promote never sends finished
   work back to Consider.
 - **"Graduate" is another word for Promote.**
-
-The rest of this Rule is the moves between branch tiers.
 
 When a message says **"Promote"** about the branch tiers -- the whole
 message, or a clause like "promote staging" -- **first check this
@@ -114,34 +182,12 @@ A Promote that resolves to staging into main is the named go-ahead
 asks for before main moves, since Morgan asked for exactly this; nobody is
 asked again.
 
-**When Claude Code's own safety check stops that move, say so and ask for
-"Produce".** Its auto mode can refuse `--promote --to main` as a
-production deploy (`[Production Deploy]`), because a bare "Promote" does
-not name that exact action. The reply says in one line that **Claude
-Code's safety check stopped it, not this repository's rules**, and asks
-for **"Produce"** (or "Promote 5"). **Never work around the check** --
-another command, the GitHub API, or a settings edit of the session's own.
-The one durable fix is an `autoMode.allow` entry only the person can add
-([gotcha](https://github.com/alex137/BestPractice/blob/staging/gotchas/gotcha-2026-09-30-auto-mode-refuses-a-bare-promote-into-main-as-a-production.md)).
-
-**Never recommend a Promote that another window is already running.**
-When a Promote finds the lock held, or the reply gate reports one under way,
-no reply suggests promoting that repository again -- not as a next step,
-not as a plain line in The Boildown, not as "try again later". It says, at
-most, that one is running, and which session holds it when that can be told
-(Morgan, 2026-09-27, strength: decided: *"NEVER recommend a promote when
-another session is already doing it!!!"*).
-
-**Waiting for a Promote never keeps a session open.** Work on staging is
-already on `origin`, and any later session can take it into main, so a
-pending Produce is never a reason for "Don't archive this session" unless
-there is a genuinely urgent reason to move it now
-([the-boildown-on-the-ladder](the-boildown-on-the-ladder.md)).
-
 **Save first, then move.** Work still sitting in the session would
 otherwise miss the move the person just asked for (Morgan, 2026-09-25,
 strength: decided; his words are in the Story). Nothing to save means
 nothing to do there: go straight to the next step.
+
+### The moves in full
 
 The commands do the whole move, and a session adds nothing to them:
 
@@ -245,14 +291,20 @@ established ([the gotcha](https://github.com/alex137/BestPractice/blob/staging/g
 Promote makes that copy itself; the merge gate refuses a pull request
 from a tier branch.
 
-**Report what it printed, plainly**: what moved and whether a full check
-ran or stood from an earlier run, or -- on `LAND REFUSED` or
-`PROMOTE REFUSED` -- the failing check and what it was run on. A refusal
-is fixed on a feature branch, landed on staging by Booked, and promoted
-again; never by pushing the work to a tier some other way. When another
-window moved the same work while this one was checking it, the tool says
-so and exits cleanly, and that is the whole report: the work has moved,
-and there is nothing to run again.
+**A full run takes as long as the suite does** -- minutes in this
+repository -- so run a Debut, or Produce's long way, with a long timeout
+or in the background, and keep working; nothing moves until it is done,
+and nothing else waits on it.
+
+### The lock and other windows
+
+**Never recommend a Promote that another window is already running.**
+When a Promote finds the lock held, or the reply gate reports one under way,
+no reply suggests promoting that repository again -- not as a next step,
+not as a plain line in The Boildown, not as "try again later". It says, at
+most, that one is running, and which session holds it when that can be told
+(Morgan, 2026-09-27, strength: decided: *"NEVER recommend a promote when
+another session is already doing it!!!"*).
 
 **Never suggest a Promote that another session is already running**, and
 the same goes for Booked (`Go update`) or a merge of the same pull request or the
@@ -265,10 +317,48 @@ once: *"you should NEVER suggest to \"promote\" or \"go update\" or
 \"merge\" when another session is already doing that with the same
 PR/thing"*, strength: decided).
 
-**A full run takes as long as the suite does** -- minutes in this
-repository -- so run a Debut, or Produce's long way, with a long timeout
-or in the background, and keep working; nothing moves until it is done,
-and nothing else waits on it.
+### Follow-through
+
+**An approved Booked or Produce covers its own follow-through.** When the
+work it moved needs a fix to go green -- a check it trips, a test that
+fails after it, a fix in another repository that work depends on -- that
+fix is landed and produced as far as the approved move went, in every
+repository it needs, without asking again; the reply says what was done.
+**New work still waits for the person's own word**, and so does a move
+that would carry somebody else's unapproved work along with it (Morgan,
+2026-10-18, strength: decided, after one Produce took three approvals: the
+third was for a fix to make the approved one pass).
+
+### Reporting and refusals
+
+**Report what it printed, plainly**: what moved and whether a full check
+ran or stood from an earlier run, or -- on `LAND REFUSED` or
+`PROMOTE REFUSED` -- the failing check and what it was run on. A refusal
+is fixed on a feature branch, landed on staging by Booked, and promoted
+again; never by pushing the work to a tier some other way. When another
+window moved the same work while this one was checking it, the tool says
+so and exits cleanly, and that is the whole report: the work has moved,
+and there is nothing to run again.
+
+**When Claude Code's own safety check stops that move, say so and ask for
+"Produce".** Its auto mode can refuse `--promote --to main` as a
+production deploy (`[Production Deploy]`), because a bare "Promote" does
+not name that exact action. The reply says in one line that **Claude
+Code's safety check stopped it, not this repository's rules**, and asks
+for **"Produce"** (or "Promote 5"). **Never work around the check** --
+another command, the GitHub API, or a settings edit of the session's own.
+The one durable fix is an `autoMode.allow` entry only the person can add
+([gotcha](https://github.com/alex137/BestPractice/blob/staging/gotchas/gotcha-2026-09-30-auto-mode-refuses-a-bare-promote-into-main-as-a-production.md)).
+
+### Sessions and waiting
+
+**Waiting for a Promote never keeps a session open.** Work on staging is
+already on `origin`, and any later session can take it into main, so a
+pending Produce is never a reason for "Don't archive this session" unless
+there is a genuinely urgent reason to move it now
+([the-boildown-on-the-ladder](the-boildown-on-the-ladder.md)).
+
+### Not practice promotion
 
 **Not practice promotion.** Moving a practice *candidate* into the
 catalogue is also called promotion, and a message about a candidate or a
@@ -351,6 +441,17 @@ branch onto staging. Until this day the Install also named the harness
 cases `check_promote_pre_staging` and
 `check_sync_copies_work_from_above_once_checked`, which pinned the move
 into staging and the copy down into pre-staging.
+
+**2026-10-31: the Rule cut to the steps.** It had grown to 2,595 words.
+It now holds what a session does, in order, in 864 (both counted with
+`wc -w` over the `## Rule` section); every paragraph it held moved word for
+word into Detail, under the headings the Rule names, except the table, which
+stayed. The line that divided the old Rule in two is kept here as history:
+The rest of this Rule is the moves between branch tiers.
+Morgan: *"maybe we add to very deep check to always review like the 25% of
+all the rules that are the longest in that repo and shorten them like you
+did?"*, then *"use your judgment, and act booked produce"* (strength:
+assented).
 
 ## Install
 Nothing to install beyond the engine: [precedent_branches.py](https://github.com/alex137/BestPractice/blob/staging/tools/precedent_branches.py) ships in
