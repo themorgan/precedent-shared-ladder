@@ -25,12 +25,19 @@ staging, moving nothing; 5 Produce = staging -> main.** The rest is the ladder s
 
 ## Why
 The stage practices live in the ladder set, which reaches a session as
-text printed at start, and that text can be cut. This line is resident in
-my own set, so it lands in the tracked AGENTS.md of every repo I work in and
-loads with it. It repeats one row of `promote`'s table on purpose: what the
-three words move has to be there before the first message.
+text printed at start, and that text can be cut. This line is resident, so
+it sits in the set's resident block rather than behind a lookup of the
+on-demand stage practices. It
+repeats one row of `promote`'s table on purpose: what the three words move
+has to be there before the first message.
 
 ## Story
+2026-10-31: the Why still said this line was resident in an individual set
+and so landed in the tracked AGENTS.md of every repo its owner works in. It
+moved to this set on 2026-10-19, and an individual set's block is never
+written into another repo's tracked files, so the very deep check of
+2026-10-30 rewrote that sentence to say what holds now.
+
 2026-10-14: pre-staging retired for everyone ("Only me, go ahead and plan
 it. Retire pre-staging."). Until then the line read "4 Debut = pre-staging
 -> staging, or only the tests where it lands on staging".
