@@ -78,17 +78,9 @@ yet, is refused with exit 1 (PROMOTE REFUSED), never "nothing to promote".
      for a fast one ("Produce fast": `--no-full-after`, which marks `main`
      as moved without a full check until the next full run).
 
-**When GitHub's test is due.** In a public repository, on every Produce.
-In a private one, the repository's `github_ci_main_test` decides first:
-`never`, `always` (GitHub tests the push to `main` once, after the merge),
-a number of hours, or `individual`, the default, which hands it to the
-person: their `github_ci_workflows` switch, then `github_ci_every_hours`
-(the person's `identity.json` first, then the repository's) -- 168 means at
-most once a week since the last pass. It is due anyway when the last run
-failed, until one passes; when no passing run is found or GitHub cannot be
-asked; when a workflow predates the not-due skip; and with
-`PRECEDENT_CI_NOW=1`. The tool decides this, not the session: read its
-line, and never re-derive it.
+**When GitHub's test is due, the tool decides**, from the repository's
+`github_ci_main_test` and the person's settings: read its line, and never
+re-derive it ("When GitHub's test is due").
 
 **The long way is taken only on the person's own words, and that is
 checked.** `--full` runs the full local suite before the merge and waits on
@@ -110,6 +102,22 @@ line that Claude Code's auto mode stopped the move, not this repository's
 rules, and ask for it again in words that name the move ("Produce: staging
 into main"). Never route around the check; the durable fix is the person's
 ([gotcha](https://github.com/alex137/BestPractice/blob/staging/gotchas/gotcha-2026-09-30-auto-mode-refuses-a-bare-promote-into-main-as-a-production.md)).
+
+## Detail
+
+### When GitHub's test is due
+
+**When GitHub's test is due.** In a public repository, on every Produce.
+In a private one, the repository's `github_ci_main_test` decides first:
+`never`, `always` (GitHub tests the push to `main` once, after the merge),
+a number of hours, or `individual`, the default, which hands it to the
+person: their `github_ci_workflows` switch, then `github_ci_every_hours`
+(the person's `identity.json` first, then the repository's) -- 168 means at
+most once a week since the last pass. It is due anyway when the last run
+failed, until one passes; when no passing run is found or GitHub cannot be
+asked; when a workflow predates the not-due skip; and with
+`PRECEDENT_CI_NOW=1`. The tool decides this, not the session: read its
+line, and never re-derive it.
 
 ## Why
 The last step needs a word that is a verb like the others and has the "go
@@ -149,6 +157,14 @@ into the quick checks or into Produce was proposed. Morgan: *"These feel
 like minor errors so I'm happy to catch them at debut or after main"*
 (strength: decided). What changed instead is the route above: a red
 `main` is fixed straight into it.
+
+**2026-10-31: the Rule cut to what a session does.** It had grown to
+830 words; it now holds 740 (both counted with `wc -w` over the
+`## Rule` section), and every paragraph it no longer holds moved word for
+word into Detail, under the heading the Rule names. Morgan: *"maybe we add
+to very deep check to always review like the 25% of all the rules that are
+the longest in that repo and shorten them like you did?"*, then *"use your
+judgment, and act booked produce"* (strength: assented).
 
 ## Install
 Nothing new: the promotion tool and its checks are

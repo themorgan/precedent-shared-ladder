@@ -23,6 +23,166 @@ approved_by: "Morgan F, 2026-10-02, withdrawn from the universal set BestPractic
 strength:    decided
 ---
 ## Rule
+**"Booked" is stage 3 of the five-stage ladder ([promote](promote.md)): land
+the work on the landing branch, the shared save, where it won't be lost.**
+"Go update" (its older name, still working), "Approved", "Book", "Book it",
+"Shared Save" and "Promote 3" all mean the same. Read them for what the
+message means in its conversation, never as a string to match, and a clear
+yes in other words is the same yes ("Reading the phrases in full"). Asked for
+by a stage word, read it back as a stage first: *"Now Promote 3: Booked, the
+Shared Save -- moving `<branch>` onto staging (BestPractice)"*. It means
+what this file says today; an older copy anywhere narrows nothing ("What it
+authorizes"). The Detail section has the how and why under the headings
+named here, and the Story the incidents.
+
+1. **Take it as authorization, right there, with no second question:** sync
+   with origin, commit the pending work, and land it -- whatever finishing
+   the work actually needs. Where nothing needs doing, say so plainly
+   instead of making a commit to satisfy the phrase. A session with no
+   branch of its own names one with
+   [`tools/precedent_branch_name.py`](https://github.com/alex137/BestPractice/blob/staging/tools/precedent_branch_name.py),
+   never by hand ([act](act.md)).
+2. **Land on the landing branch**, which `python3
+   tools/precedent_branches.py --landing` names -- the person's
+   identity.json, then the repository's precedent.json, then `staging` --
+   never a repository's configured default just because it is configured
+   that way ("Where it lands"). **Say that branch out loud before pushing
+   or merging, every time.**
+3. **In a repository that vendors Precedent, run `python3
+   tools/precedent_merge_vendors.py` after committing and before the
+   push.** It never blocks the landing; its `VENDORS:` line goes in the
+   reply, and a NOT TAKEN reason is a question for the person ("The vendor
+   update").
+4. **Classify the change, then take its path.** The default lands it
+   straight on staging, with no pull request:
+
+       python3 tools/precedent_branches.py --land BRANCH
+
+   It brings `main`'s direct commits in first, runs the quick checks, and
+   ends `LAND RESULT: ...` ([promote](promote.md) says what it does step by
+   step). **A high-risk change goes through a pull request into staging
+   instead**, with `origin/staging` and `origin/main` merged into the work
+   first. High-risk is at least one of these four, and size and reach are
+   never the test ("The high-risk test in full"):
+   - **It touches enforcement or gating code**: a CI workflow,
+     [tools/precedent_check.py](https://github.com/alex137/BestPractice/blob/staging/tools/precedent_check.py),
+     [tools/leak_gate.py](https://github.com/alex137/BestPractice/blob/staging/tools/leak_gate.py),
+     [tools/verify_harness.py](https://github.com/alex137/BestPractice/blob/staging/tools/verify_harness.py),
+     a check under `tools/checks/` or
+     `local/tools/checks/`, a repository's own branch-restriction rule. The
+     pre-push guard [tools/landing_pr_guard.py](../tools/landing_pr_guard.py)
+     refuses these on a landing. An engine file or a materialized check
+     byte-identical to what was vendored is exempt; a workflow file never
+     is.
+   - **It changes a governance or authorization practice**: this file,
+     weak-yes, decision-strength, open-item-disposition, a repository's own
+     merge-target rule.
+   - **It is hard to reverse once live**: a force-push, a delete or
+     overwrite with no easy undo, credentials, billing or access, something
+     an outside party already depends on.
+   - **You are not confident it is none of these.** Default up, never down.
+
+   A direct, specific instruction about this one change overrides the
+   classification. Getting the work into main is [Produce](produce.md), a
+   separate step.
+5. **Say which path you took and why, in one clause**: *"landed directly
+   (content change, not gating code)"* or *"opened a PR (touches
+   tools/precedent_check.py, a gating check)"* ("Verifying and reporting").
+6. **Verify before reporting where the work went.** Fetch and confirm
+   `origin/<branch>` carries the commit; for a merge, quote `merged: true`
+   and the merge commit's SHA in the same turn. If auto mode refuses the
+   fetch after a merge, the check opens the next turn and the reply says
+   so. A commit only in the working copy is never reported as done. When
+   staging is ahead of main with this session's work, The Boildown gets one
+   plain, unbolded line, never a reason to keep the session open.
+
+**When it cannot run as asked** ("When a step is refused"):
+
+- **No phrase, and the sentence leaves genuine doubt:** say your reading
+  and get it confirmed before the push, the pull request or the merge.
+  Commit locally regardless. Never ask about a sentence that already reads
+  as a clear yes.
+- **A step this session cannot reach** (no push access, a refused
+  `add_repo`, a repository nobody attached): finish everything it can, then
+  write the rest as one
+  [prompt-please](https://github.com/alex137/BestPractice/blob/staging/practices/prompt-please.md)
+  prompt that carries the authorization. The receiving session merges only
+  as [relayed-authorization](relayed-authorization.md) allows. Reporting the
+  refusal and stopping is the one wrong answer.
+- **Claude Code's auto mode refused it:** say in one line that auto mode
+  stopped it, not this repository's rules, and ask again in words that
+  name it -- "Booked: land `<branch>` on staging" on the `--land` route,
+  "Merge PR #N into staging" on the pull-request route. Never route around
+  it.
+- **A branch another session made** is merged only once that session, or
+  the person, has said it is finished; when that cannot be settled, ask.
+
+## Detail
+"That was perfect. Go update", "Go update.", a lone line reading
+`GO UPDATE`, "go update it and tell me what broke", and "when the check
+passes, go update" all count. What does not is the word being used about
+something else -- "go update the branch, then look at the diff", "can you
+update TODO.md first", "go update your local clone before you start" --
+where `update` has its own object and is plainly not an instruction about
+the work in front of you.
+
+**`Approved` has the same shape and one more way to be about something
+else, because it is an ordinary adjective as well as a verb.** "Approved.",
+"Approved -- ship it", "that's approved, go" all count. What does not is the
+word modifying a noun that is not the work in front of you -- "the approved
+plan of record", "Alex has not approved that yet", "an approved practice
+source" -- or a question about approval rather than a grant of it, "has this
+been approved?". **The test is the same one the rest of this file uses: if
+you can tell what would be merged and the word is being said about it,
+merge it.** A message that says `approved` about work you have not yet shown
+him, where nothing is pending, is the one case worth a question -- and the
+question is *which* work, never whether the word meant what it said.
+
+**"Blocked" means a call came back refused, not that you expect one to.**
+`Go update` is not an invitation to go looking for reasons the merge might
+not be allowed; try the step, and hand off on what the tool actually said,
+quoting it. A restriction the repository itself declares on a branch is a
+different thing and is handed off nowhere -- the phrase authorizes a merge,
+it does not lift a branch rule, so a merge that waits for review goes on
+waiting for review.
+
+**High-risk reads narrowly, not generously — the opposite bias from the old
+trivial test.** "Fixed a bug in
+[tools/precedent_check.py](https://github.com/alex137/BestPractice/blob/staging/tools/precedent_check.py)",
+"changed what
+[tools/leak_gate.py](https://github.com/alex137/BestPractice/blob/staging/tools/leak_gate.py)
+enforces", "edited `go-update.md` itself" are high-risk, even at one line, even
+when the fix is obviously correct — because what they touch is the
+machinery that catches mistakes, or the rule that governs how changes
+land. "Fixed a typo in
+[README.md](https://github.com/alex137/BestPractice/blob/staging/README.md)",
+"reworded a confusing sentence", "added a new practice about doc-link
+formatting", "rewrote a function's internals without touching what calls
+it or what it's checked against" are not high-risk, however large the diff,
+because none of them touches enforcement, governance, or anything hard to
+reverse. **The test is never the size of the diff, and it is no longer
+"did the meaning change" — it is whether the change hits one of the four
+high-risk criteria in the Rule above.**
+
+**Once one of the two phrases is there, ask about the object, never about
+the phrasing.** The one question worth stopping for is *which* pending work
+is meant, and only when several unrelated branches are genuinely in play.
+Asking whether the words were meant as the command produces exactly the
+interruption the command exists to remove: if you can tell what would be
+merged, merge it. This is a different case from the phrase being absent
+altogether — there, the confirmation above is about whether the message
+authorizes anything at all, not about which branch it means.
+
+**This is shorthand for an authorization, never a new kind of permission.**
+It says the person has approved *this* merge; it does not widen what may be
+merged, and it does not survive into the next one. Where a repository
+restricts a particular branch -- a release branch, a pinned integration
+branch, a `main` behind review -- that restriction still holds, and
+`Go update` with no branch named means the branch the repository's own rules
+say routine work lands on.
+
+### Reading the phrases in full
+
 **"Booked" is this step's name. "Go update", "Approved", "Book", "Book it",
 "Shared Save" and "Promote 3" all mean the same thing**: land the work on
 the landing branch, the shared save, which `python3
@@ -46,6 +206,36 @@ arrives in, not as a string to match: "book it if there's anything to
 book; if not, promote", said after a day of landing and promoting, asks
 for exactly this, and a word missing from the vocabulary is a reason to
 read the recent plans and the thread, not to call it unknown.
+
+**`Approved` means the same thing.** Said of the work in front of you --
+as its own line, as a whole sentence, or as a clause accepting what you just
+proposed or showed -- it carries the identical authorization, the identical
+chain, and the identical branch-naming step. There is no weaker reading of
+it: it is not "noted", it is not "go ahead and I will merge it later", and it
+does not become a question about whether he meant the command.
+
+**`Go merge` is retired as a trigger.** Say `Go update` (or `Approved`)
+instead -- both carry the identical authorization, the identical chain,
+and the identical branch-naming step this file has always described. A
+message that still says "go merge" in plain English is read the way any
+intent is: if it plainly asks for this authorization, treat it as one, per
+the no-phrase-required paragraph below -- it is simply no longer one of the
+phrases guaranteed to be recognized on its own. For the case where the size
+call is already made and the PR should be skipped outright, the person says
+so ("push it directly"), and the push goes straight to the branch; the
+phrase that used to carry this, push-directly, was retired on 2026-09-30,
+since a direct push is already this step's default.
+
+**Neither of the two phrases is required for the authorization to exist —
+they are the unambiguous case, not the only case.** A message can plainly
+authorize a merge without any of them in it: "sold, ship it", "yes, let's
+do this", "that's exactly what I wanted, put it up" all read as this
+command to a reasonable person, and treating them as anything less is
+answering a clear yes with a question. **The phrases stay valuable because
+they remove the one thing intent-reading cannot: doubt.** Say one of them
+and the chain runs, full stop, no matter how the sentence around it reads.
+
+### What it authorizes
 
 If the message you are answering tells you to `Go update` --
 case-insensitive, **anywhere in the message**, as its own line, as a whole
@@ -83,6 +273,46 @@ declined it, or this file's own history narrows nothing. Those are records
 of earlier decisions, read only to investigate or to propose reconsidering
 the rule, and never while deciding whether to run it
 ([current-rule-governs](https://github.com/alex137/BestPractice/blob/staging/practices/current-rule-governs.md)).
+
+### Where it lands
+
+**Either path ends on the shared branch, never in the local clone.**
+`Go update` means make the change live: the default lands on the branch
+the repository's own rules say routine work lands on, and the full chain
+merges into that same branch -- in both cases a real branch on `origin`,
+and never a repository's *configured default* branch picked just because
+it is configured that way. That branch is the person's landing branch,
+and `python3 tools/precedent_branches.py --landing` names it: the person's own
+`landing_branch` in their identity.json first, then the repository's in
+its `precedent.json`, then `staging` (Morgan, 2026-09-27, strength:
+decided: *"have the individual repo take precedence over the others (if it
+set, use that)"*). On the ladder that is `staging`. A landing branch of
+`main` skips staging but never the checks, and still answers to the
+repository's own rule about main.
+
+**Landing on staging is `--land`.** It composes staging, what reached main
+directly, and the work in a throwaway worktree, runs the quick checks on
+the change, and pushes staging to that commit, never forced. **A high-risk
+change goes through a pull request into staging instead**: merge
+`origin/staging` and `origin/main` into the work first, since a pull
+request into staging is let through only when it already carries
+everything main has. Getting it into main is a separate step,
+[Produce](produce.md).
+
+### The vendor update
+
+**In a repository that vendors Precedent, the landing takes the vendor
+update with it.** After syncing with origin and committing, and before the
+push, run `python3 tools/precedent_merge_vendors.py`. Nothing behind, it says
+`VENDORS: current` in about the time a fetch takes. Behind, it runs Update
+Vendors from the BestPractice clone and either commits the result as a commit
+of its own, which lands with the work, or takes everything it wrote back and
+says why (`VENDORS: NOT TAKEN`). It never blocks the landing. Its `VENDORS:`
+line goes in the reply, and a NOT TAKEN reason is a question for the person,
+asked there (Alex, 2026-10-02: "Can we set up a system so merge also does
+vendor updates?").
+
+### The high-risk test in full
 
 **Classify the pending change before running that chain — and the default
 has flipped.** Until 2026-09-20 the default was the full chain, with a
@@ -152,28 +382,29 @@ changes:**
   ([checks-follow-the-tier](checks-follow-the-tier.md)) -- so
   verification never gets skipped, only the PR wrapper does.
 
-**Either path ends on the shared branch, never in the local clone.**
-`Go update` means make the change live: the default lands on the branch
-the repository's own rules say routine work lands on, and the full chain
-merges into that same branch -- in both cases a real branch on `origin`,
-and never a repository's *configured default* branch picked just because
-it is configured that way. That branch is the person's landing branch,
-and `python3 tools/precedent_branches.py --landing` names it: the person's own
-`landing_branch` in their identity.json first, then the repository's in
-its `precedent.json`, then `staging` (Morgan, 2026-09-27, strength:
-decided: *"have the individual repo take precedence over the others (if it
-set, use that)"*). On the ladder that is `staging`. A landing branch of
-`main` skips staging but never the checks, and still answers to the
-repository's own rule about main.
+**This is the standing default for how `Go update` (and its synonyms) are
+read when nothing else qualifies them — it does not override a direct,
+specific instruction about this one change.** Told to skip the PR on
+something that would otherwise count as high-risk, or to open one for something
+that would otherwise push straight through, that instruction governs; the
+classification above is only what runs in its absence.
 
-**Landing on staging is `--land`.** It composes staging, what reached main
-directly, and the work in a throwaway worktree, runs the quick checks on
-the change, and pushes staging to that commit, never forced. **A high-risk
-change goes through a pull request into staging instead**: merge
-`origin/staging` and `origin/main` into the work first, since a pull
-request into staging is let through only when it already carries
-everything main has. Getting it into main is a separate step,
-[Produce](produce.md).
+### Verifying and reporting
+
+**Say which path you took and why, in one clause, in the reply.** Not
+"pushed the fix" — *"pushed directly (content change, not gating code)"*
+or *"opened a PR (touches
+[tools/precedent_check.py](https://github.com/alex137/BestPractice/blob/staging/tools/precedent_check.py),
+a gating check)"*. A
+path taken without its reason is exactly as unreviewable as no reason at
+all.
+
+**Say the target branch before pushing or merging, every time --
+including on the direct-push default, which is now the common path.** It is
+spelled out here rather than left inside "usual conventions" because that is
+the step whose silent failure is expensive: a push or a merge onto the wrong
+branch, or a commit that never left the clone, looks identical to a correct
+one in the reply until somebody goes looking.
 
 **Staging ahead of main gets one plain line in The Boildown**, when what
 waits holds this session's own work -- not bolded, not urgent, for example *"Staging is 2 commits ahead of main; it
@@ -196,48 +427,7 @@ next turn, and the reply says it is still to come. Where the push cannot run fro
 blocked-step handoff below, said plainly; it is never a local commit
 reported as done.
 
-**This is the standing default for how `Go update` (and its synonyms) are
-read when nothing else qualifies them — it does not override a direct,
-specific instruction about this one change.** Told to skip the PR on
-something that would otherwise count as high-risk, or to open one for something
-that would otherwise push straight through, that instruction governs; the
-classification above is only what runs in its absence.
-
-**Say which path you took and why, in one clause, in the reply.** Not
-"pushed the fix" — *"pushed directly (content change, not gating code)"*
-or *"opened a PR (touches
-[tools/precedent_check.py](https://github.com/alex137/BestPractice/blob/staging/tools/precedent_check.py),
-a gating check)"*. A
-path taken without its reason is exactly as unreviewable as no reason at
-all.
-
-**`Approved` means the same thing.** Said of the work in front of you --
-as its own line, as a whole sentence, or as a clause accepting what you just
-proposed or showed -- it carries the identical authorization, the identical
-chain, and the identical branch-naming step. There is no weaker reading of
-it: it is not "noted", it is not "go ahead and I will merge it later", and it
-does not become a question about whether he meant the command.
-
-**`Go merge` is retired as a trigger.** Say `Go update` (or `Approved`)
-instead -- both carry the identical authorization, the identical chain,
-and the identical branch-naming step this file has always described. A
-message that still says "go merge" in plain English is read the way any
-intent is: if it plainly asks for this authorization, treat it as one, per
-the no-phrase-required paragraph below -- it is simply no longer one of the
-phrases guaranteed to be recognized on its own. For the case where the size
-call is already made and the PR should be skipped outright, the person says
-so ("push it directly"), and the push goes straight to the branch; the
-phrase that used to carry this, push-directly, was retired on 2026-09-30,
-since a direct push is already this step's default.
-
-**Neither of the two phrases is required for the authorization to exist —
-they are the unambiguous case, not the only case.** A message can plainly
-authorize a merge without any of them in it: "sold, ship it", "yes, let's
-do this", "that's exactly what I wanted, put it up" all read as this
-command to a reasonable person, and treating them as anything less is
-answering a clear yes with a question. **The phrases stay valuable because
-they remove the one thing intent-reading cannot: doubt.** Say one of them
-and the chain runs, full stop, no matter how the sentence around it reads.
+### When a step is refused
 
 **Where the phrase is absent and the sentence leaves genuine doubt, say
 your reading out loud and get it confirmed before running the push, the
@@ -251,13 +441,6 @@ interruption this practice exists to remove — it is for the sentence that
 could honestly go either way. Committing locally is never blocked on
 this: do that regardless, and hold only the steps that touch the shared
 branch until the reading is confirmed.
-
-**Say the target branch before pushing or merging, every time --
-including on the direct-push default, which is now the common path.** It is
-spelled out here rather than left inside "usual conventions" because that is
-the step whose silent failure is expensive: a push or a merge onto the wrong
-branch, or a commit that never left the clone, looks identical to a correct
-one in the reply until somebody goes looking.
 
 **A step you cannot perform hands off; it does not come back as a
 question.** If the push, the pull request or the merge is refused because
@@ -291,81 +474,6 @@ where.
 person, has said it is finished.** Its existence on the remote is not that
 (the 2026-09-29 case is in the Story). When the branch's status cannot be
 settled from its session or its pull request, ask before merging it.
-
-**In a repository that vendors Precedent, the landing takes the vendor
-update with it.** After syncing with origin and committing, and before the
-push, run `python3 tools/precedent_merge_vendors.py`. Nothing behind, it says
-`VENDORS: current` in about the time a fetch takes. Behind, it runs Update
-Vendors from the BestPractice clone and either commits the result as a commit
-of its own, which lands with the work, or takes everything it wrote back and
-says why (`VENDORS: NOT TAKEN`). It never blocks the landing. Its `VENDORS:`
-line goes in the reply, and a NOT TAKEN reason is a question for the person,
-asked there (Alex, 2026-10-02: "Can we set up a system so merge also does
-vendor updates?").
-
-## Detail
-"That was perfect. Go update", "Go update.", a lone line reading
-`GO UPDATE`, "go update it and tell me what broke", and "when the check
-passes, go update" all count. What does not is the word being used about
-something else -- "go update the branch, then look at the diff", "can you
-update TODO.md first", "go update your local clone before you start" --
-where `update` has its own object and is plainly not an instruction about
-the work in front of you.
-
-**`Approved` has the same shape and one more way to be about something
-else, because it is an ordinary adjective as well as a verb.** "Approved.",
-"Approved -- ship it", "that's approved, go" all count. What does not is the
-word modifying a noun that is not the work in front of you -- "the approved
-plan of record", "Alex has not approved that yet", "an approved practice
-source" -- or a question about approval rather than a grant of it, "has this
-been approved?". **The test is the same one the rest of this file uses: if
-you can tell what would be merged and the word is being said about it,
-merge it.** A message that says `approved` about work you have not yet shown
-him, where nothing is pending, is the one case worth a question -- and the
-question is *which* work, never whether the word meant what it said.
-
-**"Blocked" means a call came back refused, not that you expect one to.**
-`Go update` is not an invitation to go looking for reasons the merge might
-not be allowed; try the step, and hand off on what the tool actually said,
-quoting it. A restriction the repository itself declares on a branch is a
-different thing and is handed off nowhere -- the phrase authorizes a merge,
-it does not lift a branch rule, so a merge that waits for review goes on
-waiting for review.
-
-**High-risk reads narrowly, not generously — the opposite bias from the old
-trivial test.** "Fixed a bug in
-[tools/precedent_check.py](https://github.com/alex137/BestPractice/blob/staging/tools/precedent_check.py)",
-"changed what
-[tools/leak_gate.py](https://github.com/alex137/BestPractice/blob/staging/tools/leak_gate.py)
-enforces", "edited `go-update.md` itself" are high-risk, even at one line, even
-when the fix is obviously correct — because what they touch is the
-machinery that catches mistakes, or the rule that governs how changes
-land. "Fixed a typo in
-[README.md](https://github.com/alex137/BestPractice/blob/staging/README.md)",
-"reworded a confusing sentence", "added a new practice about doc-link
-formatting", "rewrote a function's internals without touching what calls
-it or what it's checked against" are not high-risk, however large the diff,
-because none of them touches enforcement, governance, or anything hard to
-reverse. **The test is never the size of the diff, and it is no longer
-"did the meaning change" — it is whether the change hits one of the four
-high-risk criteria in the Rule above.**
-
-**Once one of the two phrases is there, ask about the object, never about
-the phrasing.** The one question worth stopping for is *which* pending work
-is meant, and only when several unrelated branches are genuinely in play.
-Asking whether the words were meant as the command produces exactly the
-interruption the command exists to remove: if you can tell what would be
-merged, merge it. This is a different case from the phrase being absent
-altogether — there, the confirmation above is about whether the message
-authorizes anything at all, not about which branch it means.
-
-**This is shorthand for an authorization, never a new kind of permission.**
-It says the person has approved *this* merge; it does not widen what may be
-merged, and it does not survive into the next one. Where a repository
-restricts a particular branch -- a release branch, a pinned integration
-branch, a `main` behind review -- that restriction still holds, and
-`Go update` with no branch named means the branch the repository's own rules
-say routine work lands on.
 
 ## Why
 A standing phrase costs the person two words instead of a re-explanation in
@@ -649,6 +757,15 @@ Booked."* Chosen by the session under that delegation: the check became a
 `pre-push` hook this practice ships, the way act ships its branch guard,
 and a check the sync materialized stopped counting, since in a consumer
 every sync rewrites `tools/checks/`.
+
+**2026-10-31: the Rule cut to the steps.** It had grown to 2,782 words, and
+every Booked loads all of it. It now holds what a session does, in order, in
+804 (both counted with `wc -w` over the `## Rule` section); every paragraph
+it held moved word for word into Detail, under the headings the Rule names.
+Morgan: *"maybe we add to very deep check to always review like the 25% of
+all the rules that are the longest in that repo and shorten them like you
+did?"*, then *"use your judgment, and act booked produce"* (strength:
+assented).
 
 ## Install
 No mechanical check, and not for lack of trying: this governs how a chat
