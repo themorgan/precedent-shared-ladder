@@ -14,14 +14,14 @@ in_force_at: null
 supersedes:  []
 overrides:   null
 added:       "2026-10-19"
-approved_by: "Morgan F, 2026-10-19, moved from an individual set (there: Morgan, 2026-10-11 -- \"Maybe a practice here to use Haiku 5.5 for small tasks like transcription, summarizing internally etc\", then \"Please\" to the proposal)"
+approved_by: "Morgan F, 2026-10-19, moved from an individual set (there: Morgan, 2026-10-11 -- \"Maybe a practice here to use Haiku 5.5 for small tasks like transcription, summarizing internally etc\", then \"Please\" to the proposal); reworded 2026-10-31 to speak of the person who brings this set rather than in one person's voice, meaning unchanged, by the session under Morgan F's approval of that day (\"do your recommendations for all\", strength: assented)"
 strength:    decided
 ---
 ## Rule
 **A helper whose job is reading, summarizing, transcribing, sorting or
 pulling facts out of text runs on the smallest model**: pass `model: "haiku"`
 when spawning it (Haiku 5.5 as of 2026-10-11). The helper returns lines; the
-session that spawned it does the judging and the writing I will read.
+session that spawned it does the judging and the writing the person will read.
 
 **Small model, not small cost.** Every helper carries a fixed load before it
 does anything, about 100,000 tokens for a single tool call (measured
@@ -30,7 +30,7 @@ does anything, about 100,000 tokens for a single tool call (measured
 - **one helper per job**, never one per item or per system;
 - **few calls**: one search per source, filtered at the source, and open an
   item only when its title isn't enough;
-- **give me the cost** in the reply when it was a large job: tokens, tool
+- **give the person the cost** in the reply when it was a large job: tokens, tool
   calls, minutes, from the helper's own report.
 
 **A helper's "save it exactly" is a retype, not a copy.** A helper writes
@@ -58,3 +58,11 @@ says it about helpers, which that rule's occasion never reaches.
 reported it had "retyped" it and that "the byte-for-byte match is not
 verified"; the harness had already saved the same result to a file that a
 plain copy would have carried intact.
+
+2026-10-31: the rule still spoke in the first person ("the writing I will read", "give me the cost")
+twelve days after it moved here from an individual set. The very
+deep check of 2026-10-30 found it, and the session reworded it to
+speak of the person who brings this set, under Morgan's approval of
+2026-10-31 ("do your recommendations for all", strength:
+assented). The meaning is unchanged; quoted words stay as they
+were said.

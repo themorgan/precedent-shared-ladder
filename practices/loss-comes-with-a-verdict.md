@@ -1,12 +1,12 @@
 ---
 slug:        loss-comes-with-a-verdict
-title:       Anything I'm told will be lost comes with a verdict and my action
+title:       Anything the person is told will be lost comes with a verdict and their action
 tier:        on-demand
 severity:    default
 applies_to:  ["**"]
-occasion:    "telling me something will be lost, discarded, or go away with the container, clone or session"
+occasion:    "telling the person something will be lost, discarded, or go away with the container, clone or session"
 gates:       ["reply"]
-index_clause: "never just 'it goes away': say it's fine to lose and why, or how I keep it"
+index_clause: "never just 'it goes away': say it's fine to lose and why, or how they keep it"
 index_required: true
 checked_by:  null
 defines:     []
@@ -16,11 +16,11 @@ in_force_at: null
 supersedes:  []
 overrides:   null
 added:       "2026-10-19"
-approved_by: "Morgan F, 2026-10-19, moved from an individual set (there: Morgan F, 2026-09-26, asked for it outright after a reply said the session's own clones held edits that 'go away with the container': \"update your system to ALWAYS ALWAYS give me a recommendations on what to do whenever you tell me something will go away with the container/clone/session\" -- \"Go update\".)"
+approved_by: "Morgan F, 2026-10-19, moved from an individual set (there: Morgan F, 2026-09-26, asked for it outright after a reply said the session's own clones held edits that 'go away with the container': \"update your system to ALWAYS ALWAYS give me a recommendations on what to do whenever you tell me something will go away with the container/clone/session\" -- \"Go update\".); reworded 2026-10-31 to speak of the person who brings this set rather than in one person's voice, meaning unchanged, by the session under Morgan F's approval of that day (\"do your recommendations for all\", strength: assented)"
 strength:    decided
 ---
 ## Rule
-**Never tell me something will be lost without telling me whether that's
+**Never tell the person something will be lost without telling them whether that's
 okay.** When a reply says that edits, files, commits, branches or anything
 else will go away with the container, the clone or the session -- or are
 "not committed or pushed anywhere" -- the same sentence carries one of two
@@ -30,14 +30,14 @@ verdicts:
   fine: the same change is already on the landing branch in #216."* The reason
   has to be checked, not assumed -- where the copy is, or why nobody needs it.
 - **Keep it, and the action.** *"They'll be lost unless we push them -- I'm
-  pushing now"*, or, when it's mine to do, *"you need to merge #42 before
-  archiving."* Something only I can do is named as my action, in plain words.
+  pushing now"*, or, when it's the person's to do, *"you need to merge #42 before
+  archiving."* Something only the person can do is named as their action, in plain words.
 
 **Where you can make it safe yourself, do that instead of reporting it** --
 push it, merge it, copy it where it belongs. The verdict is for what is left.
 
 A bare *"they aren't committed anywhere and go away with the container"* is
-the failure: it hands me a fact with no decision attached, and I can't tell
+the failure: it hands the person a fact with no decision attached, and they can't tell
 whether it's reassurance or a warning.
 
 ## Detail
@@ -58,7 +58,7 @@ sentence: diff the file against the branch that should hold it, or run
 A statement that something will vanish is a warning in form and says
 nothing in content until someone judges it. The session is the one holding
 the evidence -- it knows what is in the clone and what is already on the
-branch -- so leaving the judgment to me leaves it with the person who can
+branch -- so leaving the judgment to the person leaves it with the one who can
 least afford to check. `so-what-test` keeps warnings in a reply; this is
 what a warning about loss has to contain to be worth keeping.
 
@@ -71,6 +71,14 @@ identical to what had just merged into `pre-staging`, so losing them was
 fine -- but the reply never said so. Morgan: *"I NEVER understand when you
 say 'those edits aren't committed or pushed anywhere, and they go away with
 this container' because I DON'T KNOW IF WE WANT THAT OR NOT."*
+
+2026-10-31: the rule still spoke in the first person ("Never tell me", "my action")
+twelve days after it moved here from an individual set. The very
+deep check of 2026-10-30 found it, and the session reworded it to
+speak of the person who brings this set, under Morgan's approval of
+2026-10-31 ("do your recommendations for all", strength:
+assented). The meaning is unchanged; quoted words stay as they
+were said.
 
 ## Install
 No mechanical check. The subject is a sentence in a chat reply, and whether

@@ -1,10 +1,10 @@
 ---
 slug:        promote-only
-title:       Staging and main take my work by promotion only
+title:       Staging and main take the person's work by promotion only
 tier:        on-demand
 severity:    default
 applies_to:  []
-occasion:    "pushing to staging or main, or merging a pull request into either, in any repository I work in"
+occasion:    "pushing to staging or main, or merging a pull request into either, in any repository the person works in"
 gates:       []
 index_clause: "staging and main only by Promote or a staging-to-main PR; never a direct push"
 checked_by:  null
@@ -15,16 +15,16 @@ requires:    ["ladder"]
 supersedes:  []
 overrides:   null
 added:       "2026-10-19"
-approved_by: "Morgan F, 2026-10-27 -- a red main's fix goes straight to main, then back into staging: \"Red or urgent issues can go straight to main then integrated back to staging. Please fix the wording so there is no contradiction.\" (strength: decided). Morgan F, 2026-10-19, moved from an individual set (there: Morgan F, 2026-09-25)"
+approved_by: "Morgan F, 2026-10-27 -- a red main's fix goes straight to main, then back into staging: \"Red or urgent issues can go straight to main then integrated back to staging. Please fix the wording so there is no contradiction.\" (strength: decided). Morgan F, 2026-10-19, moved from an individual set (there: Morgan F, 2026-09-25); reworded 2026-10-31 to speak of the person who brings this set rather than in one person's voice, meaning unchanged, by the session under Morgan F's approval of that day (\"do your recommendations for all\", strength: assented)"
 strength:    decided
 ---
 ## Rule
-**My work reaches staging and main only through the ladder's own tools.**
+**The person's work reaches staging and main only through the ladder's own tools.**
 It lands on `staging`, the landing branch
 (`python3 tools/precedent_branches.py --landing`), by `--land`, with the
 quick checks. `main` takes `staging` by a pull request from Promote's
-throwaway copy of it (`<date>-<me>-promote-to-main-<id>`), never from `staging` itself. A
-session working for me never pushes straight to `staging` or `main`, and
+throwaway copy of it (`<date>-<user>-promote-to-main-<id>`), never from `staging` itself. A
+session working for them never pushes straight to `staging` or `main`, and
 never merges a pull request into either unless the gate allows its head:
 a `--land` into `staging`, and `staging`'s `promote-to-main` copy into
 `main`.
@@ -56,7 +56,7 @@ would be a hole in it; the red-main exception covers the case where `main`
 itself is broken (Morgan, 2026-10-27, on this choice: "do what you think is
 best and recommend. Approved.", strength: assented).
 
-**A third exception: my own content goes straight to `main`.** A change
+**A third exception: the person's own content goes straight to `main`.** A change
 whose every file is under the repository's `content_paths` (its
 `precedent.json`), such as an "Add" to a personal to-do list, may be pushed
 or merged straight into `main`; `staging` then takes it from `main` the
@@ -64,9 +64,9 @@ usual way, since a landing carries `main`'s direct work. Anything else in
 the same change, `precedent.json` included, and the gates refuse it as
 before.
 
-This is my rule, not everyone's. Other people may not use the tiers this
-way, so it is turned on by `"promote_only": true` in my own
-`identity.json` and binds only sessions working for me.
+This is a per-person rule, not everyone's. Other people may not use the tiers this
+way, so it is turned on by `"promote_only": true` in the person's own
+`identity.json` and binds only sessions working for someone who set it.
 
 ## Detail
 The push gate and the merge gate both enforce it. With the setting on,
@@ -81,7 +81,7 @@ branch.
 `Promote` itself pushes from inside [`precedent_branches.py`](https://github.com/alex137/BestPractice/blob/staging/tools/precedent_branches.py), where no gate
 sees it, so it is never refused.
 
-**It outranks `go-update`'s `main` exception for me.** An ask from me to
+**It outranks `go-update`'s `main` exception for the person.** An ask from them to
 push or merge straight into `main` lands on the landing branch and is
 followed by a Promote; say so in the reply's first line (current-rule-governs)
 rather than letting the gate refuse the push.
@@ -90,13 +90,13 @@ rather than letting the gate refuse the push.
 deliberate (BestPractice's [`precedent_source_bootstrap.py`](https://github.com/alex137/BestPractice/blob/staging/tools/precedent_source_bootstrap.py)): the clone is
 what a session reads its practices from, and a clone on another branch once
 read an older tree and nearly wrote it over newer committed text. When a
-session edits one of my sources, it commits on a branch of its own and
+session edits one of the person's sources, it commits on a branch of its own and
 lands it on that source's landing branch, then puts the clone back on
 `main`; the gate catches a push straight to a tier when it forgets.
 
 ## Why
 Because a direct push skips the batching that makes `Promote` worth having.
-Nothing tells me that work skipped the middle step, and the next Promote
+Nothing tells the person that work skipped the middle step, and the next Promote
 reports "nothing to promote" for a change that never passed through it.
 
 ## Story
@@ -106,10 +106,10 @@ landing branch was `pre-staging`, `Promote` moved work to `staging` with
 the full check, and the gate let a pull request from `pre-staging` into
 `staging` through.
 
-2026-09-25. I asked how some changes got straight to `main` while I was
+2026-09-25. Morgan asked how some changes got straight to `main` while he was
 trying to run everything through `pre-staging`, then `staging`, then `main`.
 In this repository alone, five changes reached `main` that day without
-passing `pre-staging`: three commits from one session that had set my
+passing `pre-staging`: three commits from one session that had set his
 `landing_branch` to `pre-staging` minutes before, a commit adding two
 practices, and a pull request opened against `main` because it was the
 default branch. The causes were three. This repository has no separate
@@ -118,26 +118,34 @@ sits on `main`, so a session commits there without deciding to. And the
 push gate only chose how hard to test by branch: a push to `main` got the
 full check, passed, and went through.
 
-Me, the same day: *"Yes do this but please make this an INDIVIDUAL rule for
+Morgan, the same day: *"Yes do this but please make this an INDIVIDUAL rule for
 me, because I believe that Alex and others won't necessarily use this
 system."*
 
 2026-10-08. A session installing Precedent into a brand-new repository
 had no `main` to open a pull request into and no tier to promote from.
-Me: *"Why not install it straight to main?"* (`strength: decided`). That
+Morgan: *"Why not install it straight to main?"* (`strength: decided`). That
 became the first-install exception.
 
 2026-10-11. A Produce turned `main` red, and the session's fix was refused
 straight into `main`; it went through `staging` and a second Produce
-instead, one extra pull request. I had forgotten this rule; asked, I
+instead, one extra pull request. Morgan had forgotten this rule; asked, he
 approved letting a fix for a red `main` go straight there
 (`strength: assented`). That became the red-main exception.
 
-2026-10-13. Adding items to my personal to-do list went through `staging`
-and a Produce like code. Me: *"since the "Add" is just _pure content_, it
+2026-10-13. Adding items to his personal to-do list went through `staging`
+and a Produce like code. Morgan: *"since the "Add" is just _pure content_, it
 shouldn't need to go through staging ... I just want to update lists
 quickly and easily"* (`strength: decided`). That became the content
 exception, read from `content_paths`.
+
+2026-10-31: the rule still spoke in the first person ("my work", "This is my rule")
+twelve days after it moved here from an individual set. The very
+deep check of 2026-10-30 found it, and the session reworded it to
+speak of the person who brings this set, under Morgan's approval of
+2026-10-31 ("do your recommendations for all", strength:
+assented). The meaning is unchanged; quoted words stay as they
+were said.
 
 ## Install
 Nothing to install beyond the setting: `"promote_only": true` in this

@@ -14,18 +14,18 @@ in_force_at: null
 supersedes:  []
 overrides:   null
 added:       "2026-10-19"
-approved_by: "Morgan F, 2026-10-19, moved from an individual set (there: Morgan F, 2026-09-25)"
+approved_by: "Morgan F, 2026-10-19, moved from an individual set (there: Morgan F, 2026-09-25); reworded 2026-10-31 to speak of the person who brings this set rather than in one person's voice, meaning unchanged, by the session under Morgan F's approval of that day (\"do your recommendations for all\", strength: assented)"
 strength:    decided
 ---
 ## Rule
-**GitHub Actions minutes are scarce, and I pay for every one of them.** A
+**GitHub Actions minutes are scarce, and the person pays for every one of them.** A
 workflow that runs when it did not need to is a defect, the same as a bug.
 It is never a harmless convenience. **Every workflow, and every piece of
 work that will push to a repo that has workflows, is designed to minimize
 minutes from the first commit.** Don't retrofit it after the bill arrives.
-How to answer me when I raise the cost is
+How to answer the person when they raise the cost is
 `cost-concern-face-value`. This rule is about
-not giving me the reason to raise it.
+not giving them the reason to raise it.
 
 **Count jobs, not seconds.** GitHub bills each job rounded **up to a whole
 minute** (as of 2026-09). A job that runs for one second costs a minute. So
@@ -95,3 +95,11 @@ push triggers. The recurring cost went to **one minute a week**, plus one
 for each config change merged to `main`. That is the floor for a weekly job
 with no server. Everything above it had been designed in by default and had
 to be taken out by hand.
+
+2026-10-31: the rule still spoke in the first person ("I pay", "answer me")
+twelve days after it moved here from an individual set. The very
+deep check of 2026-10-30 found it, and the session reworded it to
+speak of the person who brings this set, under Morgan's approval of
+2026-10-31 ("do your recommendations for all", strength:
+assented). The meaning is unchanged; quoted words stay as they
+were said.

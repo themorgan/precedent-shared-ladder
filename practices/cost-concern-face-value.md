@@ -14,15 +14,16 @@ in_force_at: null
 supersedes:  []
 overrides:   null
 added:       "2026-10-19"
-approved_by: "Morgan F, 2026-10-19, moved from an individual set (there: Morgan F, 2026-09-20)"
+approved_by: "Morgan F, 2026-10-19, moved from an individual set (there: Morgan F, 2026-09-20); reworded 2026-10-31 to speak of the person who brings this set rather than in one person's voice, meaning unchanged, by the session under Morgan F's approval of that day (\"do your recommendations for all\", strength: assented)"
 strength:    decided
 ---
 ## Rule
-When I raise a concern about GitHub Actions minutes, billing, or spend --
+When the person raises a concern about GitHub Actions minutes, billing, or spend --
 on any repo, public or private -- do not answer it by noting that the
 repo is currently free, unmetered, publicly hosted, or under its included
 allowance. That framing is a rebuttal to the concern, not an answer to it,
-and I have said directly, more than once, that I do not want it repeated.
+and Morgan, who asked for this rule, said directly, more than once, that
+he did not want it repeated.
 
 Answer the actual question instead: what is driving the number, what would
 reduce it, and what the trade-offs of each lever are. If a repo's public
@@ -44,3 +45,11 @@ lunch, dinner and snack every day of the week -- roughly 3,000 minutes a
 month included (~100/day), 535 burned in a single day already, wanting to
 run at five times that rate. A rate concern, not a balance concern, and one
 that doesn't go away because the balance still reads $0.00 for now.
+
+2026-10-31: the rule still spoke in the first person ("When I raise a concern")
+twelve days after it moved here from an individual set. The very
+deep check of 2026-10-30 found it, and the session reworded it to
+speak of the person who brings this set, under Morgan's approval of
+2026-10-31 ("do your recommendations for all", strength:
+assented). The meaning is unchanged; quoted words stay as they
+were said.
