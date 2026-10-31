@@ -32,7 +32,8 @@ Never open a handoff because you inferred this session was ending. *"I will then
 
 **Establishing that THIS session cannot do the work is necessary and not sufficient. Before a session is spawned, check whether one already covers it.** Run `list_sessions` and match on the target repository. If a live session is already on that work, do not spawn: name it and tell the person to continue there, which is [`dont-race-another-window`](https://github.com/alex137/BestPractice/blob/staging/practices/dont-race-another-window.md) applied to a window that does not exist yet. **A BLOCKED session is the sharpest case and the easiest to get wrong** -- one waiting on an answer from the person needs the answer, not a sibling, and spawning beside it buys a second branch on the same files while the first sits unanswered. Send the person to it instead.
 
-The check has to happen here, at the moment of spawning, because there is no later point where it is possible: a session spawned into a repository this one could not attach cannot enumerate that repository's other sessions either, so the burden cannot be passed downstream. This is the same move as the capability check above -- measure rather than assume -- asked about a different question. That one asks whether this session CAN do it; this one asks whether it is ALREADY being done, and satisfying the first says nothing about the second.
+The check has to happen at the moment of spawning, and nowhere later
+("Why the check happens at the spawn").
 
 **A handoff that tells the new session to attach another repository says what to do when the attach is refused**: do the part it can reach and report the rest plainly, or have the person start the session with every repository selected. An attach asked for inside a seeded prompt can be refused by that session's own permission check even where the owners allow it ([`prompt-please`](https://github.com/alex137/BestPractice/blob/staging/practices/prompt-please.md), Detail, 2026-10-20); a seed that assumes it succeeds strands half the work.
 
@@ -46,6 +47,10 @@ A handoff is normally **partial**, and that is the point. Three open items, one 
 **The cost is asymmetric, and it lands entirely on the person.** Attempting something you turn out not to be able to do costs one refused command and ten seconds. Handing them something you could have done costs them a window, a paste, a fresh session's ramp-up, and — the part the rule exists for — the routing. Morgan, who asked for it, had on the order of a hundred tabs open. Working out which of them is rooted in what, so the person can decide where your instructions should go, is the specific chore this rule exists to stop generating.
 
 This is the same shape as [`fresh-before-write`](https://github.com/alex137/BestPractice/blob/staging/practices/fresh-before-write.md)'s core move, applied to capability instead of freshness: **measure the thing rather than assume it**, because the assumption fails silently and the measurement is cheap. There, a session assumed its checkout was current; here, a session assumes it is fenced out. Both are one command away from knowing.
+
+### Why the check happens at the spawn
+
+The check has to happen here, at the moment of spawning, because there is no later point where it is possible: a session spawned into a repository this one could not attach cannot enumerate that repository's other sessions either, so the burden cannot be passed downstream. This is the same move as the capability check above -- measure rather than assume -- asked about a different question. That one asks whether this session CAN do it; this one asks whether it is ALREADY being done, and satisfying the first says nothing about the second.
 
 ## Why
 Morgan, 2026-09-11, raising this himself and framing it as standing — "now and always":
@@ -78,6 +83,14 @@ speak of the person who brings this set, under Morgan's approval of
 2026-10-31 ("do your recommendations for all", strength:
 assented). The meaning is unchanged; quoted words stay as they
 were said.
+
+**2026-10-31: the Rule cut to what a session does.** It had grown to
+617 words; it now holds 540 (both counted with `wc -w` over the
+`## Rule` section), and every paragraph it no longer holds moved word for
+word into Detail, under the heading the Rule names. Morgan: *"maybe we add
+to very deep check to always review like the 25% of all the rules that are
+the longest in that repo and shorten them like you did?"*, then *"use your
+judgment, and act booked produce"* (strength: assented).
 
 ## Install
 No mechanical check, same class as `the-boildown` and `audience-register`: the artifact is the text of a chat reply, which this repository does not hold and a repo-scoped check script cannot read. Nothing distinguishes, after the fact, a handoff that correctly carried two blocked items from one that should have carried one — both leave the same absence of a commit behind.
