@@ -418,10 +418,21 @@ def _engine_commit_env(tmp):
     return ambient, person, person_git
 
 
+def _empty_gitconfig():
+    """A new, empty file for GIT_CONFIG_GLOBAL, never os.devnull: one `git
+    config --global` under GIT_CONFIG_GLOBAL=/dev/null replaces the null
+    device with an ordinary file (BestPractice's
+    gotcha-2026-10-10-git-config-global-with-dev-null-replaces-dev-null,
+    which happened again on 2026-10-31)."""
+    fd, path = tempfile.mkstemp(prefix='gitconfig-', dir=str(_ASM))
+    os.close(fd)
+    return path
+
+
 def _fixture_git_env():
     return dict(os.environ, GIT_AUTHOR_NAME='F', GIT_AUTHOR_EMAIL='f@x',
                 GIT_COMMITTER_NAME='F', GIT_COMMITTER_EMAIL='f@x',
-                GIT_CONFIG_GLOBAL=os.devnull, PRECEDENT_ALLOW_ANY_AUTHOR='1')
+                GIT_CONFIG_GLOBAL=_empty_gitconfig(), PRECEDENT_ALLOW_ANY_AUTHOR='1')
 
 
 def _stale_ref_fixture_env(tmp):
@@ -2372,7 +2383,7 @@ def check_ladder_test_session_and_the_two_ladder_checks():
                                        'path': str(owner)}]}
         _genv = dict(os.environ, GIT_AUTHOR_NAME='F', GIT_AUTHOR_EMAIL='f@x',
                      GIT_COMMITTER_NAME='F', GIT_COMMITTER_EMAIL='f@x',
-                     GIT_CONFIG_GLOBAL=os.devnull, PRECEDENT_ALLOW_ANY_AUTHOR='1')
+                     GIT_CONFIG_GLOBAL=_empty_gitconfig(), PRECEDENT_ALLOW_ANY_AUTHOR='1')
         for d, man, cfg in (
                 (plain, {'level': 'shared', 'provides': []}, declares_owner),
                 (ladder, {'level': 'shared', 'provides': ['ladder']}, None),
