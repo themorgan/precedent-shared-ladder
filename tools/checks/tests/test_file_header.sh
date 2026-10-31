@@ -4,6 +4,10 @@
 # (commit-identity.sh, 2026-09-07) reaches the throwaway repositories
 # this test builds and would refuse them.
 export PRECEDENT_ALLOW_ANY_AUTHOR=1
+# Fixture commits skip the machine's global commit hooks too: they are
+# throwaway repositories, and running every hook on each of their commits
+# was most of this test's time (2026-10-31 test review).
+export GIT_CONFIG_COUNT=1 GIT_CONFIG_KEY_0=core.hooksPath GIT_CONFIG_VALUE_0=/dev/null
 # The same backstop runs bootstrap/pre-commit-fix, which would bump the very
 # headers these cases leave unbumped on purpose.
 export PRECEDENT_SKIP_COMMIT_FIX=1
