@@ -8,17 +8,33 @@ Scope: change, over every markdown file tracked in the repo (applies_to
 clause) once its first line matches the format below -- untouched files
 that never had one are not required to grow one; that's a per-edit choice,
 not a repo-wide sweep, per the practice's own Detail section. A line has
-to both start "<!-- Last updated:" *and* name Morgan to count as an
-attempt at this header -- vendored third-party content (e.g. a consuming
-repo's process/upstream/ tree) can have its own, different, complete
-attribution convention that happens to share the prefix; that's not this
-practice's business and isn't flagged as malformed.
+to both start "<!-- Last updated:" *and* either match the format exactly
+or name the person this session works for to count as an attempt at this
+header -- vendored third-party content (e.g. a consuming repo's
+process/upstream/ tree) can have its own, different, complete attribution
+convention that happens to share the prefix; that's not this practice's
+business and isn't flagged as malformed.
+
+WHOSE NAME AND ZONE (2026-10-31). The header names the person who made the
+edit and the place of their zone, both read from their own identity.json
+through the engine's precedent_identity.declared_identity(): a
+PRECEDENT_COMMIT_* override, this repo's own identity.json, or the
+individual set the user-level config names. This script used to spell one
+person's name and city as constants, in a public set any team may declare.
+The check itself needs nobody: a header in the exact format is judged for a
+rising N whoever it names, so it runs the same in CI and in a shared repo.
+Only two things need the person -- calling a near-miss line "malformed"
+(it must name them) and writing a stamp -- and where nobody resolves, the
+first is skipped and `--fix` refuses rather than writing a name or a place
+it does not know.
 
 Two things are checked mechanically for every file that does carry it:
 
 1. Format -- the first line must match the header exactly:
-   <!-- Last updated: YYYY-MM-DD HH:MM:SS (Buenos Aires) by Morgan F, to version N -->
-   with N a plain positive integer.
+   <!-- Last updated: YYYY-MM-DD HH:MM:SS (PLACE) by NAME, to version N -->
+   with N a plain positive integer; PLACE is the last part of a zone name
+   with underscores as spaces (America/New_York reads
+   "New York"), and NAME is the person's declared name.
 
 2. Version continuity, against this file's own content in the parent
    commit (HEAD~1) where available. **N is MONOTONIC, not a successor
@@ -45,10 +61,11 @@ Two things are checked mechanically for every file that does carry it:
 3. `--fix` repairs the WORKING TREE before the commit is made, which is the
    only moment a repair is possible: for every tracked markdown file whose
    body differs from HEAD and whose first line carries this header, the line
-   is rewritten with the current Buenos Aires timestamp and N set past the
-   HEAD version. Where the zone cannot be resolved -- `precedent_time.py`
-   not importable -- it stamps NOTHING and exits non-zero rather than
-   guessing; see `_stamp()` for why guessing is the worse of the two. It stamps a malformed header into the right format too, and
+   is rewritten with the current time in the person's zone, their place and
+   name, and N set past the HEAD version. Where the person cannot be
+   resolved -- `precedent_identity.py` not importable, or no identity
+   declared, or one without a name or a loadable zone -- it stamps NOTHING
+   and exits non-zero rather than guessing; see `_stamp()` for why guessing is the worse of the two. It stamps a malformed header into the right format too, and
    forces a brand-new file's header to version 1. It also catches up a file
    whose body has NOT changed if HEAD's own commit is itself the violation
    -- content changed with no bump, or a backwards version -- which is what
@@ -86,12 +103,14 @@ SOURCE_ROOT = pathlib.Path(__file__).resolve().parent.parent.parent
 ROOT = pathlib.Path(os.environ.get("PRECEDENT_CHECK_ROOT") or SOURCE_ROOT)
 PRACTICE_FILE = SOURCE_ROOT / "practices" / "file-header.md"
 
+# Any name and any place: the format is the convention, and whose header it
+# is never changes how its N is judged (see the module docstring).
 HEADER_RE = re.compile(
     r"^<!-- Last updated: (\d{4}-\d{2}-\d{2}) (\d{2}):(\d{2}):(\d{2}) "
-    r"\(Buenos Aires\) by Morgan F, to version (\d+) -->$"
+    r"\((?P<place>[^()]+)\) by (?P<name>[^,]+), to version (?P<n>\d+) -->$"
 )
-HEADER_FMT = ("<!-- Last updated: {stamp} (Buenos Aires) "
-              "by Morgan F, to version {n} -->")
+HEADER_FMT = ("<!-- Last updated: {stamp} ({place}) "
+              "by {name}, to version {n} -->")
 # How the violation messages tell a session to repair this. Written as the
 # path a session actually types, not as __file__, which in a materialized
 # consumer is an absolute path nobody would paste.
@@ -101,14 +120,98 @@ REL_SELF = "tools/checks/check_file_header.py"
 HEADER_ATTEMPT_RE = re.compile(r"^<!--\s*Last updated:", re.IGNORECASE)
 
 
+# The engine's tools directories, in the order every lookup here tries them.
+def _engine_dirs() -> tuple:
+    return (ROOT / "tools", ROOT / "process" / "upstream" / "tools",
+            pathlib.Path(__file__).resolve().parent.parent,
+            SOURCE_ROOT / "tools")
+
+
+def _import_engine(module: str):
+    for _d in _engine_dirs():
+        if (_d / f"{module}.py").is_file():
+            if str(_d) not in sys.path:
+                sys.path.insert(0, str(_d))
+            break
+    return __import__(module)
+
+
+class PersonUnresolved(Exception):
+    """Nobody's name and zone resolve, so nothing can be stamped."""
+
+
+def person() -> dict:
+    """-> {'name', 'zone', 'place'} for the person this session works for,
+    from their own identity.json (precedent_identity.declared_identity), or
+    raise PersonUnresolved saying why. Never a constant: this set is public
+    and shared, and the header names whoever made the edit."""
+    try:
+        pid = _import_engine("precedent_identity")
+    except Exception as exc:
+        raise PersonUnresolved(
+            "precedent_identity.py is not importable from this checkout, so "
+            "whose name and zone the header carries cannot be resolved. Looked "
+            "in %s." % ", ".join(str(d) for d in _engine_dirs())) from exc
+    try:
+        ident = pid.declared_identity(ROOT)
+    except Exception as exc:
+        raise PersonUnresolved(
+            "no identity resolves here (%s). The header names the person who "
+            "made the edit and their zone, from their own identity.json; with "
+            "nobody declared there is no name to write. Attach your individual "
+            "set, or set PRECEDENT_COMMIT_EMAIL, PRECEDENT_COMMIT_NAME and "
+            "PRECEDENT_COMMIT_TZ." % exc) from exc
+    name = (ident.get("name") or "").strip()
+    zone = (ident.get("timezone") or "").strip()
+    where = ident.get("source") or "the declared identity"
+    if not name or "," in name:
+        raise PersonUnresolved(
+            "the identity from %s declares no usable name (%r); the header "
+            "has to say who made the edit." % (where, name))
+    try:
+        from zoneinfo import ZoneInfo
+        ZoneInfo(zone)
+    except Exception as exc:
+        raise PersonUnresolved(
+            "the identity from %s declares no loadable timezone (%r); the "
+            "header names the place its time is in." % (where, zone)) from exc
+    return {"name": name, "zone": zone, "place": place_of(zone)}
+
+
+def place_of(zone: str) -> str:
+    """The place a header names for a zone: its last part, underscores as
+    spaces -- America/New_York reads "New York"."""
+    return zone.rsplit("/", 1)[-1].replace("_", " ")
+
+
+_PERSON_NAME = ...   # resolved on first use; None when nobody resolves
+
+
+def _person_name() -> str | None:
+    global _PERSON_NAME
+    if _PERSON_NAME is ...:
+        try:
+            _PERSON_NAME = person()["name"]
+        except Exception:
+            _PERSON_NAME = None
+    return _PERSON_NAME
+
+
 def is_header_attempt(line: str) -> bool:
     # A "Last updated:" prefix alone isn't enough to call a line an attempt
     # at *this* header format -- vendored third-party content (e.g. a
     # consuming repo's process/upstream/ tree) can carry its own, different,
     # complete attribution convention that happens to start the same way.
     # That's not this practice's business and shouldn't be flagged as
-    # malformed just for not saying "Morgan F". Require the name too.
-    return bool(HEADER_ATTEMPT_RE.match(line)) and "morgan" in line.lower()
+    # malformed. So a line that is not in the exact format counts only when
+    # it names the person this session works for; with nobody resolved,
+    # only the exact format counts.
+    if not HEADER_ATTEMPT_RE.match(line):
+        return False
+    if HEADER_RE.match(line):
+        return True
+    name = _person_name()
+    return bool(name) and name.lower() in line.lower()
 
 
 
@@ -360,7 +463,7 @@ def find_violations() -> list[str]:
             findings.append(f"{path}: first line looks like the header but doesn't match the required format: {first!r}")
             continue
 
-        version = int(m.group(5))
+        version = int(m.group("n"))
         body = "\n".join(lines[1:])
 
         # Read the parent side at the path this file HAD then, not the path
@@ -418,7 +521,7 @@ def find_violations() -> list[str]:
                 findings.append(f"{path}: header is new (parent revision carried none) but starts at version {version}, expected 1")
             continue
 
-        parent_version = int(parent_m.group(5))
+        parent_version = int(parent_m.group("n"))
         parent_body = "\n".join(parent_lines[1:])
 
         if body != parent_body and version <= parent_version:
@@ -446,7 +549,7 @@ def _version_of(line: str) -> int | None:
     """
     m = HEADER_RE.match(line)
     if m:
-        return int(m.group(5))
+        return int(m.group("n"))
     if is_header_attempt(line):
         loose = re.search(r"version (\d+)", line)
         if loose:
@@ -454,59 +557,48 @@ def _version_of(line: str) -> int | None:
     return None
 
 
-class ZoneUnresolved(Exception):
-    """`precedent_time.py` is not reachable, so `--fix` will not guess."""
+class ZoneUnresolved(PersonUnresolved):
+    """Kept as the name callers knew: `--fix` will not guess a person."""
 
 
-def _stamp() -> str:
-    """Now, in Buenos Aires, as the header spells it.
+def _stamp() -> dict:
+    """Now, in the person's zone, with their place and name: what one run
+    writes into every header it stamps.
 
-    THE ZONE IS NOT HARDCODED HERE and must not be. `precedent_time.py` owns
-    the five-rung ladder that decides it (PRECEDENT_COMMIT_TZ, then the
-    person's identity.json, then the repo's declared fallback_timezone, and
-    so on), and `buenos-aires-dates` is the practice that makes the answer
-    Buenos Aires for Morgan. Writing `America/Argentina/Buenos_Aires` into
-    this script would be a second copy of that decision -- the exact defect
-    `no-hardcoded-git-identity` names -- so this asks the one module that
-    knows.
+    NEITHER THE ZONE NOR THE NAME IS HARDCODED HERE, and must not be. Until
+    2026-10-31 the header spelled one person's name and city as constants,
+    in a public set any team may declare. Both now come from the person's
+    own identity.json, through person() -- the engine resolves who that is,
+    the same way it resolves a commit's author.
 
-    NO MODULE, NO STAMP (Morgan, 2026-09-22). This used to fall back to a
-    bare `datetime.now()` where the module was missing -- a consuming repo
-    materializes tools/checks/ without tools/ -- on the reasoning that a
-    wrong-zone stamp still satisfies the check and refusing outright would
-    be worse. Two things were wrong with that. The zone is NOT part of what
-    gets written: HEADER_FMT spells "(Buenos Aires)" literally, so a header
-    stamped at container UTC comes out three hours off and labelled
-    correctly, and no reader of the file can tell. And "refusing is worse"
-    stopped being true in the same change that introduced the fallback --
-    once `N` became monotonic, a header this run declines to stamp is
-    caught up by any later commit, so the cost of refusing is a bump
-    somebody fixes later against the cost of guessing, which is a timestamp
-    nobody can ever catch. `timestamps-carry-offset` was reporting exactly
-    this, and it was right.
+    NO PERSON, NO STAMP (Morgan, 2026-09-22, for the zone; the name follows
+    the same reasoning). This used to fall back to a bare `datetime.now()`
+    where the zone could not be resolved, on the reasoning that a wrong-zone
+    stamp still satisfies the check and refusing outright would be worse.
+    Two things were wrong with that. The zone is NOT checked against
+    anything: the header spells the place literally, so a header stamped at
+    container UTC comes out hours off and labelled as the person's zone, and
+    no reader of the file can tell. And "refusing is worse" stopped being
+    true in the same change that introduced the fallback -- once `N` became
+    monotonic, a header this run declines to stamp is caught up by any later
+    commit, so the cost of refusing is a bump somebody fixes later against
+    the cost of guessing, which is a timestamp nobody can ever catch.
+    `timestamps-carry-offset` was reporting exactly this, and it was right.
     """
-    for _d in (ROOT / "tools", SOURCE_ROOT / "tools",
-               pathlib.Path(__file__).resolve().parent.parent):
-        if (_d / "precedent_time.py").is_file():
-            sys.path.insert(0, str(_d))
-            break
     try:
-        import precedent_time
-    except Exception as exc:
-        raise ZoneUnresolved(
-            "precedent_time.py is not importable from this checkout, so the "
-            "zone the header claims cannot be resolved. Looked in %s. Run "
-            "--fix from a checkout that carries tools/precedent_time.py, or "
-            "set the header by hand." % ", ".join(
-                str(d) for d in (ROOT / "tools", SOURCE_ROOT / "tools",
-                                 pathlib.Path(__file__).resolve().parent.parent))
-        ) from exc
-    # strftime here rather than precedent_time.stamp(): that helper appends
-    # the numeric offset ("... 10:58:06 -0300"), which HEADER_RE rejects. The
-    # zone still comes from the ladder -- it is what `now()` resolves -- and
-    # the offset is simply not part of this header's shape. Caught by the
-    # --fix test before this ever ran for real.
-    return precedent_time.now(ROOT).strftime("%Y-%m-%d %H:%M:%S")
+        who = person()
+    except PersonUnresolved as exc:
+        raise ZoneUnresolved(str(exc)) from exc
+    import datetime
+    from zoneinfo import ZoneInfo
+    # The offset is not part of this header's shape (HEADER_RE rejects it);
+    # the place names the zone instead.
+    when = datetime.datetime.now(ZoneInfo(who["zone"])).strftime("%Y-%m-%d %H:%M:%S")
+    return {"stamp": when, "place": who["place"], "name": who["name"]}
+
+
+def header_line(stamp: dict, n: int) -> str:
+    return HEADER_FMT.format(n=n, **stamp)
 
 
 def _head_catchup_target(path: str, renames: dict[str, str],
@@ -602,7 +694,7 @@ def fix_working_tree() -> list[str]:
             # rather than leaving a live violation for nobody to notice.
             catchup = _head_catchup_target(path, renames, head_first, head_body)
             if catchup is not None:
-                new_first = HEADER_FMT.format(stamp=stamp, n=catchup)
+                new_first = header_line(stamp, catchup)
                 if new_first != first:
                     f.write_text("\n".join([new_first] + lines[1:]) + "\n",
                                  encoding="utf-8")
@@ -612,7 +704,7 @@ def fix_working_tree() -> list[str]:
                         "made it, likely an edit outside a session)")
             continue
 
-        new_first = HEADER_FMT.format(stamp=stamp, n=target)
+        new_first = header_line(stamp, target)
         if new_first == first:
             continue
         f.write_text("\n".join([new_first] + lines[1:]) + "\n",
@@ -650,7 +742,7 @@ def fix_staged() -> list[str]:
       reads what was staged, so the tree does not show the bump undone.
     * EXACT FORMAT ONLY. A file whose first line is not already a
       well-formed header is left alone -- never grown one, and never
-      reformatted. An older, different header naming Morgan is somebody's
+      reformatted. An older, different header naming the person is somebody's
       decision to make, not a commit hook's.
     * NO CATCH-UP. A bump somebody missed in an earlier commit is `--fix`'s
       job; this touches nothing the current commit does not change.
@@ -689,11 +781,11 @@ def fix_staged() -> list[str]:
         if body == head_body:
             continue
         head_n = _version_of(head_first) or 0
-        if int(m.group(5)) > head_n:
+        if int(m.group("n")) > head_n:
             continue
         if stamp is None:
             stamp = _stamp()
-        new_first = HEADER_FMT.format(stamp=stamp, n=head_n + 1)
+        new_first = header_line(stamp, head_n + 1)
         blob = _git("hash-object", "-w", "--stdin",
                     data=(new_first + sep + body).encode("utf-8"))
         mode = _git("ls-files", "-s", "--", path).stdout.decode().split(" ")[0]
