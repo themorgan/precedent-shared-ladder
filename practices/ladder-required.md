@@ -67,9 +67,9 @@ assented). The meaning is unchanged; quoted words stay as they
 were said.
 
 ## Install
-Resident through the reply gate. Point 4 is also enforced where the person's own set declares it: the
-individual set this rule came from declares `require_landed_if_says` in its
-`reply_check.json` (this set does not, as of 2026-10-31), so the reply check
+Resident through the reply gate. Point 4 is also enforced: this set's
+`reply_check.json` declares `require_landed_if_says` (moved here from the
+individual set this rule came from on 2026-10-31), so the reply check
 refuses "You can archive this session" while work sits on a feature
 branch, unless each branch is given up with a **Branch disposition:**
 line.

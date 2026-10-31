@@ -34,78 +34,36 @@ repository open in the session where the person is a code owner. A branch
 is on it only when it is already in `main`, so deleting it loses nothing;
 `main`, `staging` and the engine's own branches never are.
 
-**Above the branches, the page lists each repository whose staging carries
-a change `main` lacks**: how many commits, the oldest one's date, and a link
-to GitHub's comparison. A repository where `main` is staging has no row. The
-tool builds this list too; nothing extra to run.
+Above the branches, the page lists each repository whose staging carries a
+change `main` lacks ("What the page lists").
 
-**Refresh it only when the person says "Branch cleanup"**,
-the page's name, or anything else that plainly asks for a fresh list, **and
-only after the reply's answer is written; every other time, link the saved
-page as it stands.** A branch this session made, landed or merged does not
-earn a refresh on its own (Morgan, 2026-10-20). Until 2026-10-27 a refresh
-republished the page, and each publish asked the person to approve the
-page's GitHub tool, so a rebuild after every landing put that prompt in
-nearly every session: "I keep in getting asked for permission ... it is
-very frustrating". It was also dear: the read-through a republish needed
-came to about 98,000 tokens on 2026-10-27, for a page of about 1,100
-lines, which is why the rows then moved into the page's database (below).
-A link asks for nothing and costs one line.
-**The answer always goes first**
-([answer-first-ask-before-long-work](https://github.com/alex137/BestPractice/blob/staging/practices/answer-first-ask-before-long-work.md)):
-BestPractice's answer-first gate holds the build and the publish while the
-person's question has no answer (2026-10-20: a session spent minutes
-rebuilding this page for its archive line before writing a word of the
-answer). The archive sentence can end any reply with nothing running and
-nothing off its landing branch (BestPractice's the-boildown, since
-2026-10-18), and the link goes with each one; between refreshes the page
-shows the date of its last build, so a stale row is easy to spot.
+**Write the line as** *"Branches you can delete: Branch cleanup, N across M
+repositories"*, with the page's name linked to it, and, when anything is
+waiting, add *"; waiting to go live: <repository>, <repository>"*.
+**Nothing else on that line, and nothing about the page anywhere else in
+the reply** ("The line, and an older engine").
 
 **Nothing to delete and nothing waiting, no page.** Not in any reply
 but those two.
 
-**It is one page, and its rows live in its own database** (since
-2026-10-27): one document a repository, which a refresh writes for the
-repositories this session can see and leaves alone for every other. The
-page itself is never rebuilt or republished for a refresh, so nothing has to
-be read first or merged. **A refresh is three steps:**
+**Link the saved page as it stands. Refresh it only when the person says
+"Branch cleanup"**, or plainly asks for a fresh list, **and only after the
+reply's answer is written** ("Refreshing in full"). A refresh never rebuilds
+or republishes the page; it is three steps ("The page and its database"):
 
 1. ArtifactData `list` of collection `repos` on the page's url, with
-   `out_dir` `<scratchpad>/branch-db` -- it saves the files and prints each
-   document's version, and nothing of the rows comes into the conversation;
+   `out_dir` `<scratchpad>/branch-db`;
 2. `python3 tools/precedent_stale_branches.py --fetch --db-docs
-   <scratchpad>/branch-db --versions "<the listing's lines, or id=version
-   pairs>"` -- the listing's files hold each document but not its version,
-   and every write over a document is pinned to the version it was listed
-   at, so the tool refuses until it has one for each;
+   <scratchpad>/branch-db --versions "<the listing's lines>"`;
 3. ArtifactData `batch` with the `writes` line the tool prints.
 
-A write refused for its version means another session wrote that
-repository in between: list again and run the tool again. The page reads
-the documents live, so the refresh shows the moment the batch lands. When
-no page is saved, `--db-page <scratchpad>/branch-cleanup.html` writes the
-page: publish it as a new page with the capabilities it prints, pin it,
-save its address as `branch_cleanup_page` in the person's individual
-`identity.json`, and fill it with the three steps. The page is published
-again only when its code changes, never for its rows.
+A write refused for its version: list again and run the tool again. With
+no page saved yet, `--db-page` writes one to publish once.
 
-**An engine too old for this skips the refresh.** If the tool here does not
-accept `--db-docs`, or session start reported the engine behind upstream
-(ENGINE BEHIND UPSTREAM), do not refresh, and never publish anything to the
-page's address: an older tool builds a whole page of only the repositories
-this session can see, and publishing it over the saved page would replace
-its database-backed page. **Still link the saved page as it stands**: a
-link overwrites nothing. Say in the Boildown line that it was not refreshed
-and that Update Vendors here fixes it (2026-10-13: a to-do repository's
-older tool would have erased 42 branches across seven repositories). Write the line as: *"Branches you can delete: Branch cleanup, N across M
-repositories"*, with the page's name linked to it, and, when anything is
-waiting, add *"; waiting to go live: <repository>, <repository>"*.
-**Nothing else on that line, and nothing about the page anywhere else in
-the reply**: not its ticks, its buttons, or whether a button was tried
-(Morgan, 2026-10-20: "just give it to me and say nothing else"). The page
-says nothing about itself either: no intro and no notes on how a button
-works, only the list. The reply gate prints the count at the start of a
-turn when there is one, so the session knows before it writes the close.
+**An engine too old for this skips the refresh**: when the tool here does
+not accept `--db-docs`, or session start reported ENGINE BEHIND UPSTREAM,
+never publish anything to the page's address. Link it as it stands, and say
+in the line that it was not refreshed and that Update Vendors here fixes it.
 
 ## Detail
 
@@ -177,6 +135,84 @@ Produce, and changes nothing `main` lacks, counts as level.
 **Who sees it.** This practice is `visible_to: code-owners`: branch
 management belongs to the people who run the repository, and a repository
 where the person is not a code owner is left off the page.
+
+### What the page lists
+
+**Above the branches, the page lists each repository whose staging carries
+a change `main` lacks**: how many commits, the oldest one's date, and a link
+to GitHub's comparison. A repository where `main` is staging has no row. The
+tool builds this list too; nothing extra to run.
+
+### Refreshing in full
+
+**Refresh it only when the person says "Branch cleanup"**,
+the page's name, or anything else that plainly asks for a fresh list, **and
+only after the reply's answer is written; every other time, link the saved
+page as it stands.** A branch this session made, landed or merged does not
+earn a refresh on its own (Morgan, 2026-10-20). Until 2026-10-27 a refresh
+republished the page, and each publish asked the person to approve the
+page's GitHub tool, so a rebuild after every landing put that prompt in
+nearly every session: "I keep in getting asked for permission ... it is
+very frustrating". It was also dear: the read-through a republish needed
+came to about 98,000 tokens on 2026-10-27, for a page of about 1,100
+lines, which is why the rows then moved into the page's database (below).
+A link asks for nothing and costs one line.
+**The answer always goes first**
+([answer-first-ask-before-long-work](https://github.com/alex137/BestPractice/blob/staging/practices/answer-first-ask-before-long-work.md)):
+BestPractice's answer-first gate holds the build and the publish while the
+person's question has no answer (2026-10-20: a session spent minutes
+rebuilding this page for its archive line before writing a word of the
+answer). The archive sentence can end any reply with nothing running and
+nothing off its landing branch (BestPractice's the-boildown, since
+2026-10-18), and the link goes with each one; between refreshes the page
+shows the date of its last build, so a stale row is easy to spot.
+
+### The page and its database
+
+**It is one page, and its rows live in its own database** (since
+2026-10-27): one document a repository, which a refresh writes for the
+repositories this session can see and leaves alone for every other. The
+page itself is never rebuilt or republished for a refresh, so nothing has to
+be read first or merged. **A refresh is three steps:**
+
+1. ArtifactData `list` of collection `repos` on the page's url, with
+   `out_dir` `<scratchpad>/branch-db` -- it saves the files and prints each
+   document's version, and nothing of the rows comes into the conversation;
+2. `python3 tools/precedent_stale_branches.py --fetch --db-docs
+   <scratchpad>/branch-db --versions "<the listing's lines, or id=version
+   pairs>"` -- the listing's files hold each document but not its version,
+   and every write over a document is pinned to the version it was listed
+   at, so the tool refuses until it has one for each;
+3. ArtifactData `batch` with the `writes` line the tool prints.
+
+A write refused for its version means another session wrote that
+repository in between: list again and run the tool again. The page reads
+the documents live, so the refresh shows the moment the batch lands. When
+no page is saved, `--db-page <scratchpad>/branch-cleanup.html` writes the
+page: publish it as a new page with the capabilities it prints, pin it,
+save its address as `branch_cleanup_page` in the person's individual
+`identity.json`, and fill it with the three steps. The page is published
+again only when its code changes, never for its rows.
+
+### The line, and an older engine
+
+**An engine too old for this skips the refresh.** If the tool here does not
+accept `--db-docs`, or session start reported the engine behind upstream
+(ENGINE BEHIND UPSTREAM), do not refresh, and never publish anything to the
+page's address: an older tool builds a whole page of only the repositories
+this session can see, and publishing it over the saved page would replace
+its database-backed page. **Still link the saved page as it stands**: a
+link overwrites nothing. Say in the Boildown line that it was not refreshed
+and that Update Vendors here fixes it (2026-10-13: a to-do repository's
+older tool would have erased 42 branches across seven repositories). Write the line as: *"Branches you can delete: Branch cleanup, N across M
+repositories"*, with the page's name linked to it, and, when anything is
+waiting, add *"; waiting to go live: <repository>, <repository>"*.
+**Nothing else on that line, and nothing about the page anywhere else in
+the reply**: not its ticks, its buttons, or whether a button was tried
+(Morgan, 2026-10-20: "just give it to me and say nothing else"). The page
+says nothing about itself either: no intro and no notes on how a button
+works, only the list. The reply gate prints the count at the start of a
+turn when there is one, so the session knows before it writes the close.
 
 ## Why
 
@@ -288,3 +324,11 @@ no ticks, no buttons, no Open next. BestPractice's harness now parses the
 page's script. A refresh since is a listing, one tool run and one batch of
 writes, a few thousand tokens, and touches only the repositories the
 session can see.
+
+**2026-10-31: the Rule cut to what a session does.** It had grown to
+844 words; it now holds 333 (both counted with `wc -w` over the
+`## Rule` section), and every paragraph it no longer holds moved word for
+word into Detail, under the heading the Rule names. Morgan: *"maybe we add
+to very deep check to always review like the 25% of all the rules that are
+the longest in that repo and shorten them like you did?"*, then *"use your
+judgment, and act booked produce"* (strength: assented).

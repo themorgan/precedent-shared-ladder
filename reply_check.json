@@ -95,5 +95,17 @@
         "refused": false
       }
     ]
+  },
+  {
+    "practice": "ladder-required",
+    "id": "archive-only-once-landed",
+    "require_landed_if_says": [
+      "You can archive this session"
+    ],
+    "why": "Point 4 of ladder-required, enforced: never end a session with work left on a feature branch. The reply gate has printed a NOT YET LANDED line for that since 2026-09-21, and a finished branch was still stranded for days -- a warning alone did not stop it. So the archive sentence is refused while this session's work sits on a branch its repo does not land on, until it is landed (Booked) or each branch is given up by name with a **Branch disposition:** BRANCH -- drop line. Declared in the individual set until 2026-10-31, when it moved here with its practice so that everyone who brings the ladder gets it (Morgan, 2026-10-31, strength: assented: \"use your judgment, and act booked produce\"). An engine too old to know require_landed_if_says names it as unevaluated rather than blocking.",
+    "requires": [
+      "ladder"
+    ],
+    "checks_practice_at": "practices/ladder-required.md"
   }
 ]

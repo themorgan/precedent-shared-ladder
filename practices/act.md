@@ -28,6 +28,47 @@ short-lived branch named like `<date>-<username>-<slug>-<session>-<random>` -- a
 there**, so a reclaimed container loses nothing. It is not shared yet:
 nothing reaches staging until [Booked](go-update.md).
 
+**Name the branch when Act starts, with
+[tools/precedent_branch_name.py](https://github.com/alex137/BestPractice/blob/staging/tools/precedent_branch_name.py),
+never by hand**: `git switch -c "$(python3 tools/precedent_branch_name.py <a few
+words>)"`. **Every branch a session on the ladder creates takes its shape**,
+except a `data-` branch and the tier branches. When the tool says no GitHub
+username is declared, offer the person the `--set-github <username>` command
+it prints, and run it only on their yes ("Naming the branch in full").
+
+**This rule, and every check that enforces it, binds only a person on the
+ladder** (Morgan, 2026-10-11, strength: decided: "Our branch naming
+conventions should be in force for people who use ladders, not everyone
+else"). Off it, nothing below refuses or warns.
+
+**A branch the harness named when the session opened** (`claude/...`) is
+left alone: make the named branch at Act and work there, without asking.
+This rule is the explicit permission Claude Code on the web asks for, and it
+covers any sister branch, a rename included; **only a step up the ladder,
+into staging or main, needs the person's word.** The pre-push guard
+[tools/branch_name_guard.py](../tools/branch_name_guard.py) refuses a push
+of a harness-named or hand-named branch, to itself or into `staging` or
+`main`, and prints the rename; `git branch -m` keeps every commit ("The
+harness branch and the guard").
+
+**GitHub itself can refuse such branches too, for a person who opts in**
+with `"github_branch_rules": true`
+([tools/precedent_branch_rules.py](../tools/precedent_branch_rules.py);
+"The GitHub ruleset").
+
+**Act comes after [Consider](consider.md)**, even if the plan is one line.
+A request to build with no plan yet gets the one-line plan first, in the
+same reply.
+
+**A feature branch is easy to forget**, which is why Act never ends a
+session on its own. Work that reached Act but not Booked is said plainly
+at the end of the reply, with Booked recommended
+([the-boildown](https://github.com/alex137/BestPractice/blob/staging/practices/the-boildown.md)).
+
+## Detail
+
+### Naming the branch in full
+
 **The branch is named when Act starts, by
 [tools/precedent_branch_name.py](https://github.com/alex137/BestPractice/blob/staging/tools/precedent_branch_name.py), never
 by hand**: `git switch -c "$(python3 tools/precedent_branch_name.py <a few
@@ -46,10 +87,7 @@ prints the command that records it (`--set-github <username>`): the
 session offers that to the person and runs it only on their yes. With no
 session ID the session part is random too, and the tool says so.
 
-**This rule, and every check that enforces it, binds only a person on the
-ladder** (Morgan, 2026-10-11, strength: decided: "Our branch naming
-conventions should be in force for people who use ladders, not everyone
-else"). Off it, nothing below refuses or warns.
+### The harness branch and the guard
 
 A branch the harness named when the session opened, before the task was
 known -- two random words (`claude/hopeful-carson-yy42sb`) or a few words
@@ -88,6 +126,8 @@ a copy branch the naming tool names. This rule's practice check reads the
 checkout's branch in the full check besides. `git branch -m` keeps every
 commit, so no refusal loses anything.
 
+### The GitHub ruleset
+
 **Outside the session, GitHub itself can refuse it.**
 [tools/precedent_branch_rules.py](../tools/precedent_branch_rules.py)
 reports whether each repository has a ruleset that stops anyone creating a
@@ -98,15 +138,6 @@ someone who has not (Morgan, 2026-10-16, strength: decided). Opted in,
 `--apply` adds the ruleset to the named repositories their own GitHub
 account owns, and refuses anyone else's: a ruleset binds everyone who
 pushes there.
-
-**Act comes after [Consider](consider.md)**, even if the plan is one line.
-A request to build with no plan yet gets the one-line plan first, in the
-same reply.
-
-**A feature branch is easy to forget**, which is why Act never ends a
-session on its own. Work that reached Act but not Booked is said plainly
-at the end of the reply, with Booked recommended
-([the-boildown](https://github.com/alex137/BestPractice/blob/staging/practices/the-boildown.md)).
 
 ## Why
 Building straight onto a shared branch skips the checks and the chance to
@@ -207,6 +238,14 @@ SessionStart. Chosen by the session under Morgan's "attach any repos you
 need, act, booked": a note rather than renaming the branch at start,
 since at start the work is unknown and this rule names a branch for what
 it holds; a rename later costs nothing.
+
+**2026-10-31: the Rule cut to what a session does.** It had grown to
+853 words; it now holds 341 (both counted with `wc -w` over the
+`## Rule` section), and every paragraph it no longer holds moved word for
+word into Detail, under the heading the Rule names. Morgan: *"maybe we add
+to very deep check to always review like the 25% of all the rules that are
+the longest in that repo and shorten them like you did?"*, then *"use your
+judgment, and act booked produce"* (strength: assented).
 
 ## Install
 The naming tool ships with the engine ([precedent_branch_name.py](https://github.com/alex137/BestPractice/blob/staging/tools/precedent_branch_name.py) in
