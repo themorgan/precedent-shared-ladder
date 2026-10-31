@@ -67,5 +67,33 @@
     },
     "why": "The archive-line reply and the closing reply link the branch cleanup page, only when there is something on it (Morgan, 2026-10-05), and refresh it only when the person says \"Branch cleanup\" (Morgan, 2026-10-20 and 2026-10-27), by writing its rows into the page's own database (2026-10-27). The gate runs this set's tool and prints its note before the reply; it moved out of BestPractice's reply gate on 2026-10-17 (BestPractice spec/ENFORCEMENT_LIVES_WITH_ITS_PRACTICE_PLAN.md part 3). Printed only, never evaluated: an engine older than that day reports note_from_tool as a key it does not know, until Update Vendors.",
     "checks_practice_at": "practices/stale-branch-cleanup.md"
+  },
+  {
+    "practice": "consider",
+    "id": "boildown-finished-plan-asks-to-act",
+    "inherits": true,
+    "require_finished_plan_asks_to_act": {
+      "heading": "boildown",
+      "item": "^\\W*your next steps\\b",
+      "plan_file_written": "(?:^|/)spec/[^/]+\\.md$|_PLAN\\.md$|(?:^|/)plans?/[^/]+\\.md$",
+      "plan_words": "\\b(?:plan it|brainstorm|write it up|spec it out|one-line plan|(?:the|this|my|a|our) plan(?! of record))\\b",
+      "plan_line": "^\\W*Plan:",
+      "ask": "\\bdo you want (?:me |us )?to act on (?:this|the|that|my) plan\\b",
+      "tell": "\\bI(?:'|’)?m (?:already |now )?(?:acting on|carrying out) (?:this|the|that|my) plan\\b|\\bI am (?:already |now )?(?:acting on|carrying out) (?:this|the|that|my) plan\\b",
+      "stage_line": "\\bfinished step 1 of 5\\b[^)]{0,10}\\bConsider\\b"
+    },
+    "why": "Morgan, 2026-10-30 (strength: decided): a reply that finishes a plan asks to act on it. Universal reads a finished plan from a plan file written or a new **Plan:** line; this set adds the stage line, since a Boildown whose first line says step 1 of 5, Consider while the reply makes a plan has finished one. The trigger lived in universal's reply_check.json until 2026-10-31, where a person who does not bring this set read this set's words.",
+    "_mapping_comment": "Only stage_line is this set's. The other keys restate universal's because an engine older than BestPractice b8e29c5a replaces an inherited mapping whole instead of merging it, and would drop the ask; once every repository that brings this set runs that engine or newer, cut this mapping down to stage_line.",
+    "checks_practice_at": "practices/consider.md",
+    "_examples": [
+      {
+        "reply": "Here is the plan: three steps. 1. Add the check. 2. Add the tests. 3. Land it on staging.\n\nDone.\n\n## The Boildown\n- The work of this session is now on: no branch yet (you have finished step 1 of 5, Consider)\n- **Your next steps:** Nothing blocking for you to do now.\n- You can archive this session.\n",
+        "refused": true
+      },
+      {
+        "reply": "The gate reads the transcript.\n\nDone.\n\n## The Boildown\n- The work of this session is now on: no branch yet (you have finished step 1 of 5, Consider)\n- **Your next steps:** Nothing blocking for you to do now.\n- You can archive this session.\n",
+        "refused": false
+      }
+    ]
   }
 ]

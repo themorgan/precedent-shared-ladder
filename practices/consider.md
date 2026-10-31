@@ -74,6 +74,16 @@ by naming the session that wrote it
 ([seeded-prompt-names-its-origin](https://github.com/alex137/BestPractice/blob/staging/practices/seeded-prompt-names-its-origin.md)), and
 asks the receiving session to critique the plan, not to carry it out.
 
+**A reply that finishes a Consider plan asks to act on it**, as
+[the-boildown](https://github.com/alex137/BestPractice/blob/staging/practices/the-boildown.md)
+says for every plan. Universal's reply rule finds a finished plan by a plan
+file or a new **Plan:** line; this set's
+[reply_check.json](https://github.com/themorgan/precedent-shared-ladder/blob/main/reply_check.json)
+adds the third trigger, a first Boildown line that says *step 1 of 5,
+Consider* while the reply makes a plan (id
+`boildown-finished-plan-asks-to-act`, moved here from universal
+2026-10-31, because those are this set's words).
+
 ## Why
 Planning was optional and invisible: a session either started building or
 wrote a report, with nothing in between and nothing said about which. One

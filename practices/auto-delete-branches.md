@@ -15,7 +15,7 @@ in_force_at: null
 supersedes:  []
 overrides:   null
 added:       "2026-10-19"
-approved_by: "Morgan F, 2026-10-19, moved from an individual set (there: Morgan F, 2026-09-19. Amended 2026-09-22, Morgan, in his own words -- \"the right one is to never delete a remote branch but to tell the user to\" -- after this file was found still instructing a session to run `git push origin --delete`, which the universal practice never-delete-a-remote-branch had forbidden by name two days earlier. He named the resolution directly rather than choosing from options; the session proposed only the shape of the edit. The local half, and the no-asking part, are unchanged and were not re-litigated.)"
+approved_by: "Morgan F, 2026-10-19, moved from an individual set (there: Morgan F, 2026-09-19. Amended 2026-09-22, Morgan, in his own words -- \"the right one is to never delete a remote branch but to tell the user to\" -- after this file was found still instructing a session to run `git push origin --delete`, which the universal practice never-delete-a-remote-branch had forbidden by name two days earlier. He named the resolution directly rather than choosing from options; the session proposed only the shape of the edit. The local half, and the no-asking part, are unchanged and were not re-litigated.); reworded 2026-10-31 to speak of the person who brings this set rather than in one person's voice, meaning unchanged, by the session under Morgan F's approval of that day (\"do your recommendations for all\", strength: assented)"
 strength:    decided
 ---
 ## Rule
@@ -29,7 +29,7 @@ asking first.
 (universal) lists the forbidden routes by name -- `git push origin --delete`
 and `git push origin :<branch>`, the GitHub Model Context Protocol server,
 the REST or GraphQL API by hand, a dispatched Actions workflow, a subagent --
-and it is not overridden here. **Hand the remote branch to me instead**, as
+and it is not overridden here. **Hand the remote branch to the person instead**, as
 the one-click filtered link
 [`branch-delete-links`](https://github.com/alex137/BestPractice/blob/staging/practices/branch-delete-links.md)
 (universal) specifies, in the same reply that reports the merge. That
@@ -72,7 +72,7 @@ right when it already knows the merge succeeded, is strictly better
 information than a person clicking a button minutes or days later on trust
 alone** -- and a local delete touches no remote, is reversible from the
 reflog, and is ordinary housekeeping that the universal practice permits
-outright. That half is the individual-level call this file exists to make:
+outright. That half is the call this file exists to make:
 BestPractice's own default is to leave the whole thing to a person, and
 here it is automatic and unasked-for.
 
@@ -83,29 +83,31 @@ that deleting the wrong remote branch is expensive -- it is that a session
 running in Claude Code on the web *cannot remove a remote ref at all*, so
 every attempt is a refusal, and the failure mode observed is a session
 working through the forbidden routes one at a time looking for one that
-sticks. What I get out of the deletion is one click on a row that is already
+sticks. What the person gets out of the deletion is one click on a row that is already
 on screen; what the attempt costs is a session burning a turn rediscovering
-a settled fact. So the remote is mine to click and the link is the session's
+a settled fact. So the remote is theirs to click and the link is the session's
 to produce.
 
-Individual-level, not universal: this binds only sessions that resolve
-`precedent-individual`, so it changes nothing about how anyone else's
-repository, or a session working there without this source attached, handles
-its own branches.
+Not universal: this binds only sessions that bring this set, so it changes
+nothing about how anyone else's repository, or a session working there
+without this set, handles its own branches. (It was written for one
+person's individual set and moved here on 2026-10-19; until the very deep
+check of 2026-10-30 this paragraph still said it bound only that set's
+sessions.)
 
 ## Story
 Raised in a BestPractice session (`session_0176kGXXBqRt9oUeqTFPSDGz`,
 "Automatic branch deletion configuration") asking about automating branch
 deletion there. Recognized in that conversation as a personal habit rather
 than a rule for the shared repository -- a practice only binds a session
-that resolves its source, and `precedent-individual` is a source only my
-own sessions attach, so writing it here reaches every project I work in
+that resolves its source, and `precedent-individual` is a source only his
+own sessions attach, so writing it there reached every project he worked in
 without touching BestPractice's own default for anyone else. Handed off
 to a session on `precedent-individual` itself to write and land.
 
 **Amended 2026-09-22, and the way it was found is the part worth keeping.**
 Nothing mechanical caught it. `never-delete-a-remote-branch` landed universal
-on 2026-09-21 -- asked for in my own words, after a session tried several
+on 2026-09-21 -- asked for in Morgan's own words, after a session tried several
 routes to delete a remote branch in succession -- and this file, in a
 different repository and never re-read, went on saying the opposite. Both
 carried `strength: decided`; both were in force in the same session; neither
@@ -121,6 +123,14 @@ While the file was open, its `## Why` was also repointed: it had credited the
 one-click closing link to `next-steps-after-commit`, which was deduplicated
 into [`the-boildown`](https://github.com/alex137/BestPractice/blob/staging/practices/the-boildown.md)
 on 2026-09-15 and no longer carries that rule.
+
+2026-10-31: the rule still spoke in the first person ("Hand the remote branch to me", "mine to click")
+twelve days after it moved here from an individual set. The very
+deep check of 2026-10-30 found it, and the session reworded it to
+speak of the person who brings this set, under Morgan's approval of
+2026-10-31 ("do your recommendations for all", strength:
+assented). The meaning is unchanged; quoted words stay as they
+were said.
 
 ## Install
 No mechanical check. This governs a step a session takes right after a
@@ -138,4 +148,4 @@ somewhere.** A session that tries `git push origin --delete` is running a
 forbidden command rather than leaving an absent artifact, which is a
 PreToolUse-shaped problem, not a catalogue-shaped one --
 `never-delete-a-remote-branch` is where any such gate belongs, since it binds
-every adopter and not only my own sessions.
+every adopter and not only the sessions of a person who brings this set.

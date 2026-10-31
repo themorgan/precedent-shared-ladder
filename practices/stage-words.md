@@ -1,10 +1,10 @@
 ---
 slug:        stage-words
-title:       What my stage words move, in one line, always loaded
+title:       What the stage words move, in one line, always loaded
 tier:        resident
 severity:    default
 applies_to:  ["**"]
-occasion:    "I say Booked, Debut, Produce or Promote"
+occasion:    "the person says Booked, Debut, Produce or Promote"
 gates:       []
 index_clause: "3 Booked lands on staging; 4 Debut tests; 5 Produce = staging -> main"
 index_required: true
@@ -16,7 +16,7 @@ requires:    ["ladder"]
 supersedes:  []
 overrides:   null
 added:       "2026-10-19"
-approved_by: "Morgan F, 2026-10-19, moved from an individual set (there: Morgan F, 2026-10-04, his review relayed by the session that ran a planning repository's Update Vendors: one resident line saying what his words mean, \"it can't be truncated, and it's Morgan's own rule\")"
+approved_by: "Morgan F, 2026-10-19, moved from an individual set (there: Morgan F, 2026-10-04, his review relayed by the session that ran a planning repository's Update Vendors: one resident line saying what his words mean, \"it can't be truncated, and it's Morgan's own rule\"); reworded 2026-10-31 to speak of the person who brings this set rather than in one person's voice, meaning unchanged, by the session under Morgan F's approval of that day (\"do your recommendations for all\", strength: assented)"
 strength:    decided
 ---
 ## Rule
@@ -25,12 +25,19 @@ staging, moving nothing; 5 Produce = staging -> main.** The rest is the ladder s
 
 ## Why
 The stage practices live in the ladder set, which reaches a session as
-text printed at start, and that text can be cut. This line is resident in
-my own set, so it lands in the tracked AGENTS.md of every repo I work in and
-loads with it. It repeats one row of `promote`'s table on purpose: what the
-three words move has to be there before the first message.
+text printed at start, and that text can be cut. This line is resident, so
+it sits in the set's resident block rather than behind a lookup of the
+on-demand stage practices. It
+repeats one row of `promote`'s table on purpose: what the three words move
+has to be there before the first message.
 
 ## Story
+2026-10-31: the Why still said this line was resident in an individual set
+and so landed in the tracked AGENTS.md of every repo its owner works in. It
+moved to this set on 2026-10-19, and an individual set's block is never
+written into another repo's tracked files, so the very deep check of
+2026-10-30 rewrote that sentence to say what holds now.
+
 2026-10-14: pre-staging retired for everyone ("Only me, go ahead and plan
 it. Retire pre-staging."). Until then the line read "4 Debut = pre-staging
 -> staging, or only the tests where it lands on staging".
@@ -39,3 +46,11 @@ it. Retire pre-staging."). Until then the line read "4 Debut = pre-staging
 searched the clones for "Debut". The fix printed the ladder set's lines at
 session start, and the next review found that a start with five sets
 attached printed more than fits, so the lines that mattered could be cut.
+
+2026-10-31: the rule still spoke in the first person ("my stage words", "I say Booked")
+twelve days after it moved here from an individual set. The very
+deep check of 2026-10-30 found it, and the session reworded it to
+speak of the person who brings this set, under Morgan's approval of
+2026-10-31 ("do your recommendations for all", strength:
+assented). The meaning is unchanged; quoted words stay as they
+were said.

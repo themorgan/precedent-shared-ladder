@@ -14,17 +14,17 @@ in_force_at: null
 supersedes:  []
 overrides:   null
 added:       "2026-10-19"
-approved_by: "Morgan F, 2026-10-19, moved from an individual set (there: Morgan F, 2026-09-25; Routines made explicit the same day, Morgan: \"remember we are limiting scheduled routines\" and \"make clear [we] are minimizing the number of scheduled routines\")"
+approved_by: "Morgan F, 2026-10-19, moved from an individual set (there: Morgan F, 2026-09-25; Routines made explicit the same day, Morgan: \"remember we are limiting scheduled routines\" and \"make clear [we] are minimizing the number of scheduled routines\"); reworded 2026-10-31 to speak of the person who brings this set rather than in one person's voice, meaning unchanged, by the session under Morgan F's approval of that day (\"do your recommendations for all\", strength: assented)"
 strength:    decided
 ---
 ## Rule
-**I don't like crons.** A cron (anything that runs on a clock: a GitHub
+**Crons are unwelcome.** A cron (anything that runs on a clock: a GitHub
 Actions `schedule:`, a Claude routine, a recurring timer anywhere) runs
 whether or not there is anything to do. Every run costs something. Once
 it's set up, nobody looks at it again. **The default answer to "should this
 be a cron?" is no.**
 
-**Scheduled Claude Routines count, and I'm keeping their number down just
+**Scheduled Claude Routines count, and their number is kept down just
 as hard.** That means every Routine a session could create: a recurring
 one, a one-shot, a `send_later` reminder, a self check-in scheduled to come
 back and look at a pull request. Each one fires into a session whether or
@@ -50,7 +50,7 @@ it for a while does no harm. If that's true, it is not a cron.
 
 **A cron is justified only when the job is essential and has to happen
 without anyone remembering.** A scheduling repository's weekly sync qualifies: the
-holidays have to reach the calendar whether or not I think of it. When one
+holidays have to reach the calendar whether or not anyone thinks of it. When one
 qualifies:
 
 - **Fold it in.** Every scheduled task in a repo that can share a time
@@ -69,15 +69,23 @@ qualifies:
   is worse than none. An essential cron is essential enough to alert on,
   the way a scheduling repository's opens an issue and pings a dead man's switch.
 
-**Before adding any cron or scheduled Routine, ask me.** Name the person-triggered alternative
+**Before adding any cron or scheduled Routine, ask the person.** Name the person-triggered alternative
 and your recommendation in the same breath. A cron added without asking is
 the failure this rule exists to prevent.
 
 ## Story
-By 2026-09-16 I had already paused the BestPractice sync crons ("no more
+By 2026-09-16 Morgan had already paused the BestPractice sync crons ("no more
 crons for now"). On 2026-09-24, a scheduling repository's build day added two
 more: a weekly sync and, an hour before it, a weekly regeneration of
 UPCOMING_HOLIDAYS.md. The regeneration only ever needed to run when the
 sync did, so it became a step of the sync's job the next day. The one cron
 left is the one that can't be a button: a job whose whole point is that
 nobody has to remember it. That is the bar.
+
+2026-10-31: the rule still spoke in the first person ("I don't like crons", "ask me")
+twelve days after it moved here from an individual set. The very
+deep check of 2026-10-30 found it, and the session reworded it to
+speak of the person who brings this set, under Morgan's approval of
+2026-10-31 ("do your recommendations for all", strength:
+assented). The meaning is unchanged; quoted words stay as they
+were said.
