@@ -10,7 +10,8 @@
 # adds and inherits universal's triggers (the engine's _inherit_pair), so it
 # is judged as a session sees it: universal's rule and this one through the
 # engine's _settle. UNIVERSAL_REPLY_CHECK names universal's file; by default
-# it is the BestPractice clone beside this set, which precedent.json declares.
+# it is the BestPractice clone precedent.json declares, found the engine's
+# way (beside this checkout, or beside its main checkout from a worktree).
 set -u
 HERE="$(cd "$(dirname "$0")" && pwd)"
 TOOLS="$HERE/../.."
@@ -21,6 +22,25 @@ REPLY_CHECK="${REPLY_CHECK:-$TOOLS/../reply_check.json}"
 # a run by hand from a clone beside BestPractice.
 if [ -z "${UNIVERSAL_REPLY_CHECK:-}" ] && [ -n "${PRECEDENT_SOURCE_DIR_PRECEDENT:-}" ]; then
     UNIVERSAL_REPLY_CHECK="$PRECEDENT_SOURCE_DIR_PRECEDENT/reply_check.json"
+fi
+# Otherwise the universal path precedent.json declares, resolved by the
+# engine's own _declared_path: beside this checkout, or beside its main
+# checkout when this is a linked worktree that has no BestPractice next to
+# it (2026-10-31: the test failed in a worktree under another directory).
+if [ -z "${UNIVERSAL_REPLY_CHECK:-}" ]; then
+    UNIVERSAL_DIR="$(PYTHONDONTWRITEBYTECODE=1 python3 - "$TOOLS" <<'PY' 2>/dev/null
+import json, pathlib, sys
+sys.path.insert(0, sys.argv[1])
+import precedent_resolve as pr
+root = pathlib.Path(sys.argv[1]).resolve().parent
+raw = next(s['path'] for s in json.load(open(root / 'precedent.json', encoding='utf-8'))['sources']
+           if s.get('level') == 'universal')
+print(pr._declared_path(root, raw))
+PY
+)"
+    if [ -n "$UNIVERSAL_DIR" ] && [ -f "$UNIVERSAL_DIR/reply_check.json" ]; then
+        UNIVERSAL_REPLY_CHECK="$UNIVERSAL_DIR/reply_check.json"
+    fi
 fi
 UNIVERSAL_REPLY_CHECK="${UNIVERSAL_REPLY_CHECK:-$TOOLS/../../BestPractice/reply_check.json}"
 PYTHONDONTWRITEBYTECODE=1 python3 - "$TOOLS" "$REPLY_CHECK" "$UNIVERSAL_REPLY_CHECK" <<'PY'
