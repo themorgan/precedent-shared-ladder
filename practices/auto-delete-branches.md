@@ -72,7 +72,7 @@ right when it already knows the merge succeeded, is strictly better
 information than a person clicking a button minutes or days later on trust
 alone** -- and a local delete touches no remote, is reversible from the
 reflog, and is ordinary housekeeping that the universal practice permits
-outright. That half is the individual-level call this file exists to make:
+outright. That half is the call this file exists to make:
 BestPractice's own default is to leave the whole thing to a person, and
 here it is automatic and unasked-for.
 
@@ -88,10 +88,12 @@ on screen; what the attempt costs is a session burning a turn rediscovering
 a settled fact. So the remote is mine to click and the link is the session's
 to produce.
 
-Individual-level, not universal: this binds only sessions that resolve
-`precedent-individual`, so it changes nothing about how anyone else's
-repository, or a session working there without this source attached, handles
-its own branches.
+Not universal: this binds only sessions that bring this set, so it changes
+nothing about how anyone else's repository, or a session working there
+without this set, handles its own branches. (It was written for one
+person's individual set and moved here on 2026-10-19; until the very deep
+check of 2026-10-30 this paragraph still said it bound only that set's
+sessions.)
 
 ## Story
 Raised in a BestPractice session (`session_0176kGXXBqRt9oUeqTFPSDGz`,
