@@ -71,7 +71,13 @@ import sys
 
 # Shipped by the ladder set to tools/ladder/; the engine it runs on is in
 # tools/ beside it, in the set's own repository and in every consumer.
-sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent.parent))
+# Behind the engine already loaded, never in front of it (2026-10-31): the
+# BestPractice engine loads this file into its own process, and putting
+# this set's tools/ first there made every later import -- leak_gate
+# among them -- this set's older vendored copy for the rest of that run.
+_ENGINE = str(pathlib.Path(__file__).resolve().parent.parent)
+if _ENGINE not in sys.path:
+    sys.path.append(_ENGINE)
 import precedent_identity as pi   # noqa: E402
 import precedent_time             # noqa: E402
 try:
