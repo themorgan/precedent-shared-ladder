@@ -16,7 +16,23 @@
 set -u
 HERE="$(cd "$(dirname "$0")" && pwd)"
 TOOLS="$HERE/../.."
+# This set's own reply_check.json: where the push check says this set is
+# (a consumer that declares it, PRECEDENT_SOURCE_DIR_PRECEDENT_SHARED_LADDER),
+# else this checkout's root, which is right inside the set itself. A
+# consumer receives this test since 2026-10-31, and the root there is the
+# consumer's, so the old default read a file that is not there and the
+# test crashed on main (2026-11-01, a voice repository's Produce).
+if [ -z "${REPLY_CHECK:-}" ] && [ -n "${PRECEDENT_SOURCE_DIR_PRECEDENT_SHARED_LADDER:-}" ] \
+        && [ -f "$PRECEDENT_SOURCE_DIR_PRECEDENT_SHARED_LADDER/reply_check.json" ]; then
+    REPLY_CHECK="$PRECEDENT_SOURCE_DIR_PRECEDENT_SHARED_LADDER/reply_check.json"
+fi
 REPLY_CHECK="${REPLY_CHECK:-$TOOLS/../reply_check.json}"
+if [ ! -f "$REPLY_CHECK" ]; then
+    echo "SKIPPED: no copy of this set's reply_check.json here (looked at $REPLY_CHECK"
+    echo "  and \$PRECEDENT_SOURCE_DIR_PRECEDENT_SHARED_LADDER), so there is no"
+    echo "  landing-authority pair to judge; the set's own run judges it"
+    exit 0
+fi
 # The push check exports where universal really is, resolved the engine's
 # way, a throwaway worktree in /tmp included (BestPractice PR #1440,
 # 2026-10-30). The sibling path is the default when it does not, which is
