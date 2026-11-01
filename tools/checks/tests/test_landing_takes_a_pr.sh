@@ -84,5 +84,12 @@ mkdir -p "$tmp/.github/workflows"; echo 'on: push' > "$tmp/.github/workflows/y.y
 g add -A; g commit -qm wf-main; wfm="$(g rev-parse HEAD)"; g update-ref refs/remotes/origin/main "$wfm"
 [ "$(hook "$wfm" staging)" = 1 ] || { echo "FAIL: pre-push let a workflow through because main has it"; fail=1; }
 g update-ref -d refs/remotes/origin/main
+# The harness's area files are the code other work is judged by too
+# (2026-10-31: BestPractice's verify_harness.py split into tools/harness/).
+g reset -q --hard "$synced"; mkdir -p "$tmp/tools/harness"
+echo 'def check_x(): pass' > "$tmp/tools/harness/vh_area.py"; g add -A; g commit -qm area; area="$(g rev-parse HEAD)"
+[ "$(hook "$area" staging)" = 1 ] || { echo "FAIL: pre-push let a harness area file onto staging"; fail=1; }
+g reset -q --hard "$synced"; echo 'PARTS = []' > "$tmp/tools/harness_parts.py"; g add -A; g commit -qm parts; parts="$(g rev-parse HEAD)"
+[ "$(hook "$parts" staging)" = 1 ] || { echo "FAIL: pre-push let tools/harness_parts.py onto staging"; fail=1; }
 [ "$fail" = 0 ] && echo "PASS: check_landing_takes_a_pr"
 exit "$fail"
