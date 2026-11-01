@@ -547,6 +547,40 @@ def main_test_holds_produce(root, say=print, gh=None):
     return None
 
 
+def copy_delete_line(root, copy):
+    """-> the line handing over the delete link for `copy`, the branch a
+    Promote into main pushes for its pull request, or '' when no link can
+    be made (no GitHub origin). The Promote ends before that pull request
+    merges, so the link comes with the steps: the copy has done its job
+    once the merge goes through, and a merged pull request deletes its
+    branch only where the repository's auto-delete setting is on
+    (2026-11-01: a repository carried every promote copy it ever made).
+    Built by the engine's one link builder, precedent_stale_branches.link;
+    a session hands it over and never deletes the branch itself
+    (never-delete-a-remote-branch)."""
+    import pathlib
+    # The engine sits one folder up, in tools/, wherever this set's moves are
+    # copied; reached directly, as a set's moves may call only the engine
+    # names it declares (precedent_branches.MOVES_CORE).
+    here = str(pathlib.Path(__file__).resolve().parents[1])
+    try:
+        sys.path.insert(0, here)
+        import precedent_stale_branches as psb
+        slug = psb._slug(root)
+        url = psb.link(*slug, copy) if slug else ''
+    except Exception:                                            # noqa: BLE001
+        url = ''
+    finally:
+        if sys.path and sys.path[0] == here:
+            sys.path.pop(0)
+    if not url:
+        return ''
+    return (f'Once that pull request is merged, {copy} has done its job: '
+            f'delete it with {url} (the filtered page then reads "no branches '
+            f'matched"). Hand the link over; never delete it yourself '
+            f'(never-delete-a-remote-branch).')
+
+
 def _promote_to_main(root, say=print, work=None, fast=False,
                      despite_failed_tests=False, no_full_after=False):
     """Staging into main: the full check on exactly what main would hold,
@@ -662,7 +696,8 @@ def _promote_to_main(root, say=print, work=None, fast=False,
            f'and merge it with a merge commit once that says PASSED'
            + ('' if due else ' (or, for this not-due copy, NOT DUE)')
            + core._at_head(copy_tip)) +
-        f'. Never open it from {staging} itself.')
+        f'. Never open it from {staging} itself.'
+        + (('\n' + gone) if (gone := copy_delete_line(root, copy)) else ''))
     _verdict(f'READY FOR {core.MAIN.upper()}: open a pull request from {copy} into '
              f'{core.MAIN}, then merge with expectedHeadSha {copy_tip}'
              + ('' if none_runs else ' once its GitHub test says PASSED'
@@ -898,7 +933,8 @@ def _promote_to_main_fast(root, say=print, work=None, despite_failed_tests=False
         f'{core.MAIN}, titled "Promote {staging} into {core.MAIN} ({len(batch)} '
         f'commit(s))", and merge it now with a merge commit{core._at_head(copy_tip)}; '
         f'do not wait for GitHub\'s test first. Then: {after}. Never open it '
-        f'from {staging} itself.')
+        f'from {staging} itself.'
+        + (('\n' + gone) if (gone := copy_delete_line(root, copy)) else ''))
     _verdict(f'READY FOR {core.MAIN.upper()} (FAST): open a pull request from {copy} '
              f'into {core.MAIN} and merge it now with expectedHeadSha {copy_tip}; '
              + (f'no GitHub test runs on this one, so do not wait for one; after '
