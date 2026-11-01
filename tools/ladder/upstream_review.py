@@ -158,14 +158,26 @@ def trailer_lines(items):
 
 
 def _engine(name):
-    """-> the engine module `name` beside this file, or None."""
-    sys.path.insert(0, str(_HERE))
+    """-> the engine module `name`: the one this process already runs on
+    when it has one, else the copy beside this file, or None.
+
+    Behind the running engine, never in front of it (2026-10-31): the
+    BestPractice engine calls this in its own process, and putting this
+    set's tools/ first made the module and everything it imported --
+    leak_gate among them -- this set's older vendored copies for the rest
+    of that run, which turned a later test red."""
+    if name in sys.modules:
+        return sys.modules[name]
+    added = str(_HERE) not in sys.path
+    if added:
+        sys.path.append(str(_HERE))
     try:
         return __import__(name)
     except Exception:                                          # noqa: BLE001
         return None
     finally:
-        sys.path.pop(0)
+        if added and str(_HERE) in sys.path:
+            sys.path.remove(str(_HERE))
 
 
 def applies(root):
