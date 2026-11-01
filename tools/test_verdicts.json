@@ -1,76 +1,84 @@
 {
- "verdicts": {
-  "tools/checks/tests/test_branch_page_note.sh": {
-   "verdict": "keep",
-   "importance": "low",
-   "why": "Pins the wording of the per-turn branch-cleanup note (stale-branch-cleanup's reply gate) and that it exits 0 with no engine; wording plus a never-fail guarantee, near free.",
-   "date": "2026-10-31",
-   "by": "agent",
-   "seconds": 0.2
-  },
-  "tools/checks/tests/test_branch_rules_opt_in.sh": {
-   "verdict": "keep",
-   "importance": "high",
-   "why": "tools/precedent_branch_rules.py (shipped by act) writes GitHub branch rules; this proves it changes nothing without the person's opt-in and never touches a repository they do not own.",
-   "date": "2026-10-31",
-   "by": "agent",
-   "seconds": 0.3
-  },
-  "tools/checks/tests/test_file_header.sh": {
-   "verdict": "keep",
-   "importance": "medium",
-   "why": "The live file-header check, including --fix-staged, which the person's commit-time fixer runs on every commit (and, since 2026-10-31, the only copy that fixer runs). Cheapened 2026-10-31: fixture git runs with the global commit hooks off (core.hooksPath=/dev/null), keeping PRECEDENT_SKIP_COMMIT_FIX=1; same cases and failure words, and it still fails against a check that never fires. 25.8 s -> 11.3 s in the review's measurement; 29.6 s -> 11.9 s in this pass's.",
-   "date": "2026-10-31",
-   "by": "agent",
-   "seconds": 11.9
-  },
-  "tools/checks/tests/test_ladder_branches.sh": {
-   "verdict": "keep",
-   "importance": "high",
-   "why": "Promote, Produce, --land, --run-tests and the main-test wait end to end (24 checks, hundreds of stated cases); a miss lands work on the wrong branch or drops main's commits. 24 s is one case (46 stated cases, about 20 real CLI runs at ~1 s each); global hooks are not the cost (39.5 s with them off).",
-   "date": "2026-10-31",
-   "by": "agent",
-   "seconds": 40.9
-  },
-  "tools/checks/tests/test_landing_authority_reply_check.sh": {
-   "verdict": "keep",
-   "importance": "high",
-   "why": "A Prompt Please block that orders a landing must carry the person's quoted Booked; a miss hands another session a landing nobody authorized.",
-   "date": "2026-10-31",
-   "by": "agent",
-   "seconds": 0.1
-  },
-  "tools/checks/tests/test_landing_takes_a_pr.sh": {
-   "verdict": "keep",
-   "importance": "high",
-   "why": "go-update's check that a workflow or gating-file change reaches the landing branch only through a PR; a miss lands an unreviewed gate change.",
-   "date": "2026-10-31",
-   "by": "agent",
-   "seconds": 2.9
-  },
-  "tools/checks/tests/test_others_did.sh": {
-   "verdict": "keep",
-   "importance": "medium",
-   "why": "others_did.py runs at every SessionStart and prompt (others-did hooks); tests it counts from the person's last commit, writes nothing to origin and stays silent off the ladder.",
-   "date": "2026-10-31",
-   "by": "agent",
-   "seconds": 1.5
-  },
-  "tools/checks/tests/test_session_branch_name.sh": {
-   "verdict": "keep",
-   "importance": "medium",
-   "why": "act's branch-name check and its pre-push guard: flags harness-named and hand-made branches, passes tool-made ones; a false fire would refuse a push.",
-   "date": "2026-10-31",
-   "by": "agent",
-   "seconds": 1.7
-  },
-  "tools/checks/tests/test_upstream_review.sh": {
-   "verdict": "keep",
-   "importance": "medium",
-   "why": "upstream_review.py is the step_review the engine calls at Booked, Debut and Produce; tests it is shown only to a code owner on the ladder and skips what commits already record.",
-   "date": "2026-10-31",
-   "by": "agent",
-   "seconds": 0.9
+  "verdicts": {
+    "tools/checks/tests/test_branch_page_note.sh": {
+      "verdict": "keep",
+      "importance": "low",
+      "why": "Pins the wording of the per-turn branch-cleanup note (stale-branch-cleanup's reply gate) and that it exits 0 with no engine; wording plus a never-fail guarantee, near free.",
+      "date": "2026-10-31",
+      "by": "agent",
+      "seconds": 0.2
+    },
+    "tools/checks/tests/test_branch_rules_opt_in.sh": {
+      "verdict": "keep",
+      "importance": "high",
+      "why": "tools/precedent_branch_rules.py (shipped by act) writes GitHub branch rules; this proves it changes nothing without the person's opt-in and never touches a repository they do not own.",
+      "date": "2026-10-31",
+      "by": "agent",
+      "seconds": 0.3
+    },
+    "tools/checks/tests/test_file_header.sh": {
+      "verdict": "keep",
+      "importance": "medium",
+      "why": "The live file-header check, including --fix-staged, which the person's commit-time fixer runs on every commit (and, since 2026-10-31, the only copy that fixer runs). Cheapened 2026-10-31: fixture git runs with the global commit hooks off (core.hooksPath=/dev/null), keeping PRECEDENT_SKIP_COMMIT_FIX=1; same cases and failure words, and it still fails against a check that never fires. 25.8 s -> 11.3 s in the review's measurement; 29.6 s -> 11.9 s in this pass's.",
+      "date": "2026-10-31",
+      "by": "agent",
+      "seconds": 11.9
+    },
+    "tools/checks/tests/test_ladder_branches.sh": {
+      "verdict": "keep",
+      "importance": "high",
+      "why": "Promote, Produce, --land, --run-tests and the main-test wait end to end (24 checks, hundreds of stated cases); a miss lands work on the wrong branch or drops main's commits. 24 s is one case (46 stated cases, about 20 real CLI runs at ~1 s each); global hooks are not the cost (39.5 s with them off).",
+      "date": "2026-10-31",
+      "by": "agent",
+      "seconds": 40.9
+    },
+    "tools/checks/tests/test_landing_authority_reply_check.sh": {
+      "verdict": "keep",
+      "importance": "high",
+      "why": "A Prompt Please block that orders a landing must carry the person's quoted Booked; a miss hands another session a landing nobody authorized.",
+      "date": "2026-10-31",
+      "by": "agent",
+      "seconds": 0.1
+    },
+    "tools/checks/tests/test_landing_takes_a_pr.sh": {
+      "verdict": "keep",
+      "importance": "high",
+      "why": "go-update's check that a workflow or gating-file change reaches the landing branch only through a PR; a miss lands an unreviewed gate change.",
+      "date": "2026-10-31",
+      "by": "agent",
+      "seconds": 2.9
+    },
+    "tools/checks/tests/test_others_did.sh": {
+      "verdict": "keep",
+      "importance": "medium",
+      "why": "others_did.py runs at every SessionStart and prompt (others-did hooks); tests it counts from the person's last commit, writes nothing to origin and stays silent off the ladder.",
+      "date": "2026-10-31",
+      "by": "agent",
+      "seconds": 1.5
+    },
+    "tools/checks/tests/test_session_branch_name.sh": {
+      "verdict": "keep",
+      "importance": "medium",
+      "why": "act's branch-name check and its pre-push guard: flags harness-named and hand-made branches, passes tool-made ones; a false fire would refuse a push.",
+      "date": "2026-10-31",
+      "by": "agent",
+      "seconds": 1.7
+    },
+    "tools/checks/tests/test_upstream_review.sh": {
+      "verdict": "keep",
+      "importance": "medium",
+      "why": "upstream_review.py is the step_review the engine calls at Booked, Debut and Produce; tests it is shown only to a code owner on the ladder and skips what commits already record.",
+      "date": "2026-10-31",
+      "by": "agent",
+      "seconds": 0.9
+    },
+    "tools/checks/tests/test_ladder_tools_use_the_running_engine.sh": {
+      "verdict": "keep",
+      "importance": "high",
+      "why": "The engine loads this set's ladder tools into its own process; this proves they never put the set's tools/ in front of the running engine, which once left an older leak_gate loaded for the rest of a test run.",
+      "date": "2026-10-31",
+      "by": "agent",
+      "seconds": 0.3
+    }
   }
- }
 }

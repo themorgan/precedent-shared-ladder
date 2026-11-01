@@ -20,7 +20,13 @@ import pathlib
 import sys
 
 # Shipped to tools/ladder/; the engine is in tools/ beside it.
-sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent.parent))
+# Behind the engine already loaded, never in front of it (2026-10-31): the
+# BestPractice engine loads this file into its own process, and putting
+# this set's tools/ first there made every later import -- leak_gate
+# among them -- this set's older vendored copy for the rest of that run.
+_ENGINE = str(pathlib.Path(__file__).resolve().parent.parent)
+if _ENGINE not in sys.path:
+    sys.path.append(_ENGINE)
 
 
 def note():
