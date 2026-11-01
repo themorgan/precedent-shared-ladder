@@ -25,6 +25,10 @@ WHAT COUNTS (go-update's first bullet, the mechanical half of it):
   - tools/precedent_check.py, tools/precedent_push_check.py,
     tools/leak_gate.py, tools/verify_harness.py, and any check under
     tools/checks/ or local/tools/checks/ -- the code other work is judged by
+  - the harness's area files under tools/harness/ and tools/harness_parts.py,
+    which names them (2026-10-31: BestPractice split verify_harness.py into
+    one module per area, and a change touching only an area file would
+    otherwise have landed without a pull request)
 EXCEPT, never for a workflow file:
   - an engine file byte for byte what tools/ENGINE_MANIFEST.json recorded
     vendoring from BestPractice's main (Morgan, 2026-10-16: "since they are
@@ -50,8 +54,9 @@ import sys
 HERE = pathlib.Path(__file__).resolve().parent
 ZERO = '0' * 40
 GATING = ('tools/precedent_check.py', 'tools/precedent_push_check.py',
-          'tools/leak_gate.py', 'tools/verify_harness.py')
-CHECK_DIRS = ('tools/checks/', 'local/tools/checks/')
+          'tools/leak_gate.py', 'tools/verify_harness.py',
+          'tools/harness_parts.py')
+CHECK_DIRS = ('tools/checks/', 'local/tools/checks/', 'tools/harness/')
 WORKFLOWS = '.github/workflows/'
 
 
