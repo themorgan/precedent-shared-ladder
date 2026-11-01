@@ -826,6 +826,7 @@ def _promote_to_main_fast(root, say=print, work=None, despite_failed_tests=False
             f'checks -- the full local suite is not run on a fast move...')
         t0 = time.monotonic()
         ok, out = core._check(root, wt, core.BASIC, dest=core.MAIN, since=mtip)
+        against = []
         if ok:
             # What GitHub's test of the pull request into main will judge
             # against main, judged here first (a few seconds; 2026-10-17).
@@ -838,7 +839,14 @@ def _promote_to_main_fast(root, say=print, work=None, despite_failed_tests=False
     review = core._upstream_review(root, None, 'produce', out, f'{mtip}..{stip}')[0] \
         if ok else []
     if not ok:
-        say(f'PROMOTE REFUSED: the quick checks failed on {staging} merged into '
+        # WHICH CHECKS FAILED (2026-11-01). This always said "the quick
+        # checks failed", and on 2026-10-31 they had passed: what refused
+        # the move was the checks judged against main, and the session went
+        # looking among the quick checks first. Say which it was.
+        which = (f'the checks judged against {core.MAIN} failed (the quick '
+                 f'checks passed) on' if against
+                 else 'the quick checks failed on')
+        say(f'PROMOTE REFUSED: {which} {staging} merged into '
             f'{core.MAIN}, so nothing was pushed.\n\n{out}\n\nFix it, land the fix on '
             f'{staging}, and promote again.')
         return 1

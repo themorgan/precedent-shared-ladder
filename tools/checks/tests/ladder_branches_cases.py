@@ -2180,6 +2180,14 @@ def check_debut_judges_the_change_against_main_too():
                       rc == 1 and 'PROMOTE REFUSED' in out
                       and 'rename-updates-links (against main)' in out,
                       out[-300:]))
+        # 2026-11-01: the refusal said "the quick checks failed" when they
+        # had passed and only the checks against main had not.
+        cases.append(('...and says it was the checks against main, not the '
+                      'quick checks',
+                      'PROMOTE REFUSED: the checks judged against main failed '
+                      '(the quick checks passed)' in out
+                      and 'PROMOTE REFUSED: the quick checks failed' not in out,
+                      out[-300:]))
         cases.append(('...and main did not move', tip('main') == before))
         # Main catches up: the same tree now passes.
         git(work, 'push', '-q', 'origin', 'HEAD:main')
