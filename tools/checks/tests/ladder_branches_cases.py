@@ -1629,6 +1629,49 @@ def check_merge_instructions_give_the_full_head():
           f'({len(cases)} stated cases)', not bad, '; '.join(bad))
 
 
+def check_promote_hands_over_the_copy_branch_delete_link():
+    """A Promote into main hands over the delete link for the copy branch it
+    pushes, to use once the pull request is merged (2026-11-01: a repository
+    carried every promote copy it ever made, since a merged pull request
+    deletes its branch only where the auto-delete setting is on). The link
+    is the engine's one builder's, and nothing is ever deleted by the tool
+    (never-delete-a-remote-branch)."""
+    import tempfile
+    sys.path.insert(0, str(ROOT / 'tools'))
+    import precedent_branches as pb
+    cases = []
+    copy = '2026-11-01-someone-promote-to-main-abcde-fghij'
+    try:
+        with tempfile.TemporaryDirectory() as td:
+            gh = pathlib.Path(td) / 'gh'
+            gh.mkdir()
+            subprocess.run(['git', 'init', '-q', str(gh)], capture_output=True)
+            subprocess.run(['git', '-C', str(gh), 'remote', 'add', 'origin',
+                            'https://github.com/example/somerepo'],
+                           capture_output=True)
+            line = pb.copy_delete_line(str(gh), copy)
+            cases.append(('THE CASE: a GitHub origin gets the filtered branches '
+                          'page for the copy, to use once the merge goes through',
+                          'https://github.com/example/somerepo/branches/all?query='
+                          + copy in line and 'Once that pull request is merged'
+                          in line and 'never delete it yourself' in line))
+            local = pathlib.Path(td) / 'local'
+            local.mkdir()
+            subprocess.run(['git', 'init', '-q', str(local)], capture_output=True)
+            subprocess.run(['git', '-C', str(local), 'remote', 'add', 'origin',
+                            str(pathlib.Path(td) / 'bare.git')], capture_output=True)
+            cases.append(('CONTROL: an origin that is not GitHub gets no line',
+                          pb.copy_delete_line(str(local), copy) == ''))
+    finally:
+        sys.path.pop(0)
+    src = (ROOT / 'tools' / 'precedent_branches.py').read_text(encoding='utf-8')
+    cases.append(('both READY routes into main print it, the full and the fast',
+                  src.count('copy_delete_line(root, copy)') >= 2))
+    bad = [n for n, ok in cases if not ok]
+    check(f'a Promote into main hands over its copy branch\'s delete link '
+          f'({len(cases)} stated cases)', not bad, '; '.join(bad))
+
+
 def check_promote_into_main_exits_nonzero_until_main_moves():
     """Exit 0 from a Promote means the branch it names has moved.
 
