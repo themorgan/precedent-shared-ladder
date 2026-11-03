@@ -43,9 +43,10 @@ whether it's reassurance or a warning.
 ## Detail
 **This is the chat-reply form of a check the archive line already makes.**
 Universal `the-boildown` requires every checkout the container holds to be
-safe before the archive-line reply (the-boildown), and gives each one a
-`**Checkout disposition:** NAME -- discard (reason)` line. That covers the
-archive moment only. This covers every other moment a reply mentions a loss
+safe before the archive-line reply (the-boildown), and settles anything
+meant to be lost silently, through the scanner's `--discard`, never in the
+reply (since 2026-11-02, Morgan, decided). That covers the archive moment
+only. This covers every other moment a reply mentions a loss
 -- mid-task, in a status note, in a caveat -- where no gate is looking.
 
 **"Why it's fine" names the other copy or the reason, concretely.** "It's

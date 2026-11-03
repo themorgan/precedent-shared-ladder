@@ -556,8 +556,9 @@ def copy_delete_line(root, copy):
     branch only where the repository's auto-delete setting is on
     (2026-11-01: a repository carried every promote copy it ever made).
     Built by the engine's one link builder, precedent_stale_branches.link;
-    a session hands it over and never deletes the branch itself
-    (never-delete-a-remote-branch)."""
+    the branch cleanup page lists it, so a session names it in no reply
+    (the-boildown item 6, since 2026-10-30) and never deletes the branch
+    itself (never-delete-a-remote-branch)."""
     import pathlib
     # The engine sits one folder up, in tools/, wherever this set's moves are
     # copied; reached directly, as a set's moves may call only the engine
@@ -577,8 +578,9 @@ def copy_delete_line(root, copy):
         return ''
     return (f'Once that pull request is merged, {copy} has done its job: '
             f'delete it with {url} (the filtered page then reads "no branches '
-            f'matched"). Hand the link over; never delete it yourself '
-            f'(never-delete-a-remote-branch).')
+            f'matched"). The branch cleanup page lists it, so say nothing of it '
+            f'in the reply, and never delete it yourself (the-boildown item 6; '
+            f'never-delete-a-remote-branch).')
 
 
 def _promote_to_main(root, say=print, work=None, fast=False,
