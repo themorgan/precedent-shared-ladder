@@ -71,7 +71,7 @@ session's opinion is one copy and one paste. The block follows
 [fence-block-for-paste](https://github.com/alex137/BestPractice/blob/staging/practices/fence-block-for-paste.md): it says where to paste
 it -- a new session, the repository to root it in, what to attach -- opens
 by naming the session that wrote it
-([seeded-prompt-names-its-origin](https://github.com/alex137/BestPractice/blob/staging/practices/seeded-prompt-names-its-origin.md)), and
+([prompt-please](https://github.com/alex137/BestPractice/blob/staging/practices/prompt-please.md)), and
 asks the receiving session to critique the plan, not to carry it out.
 
 **A reply that finishes a Consider plan asks to act on it**, as
