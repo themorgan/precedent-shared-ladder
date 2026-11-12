@@ -77,7 +77,7 @@ run rather than two (practice: slow-steps-report-and-cache). The record
 is keyed on the tree and the check list together, so any change to either
 invalidates it, and it lives in the git directory, never in the tracked
 tree. "Nothing uncommitted" leaves out the fact ledgers the checks
-themselves write (practice: gate-ledger): fact_ledger.py reports each one it
+themselves write (practice: slow-steps-report-and-cache): fact_ledger.py reports each one it
 saves, the pass is recorded for the commit, and the refreshed ledgers are
 left in place for the person to commit. A ledger only caches facts that
 verify themselves, so its working copy changes no verdict; any other
@@ -141,7 +141,7 @@ from pathlib import Path
 HERE = Path(__file__).resolve().parent
 RECORD = 'precedent-push-check.json'
 # The variable fact_ledger.py reads to report each ledger it saves
-# (fact_ledger.WRITTEN_ENV; practice: gate-ledger).
+# (fact_ledger.WRITTEN_ENV; practice: slow-steps-report-and-cache).
 LEDGER_WRITES_ENV = 'FACT_LEDGER_WRITTEN'
 # Set for every check a push check runs: the branch the push goes to, and
 # the commit its change is measured from (the quick tier only).
@@ -334,6 +334,16 @@ RENAME_LINKS_CHECK = (
     'rename_links', ['{engine}/precedent_check.py', '--only',
                      'rename-updates-links'],
     'nothing -- it ran only inside the full sweep, at the landing')
+# Whether each practice file carries the sections every practice must
+# (Rule, Why, Story, Install) and the rest of its shape: basic tier for the
+# engine's origin (2026-11-12). A new practice landed without ## Why and
+# ## Install, every quick check passed, and main's GitHub test was the
+# first to see it, after the Produce had moved main (issue #1525). About
+# 0.35 s over the whole catalogue.
+PRACTICE_SHAPE_CHECK = (
+    'practice_shape', ['{engine}/precedent_check.py', '--only',
+                       'practice-file-shape'],
+    "nothing -- it ran only in the full sweep and main's GitHub test")
 CI_WORKFLOWS_CHECK = (
     'ci_workflows', ['{engine}/precedent_check.py', '--only',
                      'ci-workflow-approved'],
@@ -405,6 +415,9 @@ BASIC_CHECKS_APPROVED = {
     'scrub_gate': (_IN_FORCE_AT_CLOSING, 1),
     'practice_export_loop': (_IN_FORCE_AT_CLOSING, 1),
     'rename_links': (_IN_FORCE_AT_CLOSING, 0),
+    'practice_shape': ('Morgan, 2026-11-12, told it takes about 0.35 s and '
+                       'urged to leave it to the full check: "yes, add it, '
+                       'booked and produce"', 0.35),
 }
 BASIC_CHECKS = set(BASIC_CHECKS_APPROVED)
 BASIC, FULL = 'basic', 'full'
@@ -452,6 +465,7 @@ PUSH_CHECKS = {
          'leak-gate.yml (structural half only in CI)'),
         ('doc_lint', ['{engine}/doc_lint.py'],
          'docs.yml, retired 2026-09-21'),
+        PRACTICE_SHAPE_CHECK,
         DEEP_CHECK_SUITE,
         *IDENTITY_CHECKS,
     ),
@@ -1039,7 +1053,7 @@ def clean_tree(root, ledgers=()):
     A run over uncommitted edits checked something the push will not send,
     so it is never recorded as a pass for the commit.
 
-    `ledgers`: fact-ledger files (practice: gate-ledger) whose uncommitted
+    `ledgers`: fact-ledger files (practice: slow-steps-report-and-cache) whose uncommitted
     state does not count. A ledger only caches facts that verify themselves
     -- a stale or foreign line costs one re-run, never a skipped unit -- so
     no verdict depends on its working copy, and the push sends the
@@ -2915,7 +2929,7 @@ def main(argv):
     # with no planted case (whats-new, 2026-10-01) went green in the full
     # check and was refused minutes later by the merge gate's quick one.
     #
-    # Fact ledgers the checks write (practice: gate-ledger) are the one kind
+    # Fact ledgers the checks write (practice: slow-steps-report-and-cache) are the one kind
     # of edit a run makes to the tree it judges. fact_ledger.py reports each
     # ledger it saves into the file FACT_LEDGER_WRITTEN names; those paths,
     # and the ones an earlier run here saw, are left out of "uncommitted".

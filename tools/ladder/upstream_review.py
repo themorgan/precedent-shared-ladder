@@ -12,7 +12,7 @@ warning, error, note, exemption, kept local edit and workaround the step met
 session. This module is the mechanical half: it pulls the warning-shaped
 lines out of a run's output and drops the ones already reviewed. The
 judgment -- is the cause in a repository we own, is the fix bounded -- stays
-with the session (practice: judgment-check-or-tool).
+with the session (practice: engine-plus-host-shims).
 
 ONLY ON THE LADDER, ONLY FOR A CODE OWNER (Morgan, 2026-10-11: "let's
 rebuild it but only in ladders and also only when the user is a code
