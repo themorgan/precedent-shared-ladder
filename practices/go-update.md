@@ -19,7 +19,7 @@ in_force_at: null
 supersedes:  ["merge-authorization-keyword"]
 overrides:   null
 added:       "2026-10-02"
-approved_by: "Morgan F, 2026-10-02, withdrawn from the universal set BestPractice, which keeps no copy (there: Morgan, 2026-09-08 -- moved up from his individual set to universal; loosened 2026-09-12, Morgan, after sessions began refusing the phrase he had just typed; extended 2026-09-13, Morgan, who raised the blocked-step handoff himself out of a refusal he had just hit; second phrase added 2026-09-13, Morgan -- \"if I say 'approved', that also means the same as go merge\"; trivial/substantial split added 2026-09-15, Morgan -- \"Sold. Let's do it. Go merge\", choosing it over a rename to a new command; third phrase added later the same day, Morgan, reconsidering the rename he had just set aside -- \"I think the solution is to allow BOTH words to be used\"; extended 2026-09-16, Morgan, on Alex's intent-over-keyword point -- \"apply the same to the ones that are a serious decision such as Go Merge, Weak Yes, etc -- and just note that (if the exact phrase isn't used), then use your judgment and ASK the person if you have doubt\"; reversed 2026-09-18, Morgan -- \"let's reverse it so that Go update is the primary one, that you recommend and use\" and \"it's not about the merge because many times it's not a merge but a direct edit,\" declining a rename again for the same reason as 2026-09-15; trivial/substantial replaced with a push-by-default/high-risk split 2026-09-20, Morgan, after a session's own CI-cost review of a dependent repo found the trivial carve-out too narrow to spend a real cost correctly -- \"it is not just SINGLE WORDING changes; it should be for all NON-HUGE changes... have VERY STRICT CRITERIA for being a huge change\", and \"Make this a universal rule 100%. This should be changed universally\"; `Go merge` retired as a separate trigger later the same day, Morgan -- \"I think we changed 'go update' and are no longer using 'go merge'... let's remove entirely the 'go merge' phrase/trigger, and only 'go update' for that,\" keeping `Go update` and `Approved` as the two -- see push-directly.md for the narrower phrase coined the same conversation; the landing target made explicit 2026-09-22, Morgan -- \"Does the 'go update' command make clear that this means that the update should be made to main / precedent-beta-v01 or whatever the primary branch is of that repo? If not, it should. (This helps avoid the problem of, I tell it to update, and it does so but only the local clone only.)\"; slug renamed go-merge to go-update 2026-09-26, Morgan -- \"Go update, rename go-merge to go-update\"; \"Book\" and \"Book it\" added 2026-09-28, Morgan -- \"Add 'book' and 'book it' as synonyms\", the Booked stage of spec/FIVE_STAGES_AND_OUR_LANGUAGE_PLAN.md, and \"don't just literally look at the words but think about the words I say, the context, what we had been discussing\"; the vendor update taken out of the landing 2026-11-17, Morgan (decided) -- \"I think we should have a rule to never update the shared sets\" -- and moved here from his individual set the same day: \"move that rule to ladders\")"
+approved_by: "Morgan F, 2026-10-02, withdrawn from the universal set BestPractice, which keeps no copy (there: Morgan, 2026-09-08 -- moved up from his individual set to universal; loosened 2026-09-12, Morgan, after sessions began refusing the phrase he had just typed; extended 2026-09-13, Morgan, who raised the blocked-step handoff himself out of a refusal he had just hit; second phrase added 2026-09-13, Morgan -- \"if I say 'approved', that also means the same as go merge\"; trivial/substantial split added 2026-09-15, Morgan -- \"Sold. Let's do it. Go merge\", choosing it over a rename to a new command; third phrase added later the same day, Morgan, reconsidering the rename he had just set aside -- \"I think the solution is to allow BOTH words to be used\"; extended 2026-09-16, Morgan, on Alex's intent-over-keyword point -- \"apply the same to the ones that are a serious decision such as Go Merge, Weak Yes, etc -- and just note that (if the exact phrase isn't used), then use your judgment and ASK the person if you have doubt\"; reversed 2026-09-18, Morgan -- \"let's reverse it so that Go update is the primary one, that you recommend and use\" and \"it's not about the merge because many times it's not a merge but a direct edit,\" declining a rename again for the same reason as 2026-09-15; trivial/substantial replaced with a push-by-default/high-risk split 2026-09-20, Morgan, after a session's own CI-cost review of a dependent repo found the trivial carve-out too narrow to spend a real cost correctly -- \"it is not just SINGLE WORDING changes; it should be for all NON-HUGE changes... have VERY STRICT CRITERIA for being a huge change\", and \"Make this a universal rule 100%. This should be changed universally\"; `Go merge` retired as a separate trigger later the same day, Morgan -- \"I think we changed 'go update' and are no longer using 'go merge'... let's remove entirely the 'go merge' phrase/trigger, and only 'go update' for that,\" keeping `Go update` and `Approved` as the two -- see push-directly.md for the narrower phrase coined the same conversation; the landing target made explicit 2026-09-22, Morgan -- \"Does the 'go update' command make clear that this means that the update should be made to main / precedent-beta-v01 or whatever the primary branch is of that repo? If not, it should. (This helps avoid the problem of, I tell it to update, and it does so but only the local clone only.)\"; slug renamed go-merge to go-update 2026-09-26, Morgan -- \"Go update, rename go-merge to go-update\"; \"Book\" and \"Book it\" added 2026-09-28, Morgan -- \"Add 'book' and 'book it' as synonyms\", the Booked stage of spec/FIVE_STAGES_AND_OUR_LANGUAGE_PLAN.md, and \"don't just literally look at the words but think about the words I say, the context, what we had been discussing\"; the vendor update taken out of the landing 2026-11-17, Morgan (decided) -- \"I think we should have a rule to never update the shared sets\" -- and put back the same day with a separate session offered when it fails, Morgan (decided): \"Or maybe there's a way to do both?\" ... \"yes, do both, booked and produce.\")"
 strength:    decided
 ---
 ## Rule
@@ -48,13 +48,12 @@ named here, and the Story the incidents.
    never a repository's configured default just because it is configured
    that way ("Where it lands"). **Say that branch out loud before pushing
    or merging, every time.**
-3. **Never take the vendor update with a landing.** In a repository that
-   vendors Precedent, `python3 tools/precedent_merge_vendors.py
-   --check-only` may say what is behind; nothing runs Update Vendors as a
-   side step. When something is behind, say so in one line, give the
-   paste-ready prompt and the command for a new session that does only
-   Update Vendors, and offer to create that session ("The vendor
-   update").
+3. **In a repository that vendors Precedent, run `python3
+   tools/precedent_merge_vendors.py` after committing and before the
+   push.** It brings main's work in first, then takes the update as a
+   commit of its own, and never blocks the landing. Taken: one plain line
+   in the reply. Not taken: no account of the machinery; offer a separate
+   session that does only the update ("The vendor update").
 4. **Classify the change, then take its path.** The default lands it
    straight on staging, with no pull request:
 
@@ -320,34 +319,41 @@ checks only that background run reached.
 
 ### The vendor update
 
-**A landing never takes the vendor update with it, and neither does any
-other work.** Updating the vendored engine, the universal set or a shared
-set is its own piece of work, with its own checks and its own ways to fail,
-so it gets its own session. At a landing, `python3
-tools/precedent_merge_vendors.py --check-only` may say whether anything is
-behind; it changes nothing. When something is:
+**In a repository that vendors Precedent, the landing takes the vendor
+update with it, and only a failed one gets its own session.** After
+syncing with origin and committing, and before the push, run `python3
+tools/precedent_merge_vendors.py`. It brings origin's main into the branch
+first, the same merge the landing makes a moment later, so the update's
+own check judges what will actually land. Nothing behind, it says
+`VENDORS: current` in about the time a fetch takes. Behind, it runs Update
+Vendors from the BestPractice clone, and then:
 
-1. say in one line which copy is behind;
-2. give the **paste-ready prompt** for a new session that does only the
-   update ([prompt-please](https://github.com/alex137/BestPractice/blob/staging/practices/prompt-please.md)), naming the repository and saying "Update
-   Vendors", with the **command** it runs, `python3
-   tools/precedent_merge_vendors.py`;
-3. **offer to create that session**, and create it with `create_session` on
-   the person's yes.
+- **Taken** (`VENDORS: updated`): the update is a commit of its own and
+  lands with the work. The reply says so in one plain line, and nothing
+  more.
+- **Not taken** (`VENDORS: NOT TAKEN`): everything it wrote is taken back
+  and the work lands without it. The reply does not explain what failed
+  inside the update. It says in one line that the update could not come
+  along, gives the **paste-ready prompt** for a new session that does only
+  the update ([prompt-please](https://github.com/alex137/BestPractice/blob/staging/practices/prompt-please.md)), naming the repository and saying
+  "Update Vendors", with the **command** it runs, `python3
+  tools/precedent_merge_vendors.py`, and **offers to create that session**,
+  creating it with `create_session` on the person's yes.
 
-**A session started to do the update is the exception:** "Update Vendors"
-said there is the go-ahead, and it runs the update in full.
+A session started to do the update runs it in full: "Update Vendors" said
+there is the go-ahead.
 
-Until 2026-11-17 the landing ran the update itself (Alex, 2026-10-02: "Can
-we set up a system so merge also does vendor updates?"). Morgan reversed it
-that day, after a landing's update was refused for a reason that had
-nothing to do with the work being landed: its check ran before the landing
-brought main's commits in, so it failed whenever main had something new,
-and the reply had to explain machinery nobody had asked about. "I think we
-should have a rule to never update the shared sets. Instead, whenever you
-want to update a shared set, to suggest to me to create a new session to do
-that and give me the code and the prompt, please, and then offer to create
-the new session."
+Alex asked for the landing to take the update on 2026-10-02 ("Can we set up
+a system so merge also does vendor updates?"), so that every project stays
+current without anybody having to remember. On 2026-11-17 a landing's
+update was refused for a reason that had nothing to do with it: its check
+ran before the landing brought main's commits in, so it failed whenever
+main had moved, and the reply had to explain machinery nobody had asked
+about. Morgan first moved the update out of the landing altogether, then
+put it back the same day, keeping Alex's design and adding the separate
+session for the case that fails ("Or maybe there's a way to do both?" ...
+"yes, do both"). The order bug was fixed where it lived, in the engine's
+`bring_main_in`.
 
 ### The high-risk test in full
 
