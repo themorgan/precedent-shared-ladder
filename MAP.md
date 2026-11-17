@@ -10,7 +10,7 @@ This repository's map of the practice catalogue in force here and the engine's o
 
 ## The practice catalogue
 
-`practices/` holds 36 practice files (2 resident, 34 on-demand). One file per practice.
+`practices/` holds 37 practice files (2 resident, 35 on-demand). One file per practice.
 
 | Practice | Tier | Occasion / scope |
 |---|---|---|
@@ -33,6 +33,7 @@ This repository's map of the practice catalogue in force here and the engine's o
 | [ladder-required](practices/ladder-required.md) | on-demand | starting to build anything, landing it, or ending a session that built something |
 | [loss-comes-with-a-verdict](practices/loss-comes-with-a-verdict.md) | on-demand | telling the person something will be lost, discarded, or go away with the container, clone or session |
 | [no-ladders](practices/no-ladders.md) | on-demand | a person says "No ladders", or asks to see what somebody who does not use the ladder sees |
+| [offer-only-what-you-recommend](practices/offer-only-what-you-recommend.md) | on-demand | ** |
 | [others-did](practices/others-did.md) | on-demand | the first session of a day, after 07:00 in the person's own timezone, when someone else has landed work since the person's own last commit there |
 | [primary-branch](practices/primary-branch.md) | on-demand | ** |
 | [produce](practices/produce.md) | on-demand | a person says "Promote", "Promote N" or a stage word ("Consider", "Act", "Debut", "Produce", "Make live"), or asks to plan, build or move work up a tier |
