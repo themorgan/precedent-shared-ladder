@@ -228,7 +228,18 @@ def is_content(path, root=None):
 ACRONYM_RE = re.compile(r'\b([A-Z]{2}[A-Z0-9]{0,4})\b')   # 2-6 chars, ≥2 leading letters
 # A shouted phrase: three or more ALL-CAPS words (one letter counts: "A",
 # "I"), separated by single spaces. scan_unglossed() says why.
-SHOUTED_RUN_RE = re.compile(r"\b[A-Z][A-Z0-9'’]*(?: [A-Z][A-Z0-9'’]*){2,}\b")
+# A shouted phrase stays one phrase across the punctuation a sentence
+# carries -- a colon, brackets, a question mark, a dash, quotation marks --
+# so long as a space sits between the words. Spaces alone were the rule
+# until a draft placeholder shaped like "CONFIRM: THE TEAM (JANE DOE) IS THE
+# OWNER" had its colon and brackets split it into short runs, and the
+# surname was refused as an acronym, blocking a Produce in a consumer repo
+# (Morgan, 2026-11-12: "phrases in caps shouldn't be treated as
+# acronyms"). A comma still ends a run, so a list like "API, CLI, SDK" is
+# still scanned.
+SHOUT_WORD = r"[A-Z][A-Z0-9'’]*"
+SHOUT_GAP = r"[:;()?!.\-–—\"“”]*\s+[(\"“”\-–—]*"
+SHOUTED_RUN_RE = re.compile(rf"\b{SHOUT_WORD}(?:{SHOUT_GAP}{SHOUT_WORD}){{2,}}\b")
 # Inside a quotation, two ALL-CAPS words in a row are already a person
 # shouting: a quote keeps its own form, and Morgan's "PURE CONTENT" in
 # promote-only's Story was refused as an acronym when the practice moved to a
@@ -1673,6 +1684,26 @@ RESIDUE_PATTERNS = [
     (re.compile(r"search.engine snippets?|egress.blocked", re.I),
      "how a figure was checked is verification bookkeeping; it belongs in "
      "the record doc"),
+    # A document arguing with its own earlier versions, which the reader was
+    # never shown: a "What changed" section, "version 0.6 asked ...",
+    # "carried over from version 0.6", "this revision". All four reached a
+    # published brief on 2026-11-17 and none of the patterns above matched.
+    # (practices: docs-are-current-state, abstract-first)
+    (re.compile(r"^#{1,6}\s.*\b(?:what(?:'s| has)? changed|"
+                r"changes (?:from|since) (?:the )?(?:version|last|previous|earlier|prior)|"
+                r"change ?log|revision history)\b", re.I),
+     "a document's own change history belongs in the record doc or version "
+     "control, never in a section of the document"),
+    (re.compile(r"\b(?:carried over|condensed|unchanged|changed) from "
+                r"(?:(?:the|an) )?(?:earlier|previous|prior|last) "
+                r"(?:version|draft|revision|text)\b|"
+                r"\b(?:carried over|condensed|unchanged|changed) from version \d|"
+                r"\bversion \d+(?:\.\d+)+ (?:asked|said|scaled|sized|defined|"
+                r"placed|cites?|cited|used|had|assumed|gave)\b", re.I),
+     "comparing the document with an earlier version the reader has not "
+     "seen -- state what is true now; the change goes in the record doc"),
+    (re.compile(r"\b(?:this|the (?:current|present)) revision\b", re.I),
+     "a note about the document's own revision belongs in the record doc"),
     (re.compile(r"\bopen tail\b|\bthe record carries\b", re.I),
      "pointing the reader at the record's apparatus -- the footer's one "
      "link to the record is enough"),

@@ -10,7 +10,7 @@ This repository's map of the practice catalogue in force here and the engine's o
 
 ## The practice catalogue
 
-`practices/` holds 36 practice files (2 resident, 34 on-demand). One file per practice.
+`practices/` holds 37 practice files (2 resident, 35 on-demand). One file per practice.
 
 | Practice | Tier | Occasion / scope |
 |---|---|---|
@@ -33,6 +33,7 @@ This repository's map of the practice catalogue in force here and the engine's o
 | [ladder-required](practices/ladder-required.md) | on-demand | starting to build anything, landing it, or ending a session that built something |
 | [loss-comes-with-a-verdict](practices/loss-comes-with-a-verdict.md) | on-demand | telling the person something will be lost, discarded, or go away with the container, clone or session |
 | [no-ladders](practices/no-ladders.md) | on-demand | a person says "No ladders", or asks to see what somebody who does not use the ladder sees |
+| [offer-only-what-you-recommend](practices/offer-only-what-you-recommend.md) | on-demand | ** |
 | [others-did](practices/others-did.md) | on-demand | the first session of a day, after 07:00 in the person's own timezone, when someone else has landed work since the person's own last commit there |
 | [primary-branch](practices/primary-branch.md) | on-demand | ** |
 | [produce](practices/produce.md) | on-demand | a person says "Promote", "Promote N" or a stage word ("Consider", "Act", "Debut", "Produce", "Make live"), or asks to plan, build or move work up a tier |
@@ -160,6 +161,7 @@ This repository's map of the practice catalogue in force here and the engine's o
 | [tools/precedent_whats_new.py](tools/precedent_whats_new.py) | The mechanics behind "What's new?": which finished days on main a project's running log lacks, what changed on each, today so far, and marking the log current -- the entries themselves are the session's to write |
 | [tools/precedent_which_repo.py](tools/precedent_which_repo.py) | Names the repo an engine tool reads, and warns when it is run from inside a different one -- engine tools read their own file's repo, never the current directory |
 | [tools/qualified_mention.py](tools/qualified_mention.py) | Whether a line's mention of a path names another repository's file. |
+| [tools/reply_refusals.py](tools/reply_refusals.py) | How often the reply gate refuses a turn, per session and per requirement -- read from the ledger the stop hook keeps |
 | [tools/repo_attach_gate.py](tools/repo_attach_gate.py) | Refuses a sweep of repository attaches the person did not ask for |
 | [tools/session_load_trend.py](tools/session_load_trend.py) | How much room every always-loaded surface has left and how fast it is going -- headroom, the hand-written/generated split, and the growth rate; its headroom_notice() is what the merge and push gates print |
 | [tools/set_words.py](tools/set_words.py) | The one matcher for a practice set's own words -- the ones a set declares in its precedent-source.json `owned_words`, which belong in that set and nowhere a person who does not bring it reads -- used by the check that holds every other set to them and by the tests that hold engine output to the same (spec/ENFORCEMENT_LIVES_WITH_ITS_PRACTICE_PLAN.md part 3) |
