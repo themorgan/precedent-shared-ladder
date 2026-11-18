@@ -12,6 +12,7 @@ Built from every practice's `defines:` frontmatter field -- the terms that pract
 |---|---|
 | Act | [act](practices/act.md) |
 | Approved | [go-update](practices/go-update.md) |
+| ASSORTED_NOTES.md | [assorted-notes-is-deleted](practices/assorted-notes-is-deleted.md) |
 | Book | [go-update](practices/go-update.md) |
 | Book it | [go-update](practices/go-update.md) |
 | Booked | [go-update](practices/go-update.md) |

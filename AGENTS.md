@@ -6,11 +6,12 @@ This repo IS `precedent-shared-ladder` -- a **shared** source, named for its sub
 
 <!-- Regenerate with: python3 tools/build_views.py -- do not hand-edit this block; `python3 tools/build_views.py --check` exits non-zero on drift. Source: practices/ -- edit the practice file, never this block. -->
 
-## Resident block (~196 of 250 token budget, 3 of 29 practices)
+## Resident block (~214 of 250 token budget, 3 of 29 practices)
 
 **assorted-notes-is-deleted.** **What is in `ASSORTED_NOTES.md` counts as deleted.** Never read, search,
 cite, link or mention it unless the person asks for it; confirm a move
-there in a word, with no recap.
+there in a word, with no recap. One per repo, by that name; only a
+`README.md` or `MAP.md` may link it.
 
 **brainstorm-holds-commits.** When a conversation is a **Brainstorm** -- the person says the word, or the
 thread is plainly exploratory ("I'm wondering", "what are my options", "do
