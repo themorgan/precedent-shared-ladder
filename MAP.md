@@ -17,7 +17,7 @@ This repository's map of the practice catalogue in force here and the engine's o
 | [act](practices/act.md) | on-demand | a person says "Promote", "Promote N" or a stage word ("Consider", "Act", "Debut", "Produce", "Make live"), or asks to plan, build or move work up a tier |
 | [actions-minutes-are-scarce](practices/actions-minutes-are-scarce.md) | on-demand | GitHub Actions comes up -- its minutes, billing or spend, or a workflow written, reviewed or pushed to |
 | [ask-before-opening-many-repos](practices/ask-before-opening-many-repos.md) | on-demand | about to open more than three more repos in one session |
-| [assorted-notes-is-deleted](practices/assorted-notes-is-deleted.md) | resident | moving anything into ASSORTED_NOTES.md, or writing a reply, a page or a plan that could draw on it |
+| [assorted-notes-is-deleted](practices/assorted-notes-is-deleted.md) | resident | moving anything into ASSORTED_NOTES.md, starting a catch-all notes file or renaming a legacy BRAINSTORM, NOTES or IDEAS file, or writing a reply, a page or a plan that could draw on it |
 | [auto-delete-branches](practices/auto-delete-branches.md) | on-demand | a branch this session merged finishes a clean merge |
 | [brainstorm-holds-commits](practices/brainstorm-holds-commits.md) | resident | a conversation is exploratory, or a person calls it a brainstorm |
 | [checks-follow-the-tier](practices/checks-follow-the-tier.md) | on-demand | adding a check, or deciding which branch tier a check runs at |

@@ -1,5 +1,13 @@
 {
   "verdicts": {
+    "tools/checks/tests/test_assorted_notes_is_deleted.sh": {
+      "verdict": "keep",
+      "importance": "medium",
+      "why": "Pins the strict assorted-notes-is-deleted check in both directions: fires on an ordinary link, a See also link (either case), a link naming the file and a #fragment link; stays clean on README.md/MAP.md listings, a map's source, look-alike names and a migrated legacy name. Moved from the writing set's test_assorted_notes.sh, 2026-11-18.",
+      "date": "2026-11-18",
+      "by": "agent",
+      "seconds": 6.0
+    },
     "tools/checks/tests/test_branch_page_note.sh": {
       "verdict": "keep",
       "importance": "low",
