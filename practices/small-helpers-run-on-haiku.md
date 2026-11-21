@@ -1,12 +1,12 @@
 ---
 slug:        small-helpers-run-on-haiku
-title:       "A helper that only reads, summarizes or transcribes runs on the cheapest model"
+title:       "A helper that only reads, summarizes or transcribes runs on Sonnet at low effort, never Haiku"
 tier:        on-demand
 severity:    default
 applies_to:  []
 occasion:    "spawning a helper agent, or handing a small task to another model"
 gates:       []
-index_clause: "reading, summarizing, transcribing: Haiku; one helper per job, not per item"
+index_clause: "reading, summarizing: Sonnet at low effort, never Haiku; one helper per job"
 checked_by:  null
 defines:     []
 status:      active
@@ -14,14 +14,19 @@ in_force_at: null
 supersedes:  []
 overrides:   null
 added:       "2026-10-19"
-approved_by: "Morgan F, 2026-10-19, moved from an individual set (there: Morgan, 2026-10-11 -- \"Maybe a practice here to use Haiku 5.5 for small tasks like transcription, summarizing internally etc\", then \"Please\" to the proposal); reworded 2026-10-31 to speak of the person who brings this set rather than in one person's voice, meaning unchanged, by the session under Morgan F's approval of that day (\"do your recommendations for all\", strength: assented)"
+approved_by: "Morgan F, 2026-10-19, moved from an individual set (there: Morgan, 2026-10-11 -- \"Maybe a practice here to use Haiku 5.5 for small tasks like transcription, summarizing internally etc\", then \"Please\" to the proposal); reworded 2026-10-31 to speak of the person who brings this set rather than in one person's voice, meaning unchanged, by the session under Morgan F's approval of that day (\"do your recommendations for all\", strength: assented); changed 2026-11-21 from Haiku to Sonnet at low effort, never Haiku, by Morgan (\"Use from Sonnet up\"; and for his other repositories, agreeing to the change, strength: decided)"
 strength:    decided
 ---
 ## Rule
 **A helper whose job is reading, summarizing, transcribing, sorting or
-pulling facts out of text runs on the smallest model**: pass `model: "haiku"`
-when spawning it (Haiku 5.5 as of 2026-10-11). The helper returns lines; the
-session that spawned it does the judging and the writing the person will read.
+pulling facts out of text runs on Sonnet at low effort, never Haiku**: pass
+`model: "sonnet"` when spawning it, and set the effort in the helper's own
+file where the harness reads one (Morgan, 2026-11-21, strength: decided).
+**What a helper pulls out that feeds a rule, a process or a decision runs
+at medium effort or higher**, since a wrong line there is followed by
+people. Haiku only for a case the person who brings this set approves.
+The helper returns lines; the session that spawned it does the judging and
+the writing the person will read.
 
 **Small model, not small cost.** Every helper carries a fixed load before it
 does anything, about 100,000 tokens for a single tool call (measured
@@ -44,7 +49,8 @@ check the copy must pass against the tool's own output (its length, its
 line count, or its first and last timestamp), and the helper reports that
 check, passed or failed.
 
-Haiku makes each token cheap. It does not make the fixed load go away.
+A cheaper model makes each token cheap. It does not make the fixed load go
+away.
 
 ## Story
 The first "Catch me up" in a personal repository, 2026-10-11, ran on one Haiku helper:
@@ -66,3 +72,11 @@ speak of the person who brings this set, under Morgan's approval of
 2026-10-31 ("do your recommendations for all", strength:
 assented). The meaning is unchanged; quoted words stay as they
 were said.
+
+2026-11-20: rules and process notes Morgan had compiled for the company he
+works with were found to rest on call notes a Haiku helper had pulled from
+an AI notetaker's summary, and the company's head said he was not
+confident in Haiku. Morgan moved every helper off Haiku the same day
+("Don't use Haiku. Use from Sonnet up"), Sonnet at low effort for routine
+reading, and on 2026-11-21 asked for the same in every repository that
+brings this set.
