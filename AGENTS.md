@@ -51,7 +51,7 @@ When handing work to another session, or spawning one:
 When pushing to staging or main, or merging a pull request into either, in any repository the person works in:
   promote-only — staging and main only by Promote or a staging-to-main PR; never a direct push
 When spawning a helper agent, or handing a small task to another model:
-  small-helpers-run-on-haiku — reading, summarizing, transcribing: Haiku; one helper per job, not per item
+  small-helpers-run-on-haiku — reading, summarizing: Sonnet at low effort, never Haiku; one helper per job
 When starting to build anything, landing it, or ending a session that built something:
   ladder-required — plan first, read back each stage, never leave work on a branch
 When telling the person something will be lost, discarded, or go away with the container, clone or session:
